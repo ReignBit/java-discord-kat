@@ -47,6 +47,6 @@ replay_pid*
 .history
 .ionide
 
-# Support for Project snippet scope
-
+# InteliJ
+.idea/*
 # End of https://www.toptal.com/developers/gitignore/api/java,visualstudiocode
