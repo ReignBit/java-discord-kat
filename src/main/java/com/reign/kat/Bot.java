@@ -1,24 +1,38 @@
 package com.reign.kat;
 
-import java.util.Properties;
-
+import com.reign.kat.commands.ExampleCog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 
-import com.reign.kat.utils.Config;
-
+import java.time.Instant;
 
 public class Bot {
+    private static final Logger log = LogManager.getLogger(Bot.class);
+    private DiscordApi api;
+    private static final long startedTimestamp = Instant.now().getEpochSecond();
+    private static final String prefix = "!";
 
-    Properties config;
-    
-    public Bot()
+    public static String getPrefix() { return prefix; }
+    public static long getStartedTimestamp() { return startedTimestamp; }
+
+    public Bot(String token)
     {
-        config = Config.getConfig("resources/config/conf.properties");
-        System.out.println(config);
+        FallbackLoggerConfiguration.setDebug(true);
 
-        DiscordApi api = new DiscordApiBuilder()
-                .setToken(config.getProperty("token"))
-                .login().join();
+        new DiscordApiBuilder().setToken(token).setAllIntents().login().thenAccept(api -> {
+            log.info("Successfully logged into Discord API.");
+            log.info(String.format("LOGIN as %s - %s", api.getYourself().getName(), api.getYourself().getIdAsString()));
+            log.info(String.format("Can see %d users across %d servers", api.getCachedUsers().size(), api.getServers().size()));
+
+            ExampleCog exampleCog = new ExampleCog(api);
+
+        });
+
     }
+
+
+
 }
