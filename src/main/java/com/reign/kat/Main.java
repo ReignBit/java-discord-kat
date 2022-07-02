@@ -1,15 +1,18 @@
 package com.reign.kat;
 
+import com.reign.kat.commands.debug.DebugCategory;
+import com.reign.kat.commands.ListenerCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args)
     {
-
-        Bot bot = new Bot("NTgyMDE0NTAyNDA1NTM3Nzky.XOnpPg.gBwfOi-wPwUSWLCKDVJClEcrEx4");
-
-//        HttpAPI api = new HttpAPI("https://api.reign-network.co.uk/yumi/api/v2/", "Basic a2F0ZGV2OjZERzJZRE51ekNzRFU2TmdQWkZweWhBdHozSDNFV3hR");
-//        api.get("guilds");
-//        api.post("guilds", "{")
+        log.info("Starting Kat v{}", Bot.getVersion());
+        Bot bot = new Bot("src/main/resources/config.yaml");
+        bot.addCategory(new DebugCategory());
+        bot.addCategory(new ListenerCategory());
     }
 }

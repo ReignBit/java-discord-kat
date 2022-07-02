@@ -1,2 +1,3 @@
-rootProject.name = 'javacord-kat'
+rootProject.name = 'java-discord-kat'
+include 'kat'
 

@@ -1,38 +1,78 @@
 package com.reign.kat;
 
-import com.reign.kat.commands.ExampleCog;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.DiscordApiBuilder;
-import org.javacord.api.util.logging.FallbackLoggerConfiguration;
+import com.reign.kat.core.Config;
+import com.reign.kat.core.ConfigBuilder;
+import com.reign.kat.core.command.category.Category;
+import com.reign.kat.core.command.category.CategoryHandler;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
+import javax.security.auth.login.LoginException;
+import java.util.List;
 
-public class Bot {
-    private static final Logger log = LogManager.getLogger(Bot.class);
-    private DiscordApi api;
-    private static final long startedTimestamp = Instant.now().getEpochSecond();
-    private static final String prefix = "!";
+public class Bot extends ListenerAdapter{
+    private static final Logger log = LoggerFactory.getLogger(Bot.class);
+    private static final String version = "0.0.1-alpha";
 
-    public static String getPrefix() { return prefix; }
-    public static long getStartedTimestamp() { return startedTimestamp; }
+    public static Config config;
+    public static final CategoryHandler categoryHandler = new CategoryHandler();
 
-    public Bot(String token)
+    private JDA jda;
+
+    public static String getVersion()
     {
-        FallbackLoggerConfiguration.setDebug(true);
+        return version;
+    }
 
-        new DiscordApiBuilder().setToken(token).setAllIntents().login().thenAccept(api -> {
-            log.info("Successfully logged into Discord API.");
-            log.info(String.format("LOGIN as %s - %s", api.getYourself().getName(), api.getYourself().getIdAsString()));
-            log.info(String.format("Can see %d users across %d servers", api.getCachedUsers().size(), api.getServers().size()));
+    public Bot(String configFilepath)
+    {
+        log.debug("Starting bot...");
 
-            ExampleCog exampleCog = new ExampleCog(api);
-
-        });
+        config = new ConfigBuilder(configFilepath).getConfig();
+        String token = config.getToken();
+        try
+        {
+            jda = JDABuilder.createDefault(token)
+                    .addEventListeners(this)
+                    .addEventListeners(categoryHandler)
+                    .build();
+        } catch (LoginException e)
+        {
+            log.error("Failed to login to the Discord API. Check if your Bot token is valid in your config file!");
+            System.exit(1);
+        }
 
     }
 
+    public void addCategory(Category cat)
+    {
+        categoryHandler.addCategory(cat);
+        jda.addEventListener(cat);
+        log.info("Registered category {}", cat.name);
+    }
 
+    public void removeCategory(String name)
+    {
+        Category cat = categoryHandler.removeCategory(name);
+        jda.removeEventListener(cat);
+        log.info("Unregistered category {}", cat.name);
+    }
+
+    @Override
+    public void onReady(ReadyEvent event)
+    {
+        log.info("==============================");
+        log.info("Logged in as {}", event.getJDA().getSelfUser().getName());
+        log.info("I can see {} Users", event.getJDA().getUsers().size());
+        log.info("I can see {}/{} Guilds", event.getGuildAvailableCount(), event.getGuildTotalCount());
+        log.info("Invite me to your server: {}", event.getJDA().getInviteUrl(Permission.ADMINISTRATOR));
+        log.info("==============================");
+    }
 
 }
+
