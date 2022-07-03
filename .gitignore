@@ -165,6 +165,5 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,gradle,java
 
-## Config.yaml
-src/main/resources/config.yaml
-/config.yaml
+## config.properties
+config.properties

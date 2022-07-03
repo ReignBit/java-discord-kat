@@ -85,7 +85,7 @@ public class CommandHandler extends ListenerAdapter {
         if (event.getAuthor().isBot()) { return; }
 
         Message message = event.getMessage();
-        String defaultPrefix = Bot.config.getDefaultPrefix();
+        String defaultPrefix = Bot.properties.getPrefix();
         if (message.getContentRaw().startsWith(defaultPrefix))
         {
             // Split the message up into cmd, args

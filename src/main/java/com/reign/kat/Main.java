@@ -13,7 +13,8 @@ public class Main {
         log.info("Starting Kat v{}", Bot.getVersion());
 
 
-        Bot bot = new Bot("./config.yaml");
+        Bot bot = new Bot();
+        log.info("TEST");
         bot.addCategory(new DebugCategory());
         bot.addCategory(new EmoteCategory());
     }
