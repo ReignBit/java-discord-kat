@@ -1,20 +1,21 @@
 package com.reign.kat.core.command;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Context {
+    public MessageReceivedEvent event;
+
     public Message message;
-    public User author;
+    public Member author;
+    public User authorAsUser;
     public List<MessageEmbed> embeds;
     public MessageEmbed embed;
-
-    public MessageReceivedEvent event;
 
     public TextChannel channel;
     public VoiceChannel voiceChannel;
@@ -22,8 +23,7 @@ public class Context {
     public PrivateChannel privateChannel;
 
     public long commandStartedAt = Instant.now().toEpochMilli();
-
-    public String[] args;
+    public ArrayList<String> args;
 
     public boolean isGuild()
     {
@@ -35,10 +35,11 @@ public class Context {
         return privateChannel != null;
     }
 
-    public Context(MessageReceivedEvent event, String[] args)
+    public Context(MessageReceivedEvent event, ArrayList<String> args)
     {
         message = event.getMessage();
-        author = event.getAuthor();
+        author = event.getMember();
+        authorAsUser = event.getAuthor();
         channel = event.getTextChannel();
         if (Objects.requireNonNull(event.getMember()).getVoiceState() != null)
         {

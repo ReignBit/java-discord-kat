@@ -8,8 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * CommandCategories
@@ -20,6 +19,8 @@ public class CategoryHandler extends ListenerAdapter {
     private static final Logger log = LoggerFactory.getLogger(CategoryHandler.class);
     private static final ArrayList<Category> categories = new ArrayList<>();
 
+    private static final HashMap<String, Category> cmdCatMap = new HashMap<>();
+
     public void addCategory(Category cat)
     {
         if (categories.contains(cat))
@@ -27,6 +28,14 @@ public class CategoryHandler extends ListenerAdapter {
             log.warn("Already registered Category {}", cat);
         }
         categories.add(cat);
+
+        // Populate the Command Category map for ease of finding commands.
+        for (Command cmd: cat.getCommands()) {
+            String[] aliases = cmd.getAliases();
+            for (String a: aliases) {
+                cmdCatMap.put(a, cat);
+            }
+        }
 
     }
 
@@ -36,9 +45,16 @@ public class CategoryHandler extends ListenerAdapter {
         {
             if (cat.name.equalsIgnoreCase(name))
             {
-                Category c = cat;
                 categories.remove(cat);
-                return c;
+
+                for (Command cmd: cat.getCommands()) {
+                    String[] aliases = cmd.getAliases();
+                    for (String a: aliases) {
+                        cmdCatMap.remove(a);
+                    }
+                }
+
+                return cat;
             }
         }
         return null;
@@ -47,6 +63,20 @@ public class CategoryHandler extends ListenerAdapter {
     public List<Category> getCategories()
     {
         return categories;
+    }
+
+    /**
+     * Get commands that match the input String from all registered categories.
+     * @param alias command name to search by.
+     * @return Command found
+     */
+    public Command getCommand(String alias)
+    {
+        if (cmdCatMap.containsKey(alias))
+        {
+            return cmdCatMap.get(alias).getCommand(alias);
+        }
+        return null;
     }
 
     @Override
@@ -59,14 +89,17 @@ public class CategoryHandler extends ListenerAdapter {
         if (message.getContentRaw().startsWith(defaultPrefix))
         {
             // Split the message up into cmd, args
-            String[] splitMessage = message.getContentRaw().split(" ");
-            String cmd = splitMessage[0].substring(defaultPrefix.length());
+            ArrayList<String> splitMessage = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
+            String cmd = splitMessage.get(0).substring(defaultPrefix.length());
+            splitMessage.remove(0); // Remove the command from the args list
 
-            for (int i = 0; i < categories.size(); i++) {
 
-                Command command = categories.get(i).findCommand(event, cmd);
+            // cmd = test
+            for (Category category : categories) {
+
+                Command command = category.findCommand(event, cmd);
                 if (command != null) {
-                    categories.get(i).executeCommand(event, command, splitMessage);
+                    category.executeCommand(event, command, splitMessage);
                 }
             }
         }

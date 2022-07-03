@@ -1,7 +1,7 @@
 package com.reign.kat;
 
 import com.reign.kat.commands.debug.DebugCategory;
-import com.reign.kat.commands.ListenerCategory;
+import com.reign.kat.commands.fun.emote.EmoteCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +11,10 @@ public class Main {
     public static void main(String[] args)
     {
         log.info("Starting Kat v{}", Bot.getVersion());
-        Bot bot = new Bot("src/main/resources/config.yaml");
+
+
+        Bot bot = new Bot("./config.yaml");
         bot.addCategory(new DebugCategory());
-        bot.addCategory(new ListenerCategory());
+        bot.addCategory(new EmoteCategory());
     }
 }

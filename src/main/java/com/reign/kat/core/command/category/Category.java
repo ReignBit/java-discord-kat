@@ -1,8 +1,9 @@
 package com.reign.kat.core.command.category;
 
-import com.reign.kat.Bot;
-import com.reign.kat.core.command.Command;
+import com.reign.kat.core.command.CommandParameters;
 import com.reign.kat.core.command.Context;
+import com.reign.kat.core.command.Command;
+import com.reign.kat.core.exceptions.MissingArgumentException;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public abstract class Category extends ListenerAdapter {
@@ -22,9 +24,26 @@ public abstract class Category extends ListenerAdapter {
 
     private final HashMap<String, Command> commands = new HashMap<>();
 
+    /**
+     * Get a Collection of all commands in the category.
+     * @return Collection<Command>
+     */
+    public Command getCommand(String search)
+    {
+        if (commands.containsKey(search))
+        {
+            return commands.get(search);
+        }
+        return null;
+    }
+
     public Collection<Command> getCommands()
     {
         return commands.values();
+    }
+    public Collection<Command> getCommandsDistinct()
+    {
+        return commands.values().stream().distinct().collect(Collectors.toList());
     }
 
     public void setEmoji(String emoji)
@@ -80,11 +99,21 @@ public abstract class Category extends ListenerAdapter {
         return null;
     }
 
-    public void executeCommand(MessageReceivedEvent event, Command command, String[] args)
+    public void executeCommand(MessageReceivedEvent event, Command command, ArrayList<String> args)
     {
         log.info("COMMAND {} started execution.", command.getPrimaryAlias());
         long then = Instant.now().toEpochMilli();
-        command.execute(new Context(event, args));
+
+        CommandParameters params = new CommandParameters(event);
+        try
+        {
+            params.parse(args, command);
+            command.execute(new Context(event, args), params);
+
+        } catch (MissingArgumentException e)
+        {
+            event.getChannel().sendMessage(e.toString()).queue();
+        }
         log.info("COMMAND {} finished execution in {}ms", command.getPrimaryAlias(), Instant.now().toEpochMilli() - then);
     }
 }

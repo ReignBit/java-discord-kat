@@ -1,5 +1,6 @@
 package com.reign.kat;
 
+import com.reign.api.TenorApi;
 import com.reign.kat.core.Config;
 import com.reign.kat.core.ConfigBuilder;
 import com.reign.kat.core.command.category.Category;
@@ -9,11 +10,13 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.util.List;
 
 public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
@@ -22,7 +25,8 @@ public class Bot extends ListenerAdapter{
     public static Config config;
     public static final CategoryHandler categoryHandler = new CategoryHandler();
 
-    private JDA jda;
+    public static JDA jda;
+    public static TenorApi tenorApi;
 
     public static String getVersion()
     {
@@ -35,11 +39,23 @@ public class Bot extends ListenerAdapter{
 
         config = new ConfigBuilder(configFilepath).getConfig();
         String token = config.getToken();
+
+        tenorApi = new TenorApi(config.getTenorApiKey(), "kat-java-bot");
+
         try
         {
             jda = JDABuilder.createDefault(token)
                     .addEventListeners(this)
                     .addEventListeners(categoryHandler)
+                    .setEnabledIntents(
+                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                            GatewayIntent.GUILD_MESSAGES,
+                            GatewayIntent.GUILD_MEMBERS,
+                            GatewayIntent.GUILD_VOICE_STATES,
+                            GatewayIntent.GUILD_EMOJIS_AND_STICKERS
+                    )
+                    .setChunkingFilter(ChunkingFilter.ALL)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .build();
         } catch (LoginException e)
         {

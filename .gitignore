@@ -167,3 +167,4 @@ gradle-app.setting
 
 ## Config.yaml
 src/main/resources/config.yaml
+/config.yaml
