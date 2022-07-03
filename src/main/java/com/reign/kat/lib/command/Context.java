@@ -1,4 +1,4 @@
-package com.reign.kat.core.command;
+package com.reign.kat.lib.command;
 
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

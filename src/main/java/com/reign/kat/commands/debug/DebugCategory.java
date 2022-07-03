@@ -1,6 +1,6 @@
 package com.reign.kat.commands.debug;
 
-import com.reign.kat.core.command.category.Category;
+import com.reign.kat.lib.command.category.Category;
 
 public class DebugCategory extends Category {
     public DebugCategory()

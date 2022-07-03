@@ -1,7 +1,8 @@
-package com.reign.kat.core.command.category;
+package com.reign.kat.lib.command.category;
 
 import com.reign.kat.Bot;
-import com.reign.kat.core.command.Command;
+import com.reign.kat.lib.command.Command;
+
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,9 +18,9 @@ import java.util.*;
  */
 public class CommandHandler extends ListenerAdapter {
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
-    private static final ArrayList<Category> categories = new ArrayList<>();
+    private static final ArrayList<Category> categories = new ArrayList<Category>();
 
-    private static final HashMap<String, Category> cmdCatMap = new HashMap<>();
+    private static final HashMap<String, Category> cmdCatMap = new HashMap<String, Category>();
 
     public void addCategory(Category cat)
     {
@@ -90,17 +91,15 @@ public class CommandHandler extends ListenerAdapter {
         {
             // Split the message up into cmd, args
             log.info(message.getContentRaw());
-            ArrayList<String> splitMessage = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
-            String cmd = splitMessage.get(0).substring(defaultPrefix.length());
-            splitMessage.remove(0); // Remove the command from the args list
-
-
+            ArrayList<String> cmdArgs = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
+            String cmd = cmdArgs.get(0).substring(defaultPrefix.length());
+            cmdArgs.remove(0); // Remove the command from the args list
             // cmd = test
             for (Category category : categories) {
 
                 Command command = category.findCommand(event, cmd);
                 if (command != null) {
-                    category.executeCommand(event, command, splitMessage);
+                    category.executeCommand(event, command, cmdArgs);
                 }
             }
         }

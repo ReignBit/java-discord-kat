@@ -1,10 +1,11 @@
-package com.reign.kat.core.command;
+package com.reign.kat.lib.command;
 
-import com.reign.kat.core.converters.Converter;
-import com.reign.kat.core.exceptions.MissingArgumentException;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.reign.kat.lib.converters.Converter;
+import com.reign.kat.lib.exceptions.MissingArgumentException;
 
 import java.util.ArrayList;
 

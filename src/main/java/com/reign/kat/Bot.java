@@ -1,9 +1,10 @@
 package com.reign.kat;
 
 import com.reign.api.TenorApi;
-import com.reign.kat.core.Properties;
-import com.reign.kat.core.command.category.Category;
-import com.reign.kat.core.command.category.CommandHandler;
+import com.reign.kat.lib.Properties;
+import com.reign.kat.lib.command.category.Category;
+import com.reign.kat.lib.command.category.CommandHandler;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -41,7 +42,6 @@ public class Bot extends ListenerAdapter{
             this.log.error(e.toString());
             System.exit(-1);
         }
-        System.exit(0);
         //run bot
     }
 
@@ -50,31 +50,31 @@ public class Bot extends ListenerAdapter{
 
         this.log.info("Getting bot properties");
         this.properties = new Properties();
-//        String token = this.properties.getToken();
-//
-//        tenorApi = new TenorApi(this.properties.getTenorApiKey(), "kat-java-bot");
-//
-//        try
-//        {
-//            jda = JDABuilder.createDefault(token)
-//                    .addEventListeners(this)
-//                    .addEventListeners(commandHandler)
-//                    .setEnabledIntents(
-//                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-//                            GatewayIntent.GUILD_MESSAGES,
-//                            GatewayIntent.GUILD_MEMBERS,
-//                            GatewayIntent.GUILD_VOICE_STATES,
-//                            GatewayIntent.GUILD_EMOJIS_AND_STICKERS
-//                    )
-//                    .setChunkingFilter(ChunkingFilter.ALL)
-//                    .setMemberCachePolicy(MemberCachePolicy.ALL)
-//                    .build();
-//        } catch (LoginException e)
-//        {
-//            this.log.error("Failed to login to the Discord API. Check if your Bot token is valid in your config file!");
-//            throw e;
-//
-//        }
+       String token = this.properties.getToken();
+
+       tenorApi = new TenorApi(this.properties.getTenorApiKey(), "kat-java-bot");
+
+       try
+       {
+           jda = JDABuilder.createDefault(token)
+                   .addEventListeners(this)
+                   .addEventListeners(commandHandler)
+                   .setEnabledIntents(
+                           GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                           GatewayIntent.GUILD_MESSAGES,
+                           GatewayIntent.GUILD_MEMBERS,
+                           GatewayIntent.GUILD_VOICE_STATES,
+                           GatewayIntent.GUILD_EMOJIS_AND_STICKERS
+                   )
+                   .setChunkingFilter(ChunkingFilter.ALL)
+                   .setMemberCachePolicy(MemberCachePolicy.ALL)
+                   .build();
+       } catch (LoginException e)
+       {
+           this.log.error("Failed to login to the Discord API. Check if your Bot token is valid in your config file!");
+           throw e;
+
+       }
 
     }
 

@@ -1,4 +1,4 @@
-package com.reign.kat.core.exceptions;
+package com.reign.kat.lib.exceptions;
 
 public class MissingArgumentException extends Exception{
     public MissingArgumentException(String error)

@@ -1,4 +1,4 @@
-package com.reign.kat.core;
+package com.reign.kat.lib;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
-import com.reign.kat.core.exceptions.PropertiesException;
+import com.reign.kat.lib.exceptions.PropertiesException;
 
 public class Properties {
     private static final Logger log = LoggerFactory.getLogger(Properties.class);
@@ -30,7 +30,7 @@ public class Properties {
         }catch(Exception e){
             throw e;
         }
-        log.info(toString());
+        
         
     }
 

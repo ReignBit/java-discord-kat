@@ -1,8 +1,8 @@
-package com.reign.kat.core.command;
-
-import com.reign.kat.core.converters.Converter;
+package com.reign.kat.lib.command;
 
 import java.util.ArrayList;
+
+import com.reign.kat.lib.converters.Converter;
 
 public abstract class Command {
 

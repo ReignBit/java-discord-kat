@@ -1,4 +1,4 @@
-package com.reign.kat.core.converters;
+package com.reign.kat.lib.converters;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

@@ -4,11 +4,12 @@ import com.reign.api.responses.tenor.Gif;
 import com.reign.api.responses.tenor.GifMedia;
 import com.reign.api.responses.tenor.TenorGifs;
 import com.reign.kat.Bot;
-import com.reign.kat.core.command.Command;
-import com.reign.kat.core.command.CommandParameters;
-import com.reign.kat.core.command.Context;
-import com.reign.kat.core.converters.MemberConverter;
-import com.reign.kat.core.converters.UserConverter;
+import com.reign.kat.lib.command.Command;
+import com.reign.kat.lib.command.CommandParameters;
+import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.converters.MemberConverter;
+import com.reign.kat.lib.converters.UserConverter;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;

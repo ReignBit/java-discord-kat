@@ -1,13 +1,14 @@
-package com.reign.kat.core.command.category;
+package com.reign.kat.lib.command.category;
 
-import com.reign.kat.core.command.CommandParameters;
-import com.reign.kat.core.command.Context;
-import com.reign.kat.core.command.Command;
-import com.reign.kat.core.exceptions.MissingArgumentException;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.reign.kat.lib.command.Command;
+import com.reign.kat.lib.command.CommandParameters;
+import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.exceptions.MissingArgumentException;
 
 import java.time.Instant;
 import java.util.*;

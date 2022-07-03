@@ -1,4 +1,4 @@
-package com.reign.kat.core.converters;
+package com.reign.kat.lib.converters;
 
 import com.reign.kat.Bot;
 import net.dv8tion.jda.api.entities.User;

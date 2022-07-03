@@ -11,10 +11,8 @@ public class Main {
     public static void main(String[] args)
     {
         log.info("Starting Kat v{}", Bot.getVersion());
-
-
         Bot bot = new Bot();
-        log.info("TEST");
+        log.info("Adding Categories");
         bot.addCategory(new DebugCategory());
         bot.addCategory(new EmoteCategory());
     }

@@ -1,15 +1,16 @@
 package com.reign.kat.commands.debug;
 
-import com.reign.kat.core.converters.Converter;
-import com.reign.kat.core.converters.MemberConverter;
-import com.reign.kat.core.converters.UserConverter;
-import com.reign.kat.core.command.Command;
-import com.reign.kat.core.command.CommandParameters;
-import com.reign.kat.core.command.Context;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.reign.kat.lib.command.Command;
+import com.reign.kat.lib.command.CommandParameters;
+import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.converters.Converter;
+import com.reign.kat.lib.converters.MemberConverter;
+import com.reign.kat.lib.converters.UserConverter;
 
 
 public class TestCommand extends Command {

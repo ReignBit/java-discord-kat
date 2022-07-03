@@ -1,12 +1,13 @@
-package com.reign.kat.core.converters;
+package com.reign.kat.lib.converters;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+@SuppressWarnings({"unchecked"})
 public abstract class Converter<T> {
     private T item = null;
     public String argName;
     public String description;
-    public boolean optional; //TODO: use this
+    public boolean optional;
 
     public Converter(String argName, String description, boolean optional) {
         this.argName = argName;
@@ -15,7 +16,7 @@ public abstract class Converter<T> {
     }
 
     public abstract Converter<T> convert(String toConvert, MessageReceivedEvent event) throws IllegalArgumentException;
-    @SuppressWarnings("unchecked")
+
     public <T> T get() { return (T) item; }
     public void set(T obj) { item = obj; }
 

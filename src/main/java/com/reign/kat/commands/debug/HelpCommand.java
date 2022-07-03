@@ -1,13 +1,14 @@
 package com.reign.kat.commands.debug;
 
 import com.reign.kat.Bot;
-import com.reign.kat.core.converters.Converter;
-import com.reign.kat.core.command.Command;
-import com.reign.kat.core.command.CommandParameters;
-import com.reign.kat.core.command.Context;
-import com.reign.kat.core.command.category.Category;
-import com.reign.kat.core.converters.StringConverter;
-import com.reign.kat.core.utils.DiscordColor;
+import com.reign.kat.lib.command.Command;
+import com.reign.kat.lib.command.CommandParameters;
+import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.category.Category;
+import com.reign.kat.lib.converters.Converter;
+import com.reign.kat.lib.converters.StringConverter;
+import com.reign.kat.lib.utils.DiscordColor;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.reign.kat.core.utils;
+package com.reign.kat.lib.utils;
 
 public class DiscordColor {
 
