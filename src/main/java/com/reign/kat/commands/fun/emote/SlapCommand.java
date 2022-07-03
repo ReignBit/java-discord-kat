@@ -21,7 +21,7 @@ import java.util.Random;
 public class SlapCommand extends Command {
 
     public SlapCommand() {
-        super(new String[]{"slap"}, "Slap a user.");
+        super(new String[]{"slap"}, "slap", "Slap a user.");
         addConverter(new MemberConverter(
                 "user",
                 "The user you want to slap",

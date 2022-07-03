@@ -32,7 +32,7 @@ public class CommandHandler extends ListenerAdapter {
 
         // Populate the Command Category map for ease of finding commands.
         for (Command cmd: cat.getCommands()) {
-            String[] aliases = cmd.getAliases();
+            HashSet<String> aliases = cmd.getAliases();
             for (String a: aliases) {
                 cmdCatMap.put(a, cat);
             }
@@ -47,14 +47,12 @@ public class CommandHandler extends ListenerAdapter {
             if (cat.name.equalsIgnoreCase(name))
             {
                 categories.remove(cat);
-
                 for (Command cmd: cat.getCommands()) {
-                    String[] aliases = cmd.getAliases();
+                    HashSet<String> aliases = cmd.getAliases();
                     for (String a: aliases) {
                         cmdCatMap.remove(a);
                     }
                 }
-
                 return cat;
             }
         }
@@ -104,4 +102,6 @@ public class CommandHandler extends ListenerAdapter {
             }
         }
     }
+
+
 }

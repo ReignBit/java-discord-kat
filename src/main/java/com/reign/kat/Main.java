@@ -10,10 +10,10 @@ public class Main {
 
     public static void main(String[] args)
     {
-        log.info("Starting Kat v{}", Bot.getVersion());
-        Bot bot = new Bot();
-        log.info("Adding Categories");
-        bot.addCategory(new DebugCategory());
-        bot.addCategory(new EmoteCategory());
+        log.info("Creating runner environment");
+        BotRunner br = new BotRunner();
+        log.info("Running");
+        br.run();
+        log.info("Stopping environment");
     }
 }

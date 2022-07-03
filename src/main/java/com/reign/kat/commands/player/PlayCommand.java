@@ -13,12 +13,13 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.net.http.HttpResponse;
+import java.util.HashSet;
 import java.util.Random;
 
 public class PlayCommand extends Command {
 
     public PlayCommand() {
-        super(new String[]{"play"}, "play song");
+        super(new String[]{"play","p"},"play" ,"Add song to queue");
     }
 
     @Override

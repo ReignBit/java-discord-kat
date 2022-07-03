@@ -22,7 +22,7 @@ public class HelpCommand extends Command {
 
     public HelpCommand()
     {
-        super(new String[]{"help", "?"}, "Shows this message");
+        super(new String[]{"help", "?"}, "help" ,"Shows this message");
         addConverter(new StringConverter(
                 "command",
                 "command to get help with",
@@ -96,7 +96,7 @@ public class HelpCommand extends Command {
 
 
         // Aliases Section (extra only if command has more than 1 alias
-        if (command.getAliases().length > 1)
+        if (command.getAliases().size() > 1)
         {
             StringBuilder aliasesHelp = new StringBuilder();
             for(String alias: command.getAliases())
@@ -127,7 +127,7 @@ public class HelpCommand extends Command {
                 log.info(String.valueOf(commands));
                 for (Command cmd: commands)
                 {
-                    sb.append(String.format("`%s`, ", cmd.name()));
+                    sb.append(String.format("`%s`, ", cmd.getName()));
                 }
 
                 embedBuilder.addField(

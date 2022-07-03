@@ -1,6 +1,9 @@
 package com.reign.kat;
 
 import com.reign.api.TenorApi;
+import com.reign.kat.commands.debug.DebugCategory;
+import com.reign.kat.commands.fun.emote.EmoteCategory;
+import com.reign.kat.commands.player.PlayerCategory;
 import com.reign.kat.lib.Properties;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
@@ -33,20 +36,18 @@ public class Bot extends ListenerAdapter{
         return version;
     }
 
-    public Bot()
+    public Bot() throws Exception
     {
         this.log.debug("Starting bot...");
         try{
             initialize();
         }catch(Exception e){
             this.log.error(e.toString());
-            System.exit(-1);
+            throw e;
         }
-        //run bot
     }
 
     public void initialize() throws Exception{
-
 
         this.log.info("Getting bot properties");
         this.properties = new Properties();
@@ -75,7 +76,15 @@ public class Bot extends ListenerAdapter{
            throw e;
 
        }
+       addCategories();
+    }
 
+    public void addCategories(){
+        log.info("Adding Categories");
+        addCategory(new DebugCategory());
+        addCategory(new EmoteCategory());
+        addCategory(new PlayerCategory());
+        log.info("Categories Loaded");
     }
 
     public void addCategory(Category cat)

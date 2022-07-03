@@ -110,7 +110,6 @@ public abstract class Category extends ListenerAdapter {
         {
             params.parse(args, command);
             command.execute(new Context(event, args), params);
-
         } catch (MissingArgumentException e)
         {
             event.getChannel().sendMessage(e.toString()).queue();

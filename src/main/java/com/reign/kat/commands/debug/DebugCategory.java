@@ -8,6 +8,7 @@ public class DebugCategory extends Category {
         setEmoji(":gear:");
         registerCommand(new TestCommand());
         registerCommand(new HelpCommand());
+        registerCommand(new KillCommand());
     }
 
 }
