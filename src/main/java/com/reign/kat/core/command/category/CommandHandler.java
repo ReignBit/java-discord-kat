@@ -15,8 +15,8 @@ import java.util.*;
  *
  * Contains all categories used by the Bot.
  */
-public class CategoryHandler extends ListenerAdapter {
-    private static final Logger log = LoggerFactory.getLogger(CategoryHandler.class);
+public class CommandHandler extends ListenerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
     private static final ArrayList<Category> categories = new ArrayList<>();
 
     private static final HashMap<String, Category> cmdCatMap = new HashMap<>();
@@ -89,6 +89,7 @@ public class CategoryHandler extends ListenerAdapter {
         if (message.getContentRaw().startsWith(defaultPrefix))
         {
             // Split the message up into cmd, args
+            log.info(message.getContentRaw());
             ArrayList<String> splitMessage = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
             String cmd = splitMessage.get(0).substring(defaultPrefix.length());
             splitMessage.remove(0); // Remove the command from the args list

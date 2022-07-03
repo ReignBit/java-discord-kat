@@ -4,7 +4,7 @@ import com.reign.api.TenorApi;
 import com.reign.kat.core.Config;
 import com.reign.kat.core.ConfigBuilder;
 import com.reign.kat.core.command.category.Category;
-import com.reign.kat.core.command.category.CategoryHandler;
+import com.reign.kat.core.command.category.CommandHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -23,7 +23,7 @@ public class Bot extends ListenerAdapter{
     private static final String version = "0.0.1-alpha";
 
     public static Config config;
-    public static final CategoryHandler categoryHandler = new CategoryHandler();
+    public static final CommandHandler commandHandler = new CommandHandler();
 
     public static JDA jda;
     public static TenorApi tenorApi;
@@ -46,7 +46,7 @@ public class Bot extends ListenerAdapter{
         {
             jda = JDABuilder.createDefault(token)
                     .addEventListeners(this)
-                    .addEventListeners(categoryHandler)
+                    .addEventListeners(commandHandler)
                     .setEnabledIntents(
                             GatewayIntent.GUILD_MESSAGE_REACTIONS,
                             GatewayIntent.GUILD_MESSAGES,
@@ -67,14 +67,14 @@ public class Bot extends ListenerAdapter{
 
     public void addCategory(Category cat)
     {
-        categoryHandler.addCategory(cat);
+        commandHandler.addCategory(cat);
         jda.addEventListener(cat);
         log.info("Registered category {}", cat.name);
     }
 
     public void removeCategory(String name)
     {
-        Category cat = categoryHandler.removeCategory(name);
+        Category cat = commandHandler.removeCategory(name);
         jda.removeEventListener(cat);
         log.info("Unregistered category {}", cat.name);
     }

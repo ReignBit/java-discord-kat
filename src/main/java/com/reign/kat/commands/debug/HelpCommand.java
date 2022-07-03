@@ -7,14 +7,12 @@ import com.reign.kat.core.command.CommandParameters;
 import com.reign.kat.core.command.Context;
 import com.reign.kat.core.command.category.Category;
 import com.reign.kat.core.converters.StringConverter;
-import com.reign.kat.core.converters.UserConverter;
 import com.reign.kat.core.utils.DiscordColor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,11 +32,11 @@ public class HelpCommand extends Command {
 
     @Override
     public void execute(Context ctx, CommandParameters params) {
-        List<Category> categories = Bot.categoryHandler.getCategories();
+        List<Category> categories = Bot.commandHandler.getCategories();
         String commandSearchTerm = params.get(0);
         log.info(commandSearchTerm);
 
-        Command command = Bot.categoryHandler.getCommand(commandSearchTerm);
+        Command command = Bot.commandHandler.getCommand(commandSearchTerm);
 
         if (commandSearchTerm == null)
         {

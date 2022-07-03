@@ -1,9 +1,9 @@
 package com.reign.kat.core;
 
 public class Config {
-    private final String token = "YOUR BOT TOKEN HERE";
-    private final String defaultPrefix = "!";
-    private final String tenorApiKey = "TENOR API KEY";
+    private String token = "YOUR BOT TOKEN HERE";
+    private String defaultPrefix = "!";
+    private String tenorApiKey = "TENOR API KEY";
 
     public String getToken() { return token; }
     public String getDefaultPrefix() { return defaultPrefix; }
