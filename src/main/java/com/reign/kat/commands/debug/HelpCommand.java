@@ -35,7 +35,6 @@ public class HelpCommand extends Command {
     public void execute(Context ctx, CommandParameters params) {
         List<Category> categories = Bot.commandHandler.getCategories();
         String commandSearchTerm = params.get(0);
-        log.info(commandSearchTerm);
 
         Command command = Bot.commandHandler.getCommand(commandSearchTerm);
 
@@ -83,7 +82,7 @@ public class HelpCommand extends Command {
                 usageHelp.append("<").append(arg.argName).append("> ");
             }
         }
-        usageHelp.append("`");
+        usageHelp.append("`").append("\n*[]: Optional, <>: Required*");
 
         // Command Description section
         String commandHelp = command.getDescription() +

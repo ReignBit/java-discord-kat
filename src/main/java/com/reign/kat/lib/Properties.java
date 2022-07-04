@@ -23,7 +23,7 @@ public class Properties {
     private File propertiesFile;
 
     public Properties() throws Exception{
-        this.log.debug("Reading config file");
+        log.debug("Reading config file");
         try{
             readPropertiesFile();
             requiredValuesSet();
@@ -38,7 +38,7 @@ public class Properties {
         this.propertiesFile = new File("config.properties");
         if(!this.propertiesFile.exists()){
             Exception e = new PropertiesException("config.properties file missing");
-            this.log.error("config.properties file missing");
+            log.error("config.properties file missing");
             throw e;
         }
         Scanner fscan = new Scanner(this.propertiesFile);

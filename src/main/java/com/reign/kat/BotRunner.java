@@ -18,7 +18,6 @@ public class BotRunner {
         } catch (Exception e) {
             log.error(e.toString());
         }
-        log.info("Stopping Kat");
     }
 
     public void restart(){

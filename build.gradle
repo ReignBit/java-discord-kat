@@ -7,7 +7,6 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -18,7 +17,8 @@ dependencies {
 
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3')
     implementation('com.fasterxml.jackson.core:jackson-databind:2.13.3')
-    implementation('com.github.sapher:youtubedl-java:1.+')
+
+    implementation('de.vandermeer:asciitable:0.3.2')
 }
 
 test {

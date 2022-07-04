@@ -1,5 +1,6 @@
 package com.reign.kat.lib.command.category;
 
+import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
@@ -71,7 +72,8 @@ public abstract class Category extends ListenerAdapter {
                 log.warn("Duplicate command alias registered. orig:{} new:{}", orig.name, command.name);
             }
             commands.put(alias, command);
-            log.info("Registered command {}", command.name);
+            BotStats.addCommands(getCommandsDistinct());
+            log.info("Registered command {} (alias {})", command.name, alias);
         }
     }
 
@@ -102,7 +104,7 @@ public abstract class Category extends ListenerAdapter {
 
     public void executeCommand(MessageReceivedEvent event, Command command, ArrayList<String> args)
     {
-        log.info("COMMAND {} started execution.", command.getPrimaryAlias());
+        log.debug("COMMAND {} started execution.", command.getPrimaryAlias());
         long then = Instant.now().toEpochMilli();
 
         CommandParameters params = new CommandParameters(event);
@@ -114,6 +116,9 @@ public abstract class Category extends ListenerAdapter {
         {
             event.getChannel().sendMessage(e.toString()).queue();
         }
-        log.info("COMMAND {} finished execution in {}ms", command.getPrimaryAlias(), Instant.now().toEpochMilli() - then);
+
+        long l = Instant.now().toEpochMilli() - then;
+        BotStats.addCommandExecutionStat(command, l, params);
+
     }
 }

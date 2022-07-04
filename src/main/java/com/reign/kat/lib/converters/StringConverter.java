@@ -13,7 +13,6 @@ public class StringConverter extends Converter<String> {
 
     @Override
     public Converter<String> convert(String toConvert, MessageReceivedEvent event) throws IllegalArgumentException {
-        log.info(toConvert);
         set(toConvert);
         return this;
     }

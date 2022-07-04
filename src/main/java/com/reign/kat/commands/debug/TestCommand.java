@@ -1,37 +1,84 @@
 package com.reign.kat.commands.debug;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
+import com.reign.kat.Bot;
+import net.dv8tion.jda.api.EmbedBuilder;
+
+import net.dv8tion.jda.api.entities.Guild;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.converters.Converter;
-import com.reign.kat.lib.converters.MemberConverter;
-import com.reign.kat.lib.converters.UserConverter;
+
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class TestCommand extends Command {
     private static final Logger log = LoggerFactory.getLogger(TestCommand.class);
 
     public TestCommand() {
-        super(new String[]{"test"}, "I guess this would be the description?");
-        addConverter(new MemberConverter(
-                "exampleArgument",
-                "This is where an important argument would go",
-                false
-        ));
+        super(new String[]{"test"}, "test","I guess this would be the description?");
     }
 
 
-    // !help @user
     @Override
     public void execute(Context ctx, CommandParameters params) {
-        Converter<?> t = params.params.get(0);
-        Member u = t.get();
+        ArrayList<Long> ids = Bot.api.getGuildIds().ids();
 
-        ctx.channel.sendMessage(String.format("Hello there %s", u.getEffectiveName())).queue();
+        EmbedBuilder apiGuildsEmbedBuilder = new EmbedBuilder();
+        apiGuildsEmbedBuilder.setTitle("Guilds which have API data")
+                        .setDescription(getGuildDataFromIds(ids));
+
+        EmbedBuilder nonApiEmbedBuilder = new EmbedBuilder();
+        nonApiEmbedBuilder.setTitle("Guilds which are not in API")
+                        .setDescription(getMissingGuildsFromIds(ids));
+
+
+        ctx.channel.sendMessageEmbeds(
+                apiGuildsEmbedBuilder.build(),
+                nonApiEmbedBuilder.build()
+
+        ).queue();
     }
+
+    String getGuildDataFromIds(ArrayList<Long> ids)
+    {
+        StringBuilder sb = new StringBuilder().append("```\n");
+        for(long id: ids)
+        {
+            Guild g = Bot.jda.getGuildById(id);
+            if (g != null)
+            {
+                sb.append(g.getName()).append("\t").append(g.getMemberCount()).append(" Users\n");
+            }
+            else
+            {
+                sb.append(id).append("\tNotAvailable\n");
+            }
+        }
+        sb.append("```");
+        return sb.toString();
+    }
+
+    String getMissingGuildsFromIds(ArrayList<Long> ids)
+    {
+        StringBuilder sb = new StringBuilder().append("```\n");
+
+
+        for(Guild g: Bot.jda.getGuilds())
+        {
+            if (!ids.contains(g.getIdLong()))
+            {
+                sb.append(g.getName()).append("   ").append(g.getMemberCount()).append(" Users\n");
+            }
+        }
+        sb.append("```");
+        return sb.toString();
+    }
+
 }
+

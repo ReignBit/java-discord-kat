@@ -1,5 +1,7 @@
 package com.reign.kat.lib.command;
 
+import com.reign.kat.Bot;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -10,6 +12,7 @@ import java.util.Objects;
 
 public class Context {
     public MessageReceivedEvent event;
+    public JDA jda;
 
     public Message message;
     public Member author;
@@ -54,5 +57,6 @@ public class Context {
 
         this.args = args;
         this.event = event;
+        this.jda = Bot.jda;
     }
 }

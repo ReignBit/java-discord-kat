@@ -1,6 +1,7 @@
 package com.reign.kat.lib.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import com.reign.kat.lib.converters.Converter;
@@ -9,17 +10,15 @@ public abstract class Command {
 
 
     public String name = this.getClass().getCanonicalName();
-    private HashSet<String> aliases;
-    private String primaryAlias;
-    private String description;
+    private final HashSet<String> aliases;
+    private final String primaryAlias;
+    private final String description;
     public ArrayList<Converter<?>> converters = new ArrayList<>();
 
     public Command(String[] aliases, String primaryAlias, String description)
     {
         this.aliases = new HashSet<>();
-        for(String s : aliases){
-            this.aliases.add(s);
-        }
+        this.aliases.addAll(Arrays.asList(aliases));
         this.primaryAlias = primaryAlias;
         this.description = description;
     }

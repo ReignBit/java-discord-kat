@@ -14,6 +14,5 @@ public class Main {
         BotRunner br = new BotRunner();
         log.info("Running");
         br.run();
-        log.info("Stopping environment");
     }
 }

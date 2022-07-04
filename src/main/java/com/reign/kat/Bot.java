@@ -1,5 +1,6 @@
 package com.reign.kat;
 
+import com.reign.api.KatApi;
 import com.reign.api.TenorApi;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
@@ -8,6 +9,7 @@ import com.reign.kat.lib.Properties;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
+import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -30,6 +32,9 @@ public class Bot extends ListenerAdapter{
 
     public static JDA jda;
     public static TenorApi tenorApi;
+    public static KatApi api;
+
+    public static BotStats stats;
 
     public static String getVersion()
     {
@@ -38,22 +43,24 @@ public class Bot extends ListenerAdapter{
 
     public Bot() throws Exception
     {
-        this.log.debug("Starting bot...");
+        log.debug("Starting bot...");
         try{
             initialize();
         }catch(Exception e){
-            this.log.error(e.toString());
+            log.error(e.toString());
             throw e;
         }
     }
 
     public void initialize() throws Exception{
 
-        this.log.info("Getting bot properties");
-        this.properties = new Properties();
-       String token = this.properties.getToken();
+        log.info("Getting bot properties");
+        properties = new Properties();
+       String token = properties.getToken();
 
-       tenorApi = new TenorApi(this.properties.getTenorApiKey(), "kat-java-bot");
+       tenorApi = new TenorApi(properties.getTenorApiKey(), "kat-java-bot");
+       // TODO: REMOVE THIS WHEN PUSHING
+       api = new KatApi("https://api.reign-network.co.uk/yumi/api/v2", "Basic a2F0ZGV2OjZERzJZRE51ekNzRFU2TmdQWkZweWhBdHozSDNFV3hR");
 
        try
        {
@@ -72,7 +79,7 @@ public class Bot extends ListenerAdapter{
                    .build();
        } catch (LoginException e)
        {
-           this.log.error("Failed to login to the Discord API. Check if your Bot token is valid in your config file!");
+           log.error("Failed to login to the Discord API. Check if your Bot token is valid in your config file!");
            throw e;
 
        }

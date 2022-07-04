@@ -8,6 +8,7 @@ import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.exceptions.MissingArgumentException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Converts a command's arguments into objects, decided by Command.converters
@@ -17,7 +18,7 @@ public class CommandParameters {
 
     private final MessageReceivedEvent event;
 
-    public ArrayList<Converter<?>> params = new ArrayList<>();
+    public HashMap<String, Converter<?>> params = new HashMap<>();
 
     public CommandParameters(MessageReceivedEvent event) {
         this.event = event;
@@ -37,7 +38,9 @@ public class CommandParameters {
 
         for (int i = 0; i < command.converters.size(); i++) {
             String s = i < strArgs.size() ? strArgs.get(i) : null;
-            params.add(command.converters.get(i).convert(s, event));
+
+            Converter<?> converter = command.converters.get(i);
+            params.put(converter.argName, converter.convert(s, event));
         }
     }
 
@@ -45,6 +48,16 @@ public class CommandParameters {
         if (params.isEmpty() || index > params.size()) {
             return null;
         }
-        return params.get(index).get();
+        // Since we are trying to get by index, convert HashMap to a List of Converter<?> and get the item value.
+        return params.values().stream().toList().get(index).get();
+    }
+
+    public <T> T get(String key)
+    {
+        if (!params.containsKey(key))
+        {
+            return null;
+        }
+        return params.get(key).get();
     }
 }
