@@ -16,8 +16,6 @@
  - Jackson
 
 
-<hr>
-
 ## TODO
 
 ### Core
