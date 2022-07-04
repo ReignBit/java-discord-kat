@@ -25,7 +25,7 @@ import javax.security.auth.login.LoginException;
 
 public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
-    private static final String version = "2.0.0.15-alpha";
+    private static final String version = "0.1.0";
 
     public static Properties properties;
     public static final CommandHandler commandHandler = new CommandHandler();
@@ -33,8 +33,6 @@ public class Bot extends ListenerAdapter{
     public static JDA jda;
     public static TenorApi tenorApi;
     public static KatApi api;
-
-    public static BotStats stats;
 
     public static String getVersion()
     {
