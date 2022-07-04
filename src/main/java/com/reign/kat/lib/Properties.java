@@ -12,26 +12,28 @@ public class Properties {
 
     private String token;
     private String prefix = "!";
+    private String backend_api_key;
+    private String backend_api_host;
+
     private String tenorApiKey;
 
     public String getToken() { return token; }
     public String getPrefix() { return prefix; }
+    public String getBackendApiKey() { return backend_api_key; }
+    public String getBackendApiHost() { return backend_api_host; }
     public String getTenorApiKey() { return tenorApiKey; }
 
     private File propertiesFile;
 
     public Properties() throws Exception{
         log.debug("Reading config file");
-        try{
-            readPropertiesFile();
-            requiredValuesSet();
-        }catch(Exception e){
-            throw e;
-        }
-        
+        readPropertiesFile();
+        requiredValuesSet();
         
     }
-
+    /* TODO: Maybe change this to a Class based config?
+        instead of a switch case, maybe have some kind of Config model that is loaded
+     */
     private void readPropertiesFile() throws Exception{
         this.propertiesFile = new File("config.properties");
         if(!this.propertiesFile.exists()){
@@ -62,6 +64,10 @@ public class Properties {
                 case "tenor_api_key":
                     this.tenorApiKey = args[1];
                     break;
+                case "backend_api_key":
+                    this.backend_api_key = args[1];
+                case "backend_api_host":
+                    this.backend_api_host = args[1];
                 default:
                     break;
             }

@@ -1,3 +1,5 @@
 bot_token=11=
 prefix=
 tenor_api_key=
+backend_api_key=
+backend_api_host=

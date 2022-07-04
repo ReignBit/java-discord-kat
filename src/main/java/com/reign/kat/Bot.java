@@ -59,8 +59,8 @@ public class Bot extends ListenerAdapter{
        String token = properties.getToken();
 
        tenorApi = new TenorApi(properties.getTenorApiKey(), "kat-java-bot");
-       // TODO: REMOVE THIS WHEN PUSHING
-       api = new KatApi("https://api.reign-network.co.uk/yumi/api/v2", "Basic a2F0ZGV2OjZERzJZRE51ekNzRFU2TmdQWkZweWhBdHozSDNFV3hR");
+
+       api = new KatApi(properties.getBackendApiHost(), properties.getBackendApiKey());
 
        try
        {
