@@ -5,8 +5,8 @@ import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.category.Category;
-import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.converters.StringConverter;
+import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.DiscordColor;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,7 +26,7 @@ public class HelpCommand extends Command {
         addConverter(new StringConverter(
                 "command",
                 "command to get help with",
-                null
+                ""
         ));
     }
 
@@ -35,6 +35,11 @@ public class HelpCommand extends Command {
     public void execute(Context ctx, CommandParameters params) {
         List<Category> categories = Bot.commandHandler.getCategories();
         String commandSearchTerm = params.get(0);
+
+        if (commandSearchTerm.equals(""))
+        {
+            commandSearchTerm = null;
+        }
 
         Command command = Bot.commandHandler.getCommand(commandSearchTerm);
 
@@ -54,19 +59,17 @@ public class HelpCommand extends Command {
 
     EmbedBuilder generateNoHelp(Context ctx, String cmd)
     {
-        return new EmbedBuilder()
+        return new GenericEmbedBuilder()
                 .setTitle("Kat Command Help")
                 .setDescription(String.format("No Command Found\nCould not find a command starting with `%s`", cmd))
-                .setFooter("kat.reign-network.co.uk")
                 .setColor(DiscordColor.BACKGROUND_GREY);
     }
 
     EmbedBuilder generateSpecificHelp(Context ctx, Command command)
     {
-        EmbedBuilder embedBuilder = new EmbedBuilder()
+        EmbedBuilder embedBuilder = new GenericEmbedBuilder()
                 .setTitle("Kat Command Help")
                 .setDescription(String.format("Information about `%s`", command.getPrimaryAlias()))
-                .setFooter("kat.reign-network.co.uk")
                 .setColor(DiscordColor.BACKGROUND_GREY);
 
         // Usage Help Section
@@ -98,10 +101,9 @@ public class HelpCommand extends Command {
     }
     EmbedBuilder generateGenericHelp(Context ctx, List<Category> categories)
     {
-        EmbedBuilder embedBuilder = new EmbedBuilder()
+        EmbedBuilder embedBuilder = new GenericEmbedBuilder()
                 .setTitle("Kat Commands")
                 .setDescription("You can get more information about a command by doing `!devhelp [command]`")
-                .setFooter("kat.reign-network.co.uk")
                 .setColor(DiscordColor.BACKGROUND_GREY);
 
         for (Category cat: categories)
@@ -112,7 +114,6 @@ public class HelpCommand extends Command {
             if (commands.size() > 0)
             {
                 StringBuilder sb = new StringBuilder();
-                log.info(String.valueOf(commands));
                 for (Command cmd: commands)
                 {
                     sb.append(String.format("`%s`, ", cmd.getName()));
