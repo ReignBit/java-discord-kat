@@ -4,6 +4,7 @@ import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.BooleanConverter;
+import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.utils.DiscordColor;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.EmbedBuilder;

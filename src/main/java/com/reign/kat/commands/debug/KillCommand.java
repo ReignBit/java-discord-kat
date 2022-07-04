@@ -3,9 +3,7 @@ package com.reign.kat.commands.debug;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.converters.Converter;
-import com.reign.kat.lib.converters.MemberConverter;
-import net.dv8tion.jda.api.entities.Member;
+import com.reign.kat.lib.exceptions.CommandException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +18,7 @@ public class KillCommand extends Command {
 
     // !help @user
     @Override
-    public void execute(Context ctx, CommandParameters params){
+    public void execute(Context ctx, CommandParameters params) {
 
     }
 }

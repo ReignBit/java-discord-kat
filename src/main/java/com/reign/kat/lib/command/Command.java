@@ -5,16 +5,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import com.reign.kat.lib.converters.Converter;
+import com.reign.kat.lib.exceptions.CommandException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class Command {
     private static final Logger log = LoggerFactory.getLogger(Command.class);
 
+
     public String name = this.getClass().getCanonicalName();
     private final HashSet<String> aliases;
     private final String primaryAlias;
     private final String description;
+
     public ArrayList<Converter<?>> converters = new ArrayList<>();
 
     public Command(String[] aliases, String primaryAlias, String description)
@@ -38,6 +41,8 @@ public abstract class Command {
 
         this.converters.add(converter);
     }
+
+
     public HashSet<String> getAliases() { return aliases; }
     public String getPrimaryAlias() { return primaryAlias; }
     public String getDescription() { return description; }
@@ -69,5 +74,5 @@ public abstract class Command {
         return sb.toString();
     }
 
-    public abstract void execute(Context ctx, CommandParameters args);
+    public abstract void execute(Context ctx, CommandParameters args) throws Exception;
 }

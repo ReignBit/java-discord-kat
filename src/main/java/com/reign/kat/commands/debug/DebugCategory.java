@@ -9,7 +9,7 @@ public class DebugCategory extends Category {
         registerCommand(new TestCommand());
         registerCommand(new HelpCommand());
         registerCommand(new KillCommand());
-        registerCommand(new TimingCommand());
+        registerCommand(new DebugParentCommand());
     }
 
 }

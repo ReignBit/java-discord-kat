@@ -1,5 +1,8 @@
 package com.reign.kat.lib.command.category;
 
+import com.reign.kat.lib.command.ParentCommand;
+import com.reign.kat.lib.exceptions.CommandException;
+import com.reign.kat.lib.utils.ExceptionMessageSender;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -9,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.exceptions.MissingArgumentException;
 
 import java.time.Instant;
 import java.util.*;
@@ -108,17 +110,38 @@ public abstract class Category extends ListenerAdapter {
         long then = Instant.now().toEpochMilli();
 
         CommandParameters params = new CommandParameters(event);
+        Context ctx = new Context(event, args);
+        /*
+            In order to accommodate ParentCommands, we need to check if the 1st arg matches
+            any subcommand alias in ParentCommand
+
+            Then, we need to call the parent command, and its subcommand if execution of the parent command is valid
+
+         */
         try
         {
-            params.parse(args, command);
-            command.execute(new Context(event, args), params);
-        } catch (MissingArgumentException e)
+            if (command instanceof ParentCommand parent)
+            {
+                parent.executeCommands(ctx, event, args);
+            }
+            else
+            {
+
+                params.parse(args, command);
+                command.execute(ctx, params);
+            }
+
+            long l = Instant.now().toEpochMilli() - then;
+            BotStats.addCommandExecutionStat(command, l, params);
+
+        } catch (CommandException e)
         {
-            event.getChannel().sendMessage(e.toString()).queue();
+            ExceptionMessageSender.sendMessage(ctx, e);
+        } catch (Exception e) {
+            log.error(Arrays.toString(e.getStackTrace()));
+            ExceptionMessageSender.sendMessage(ctx, e);
         }
 
-        long l = Instant.now().toEpochMilli() - then;
-        BotStats.addCommandExecutionStat(command, l, params);
 
     }
 }

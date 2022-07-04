@@ -1,6 +1,7 @@
 package com.reign.kat.commands.debug;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.exceptions.CommandException;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,9 +13,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class TestCommand extends Command {

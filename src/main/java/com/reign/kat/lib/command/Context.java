@@ -25,14 +25,13 @@ public class Context {
     public Guild guild;
     public PrivateChannel privateChannel;
 
-    public long commandStartedAt = Instant.now().toEpochMilli();
+    @Deprecated
     public ArrayList<String> args;
 
     public boolean isGuild()
     {
         return guild != null;
     }
-
     public boolean isPrivateChannel()
     {
         return privateChannel != null;

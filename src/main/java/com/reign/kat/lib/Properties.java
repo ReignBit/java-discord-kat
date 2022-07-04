@@ -3,10 +3,8 @@ package com.reign.kat.lib;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 import com.reign.kat.lib.exceptions.PropertiesException;
 
 public class Properties {

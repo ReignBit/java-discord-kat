@@ -4,9 +4,11 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
+import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.utils.DiscordColor;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -28,22 +30,50 @@ public class HelpCommand extends Command {
                 "command to get help with",
                 ""
         ));
+        addConverter(new StringConverter(
+                "subcommand",
+                "subcommand to get help with",
+                ""
+        ));
     }
 
 
     @Override
     public void execute(Context ctx, CommandParameters params) {
         List<Category> categories = Bot.commandHandler.getCategories();
-        String commandSearchTerm = params.get(0);
 
-        if (commandSearchTerm.equals(""))
+        String commandSearchTerm = params.get("command");
+        String subcommandSearchTerm = params.get("subcommand");
+
+        Command command = null;
+        Command subcommand = null;
+
+        if(commandSearchTerm != null && !commandSearchTerm.trim().isEmpty())
         {
-            commandSearchTerm = null;
+            command = Bot.commandHandler.getCommand(commandSearchTerm);
+            if(subcommandSearchTerm != null && !subcommandSearchTerm.trim().isEmpty())
+            {
+                if (command instanceof ParentCommand parent)
+                {
+                    subcommand = parent.getSubcommand(subcommandSearchTerm);
+                }
+            }
         }
 
-        Command command = Bot.commandHandler.getCommand(commandSearchTerm);
 
-        if (commandSearchTerm == null)
+        if (subcommand != null)
+        {
+            sendEmbedsForCommand(subcommand, String.format("%s %s", commandSearchTerm, subcommandSearchTerm), categories, ctx);
+        }
+        else
+        {
+            sendEmbedsForCommand(command, commandSearchTerm, categories, ctx);
+        }
+    }
+
+    public void sendEmbedsForCommand(Command command, String searchTerm, List<Category> categories, Context ctx)
+    {
+        if (searchTerm == null || searchTerm.trim().isEmpty())
         {
             ctx.channel.sendMessageEmbeds(generateGenericHelp(ctx, categories).build()).queue();
         }
@@ -53,7 +83,7 @@ public class HelpCommand extends Command {
         }
         else
         {
-            ctx.channel.sendMessageEmbeds(generateNoHelp(ctx, commandSearchTerm).build()).queue();
+            ctx.channel.sendMessageEmbeds(generateNoHelp(ctx, searchTerm).build()).queue();
         }
     }
 

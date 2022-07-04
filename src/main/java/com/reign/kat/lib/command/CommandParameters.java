@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reign.kat.lib.converters.Converter;
-import com.reign.kat.lib.exceptions.MissingArgumentException;
+import com.reign.kat.lib.exceptions.MissingArgumentCommandException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,17 +29,17 @@ public class CommandParameters {
      *
      * @param strArgs String[] command given by the user.
      * @param command Command in which to try to convert for.
-     * @throws MissingArgumentException The input strArgs has missing arguments for the specified command.
+     * @throws MissingArgumentCommandException The input strArgs has missing arguments for the specified command.
      */
-    public void parse(ArrayList<String> strArgs, Command command) throws MissingArgumentException {
+    public void parse(ArrayList<String> strArgs, Command command) throws MissingArgumentCommandException {
         if (strArgs.size() < command.getRequiredCount()) {
-            throw new MissingArgumentException("Missing required arguments");
+            throw new MissingArgumentCommandException("Missing required arguments");
         }
 
         for (int i = 0; i < command.converters.size(); i++) {
             String s = i < strArgs.size() ? strArgs.get(i) : null;
 
-            Converter<?> converter = command.converters.get(0).convert(s, event);
+            Converter<?> converter = command.converters.get(i).convert(s, event);
 
             if (converter.optional && converter.get() == null)
             {
@@ -50,8 +50,9 @@ public class CommandParameters {
         }
     }
 
+    @Deprecated
     public <T> T get(int index) {
-        if (params.isEmpty() || index > params.size()) {
+        if (params.isEmpty() || index >= params.size()) {
             return null;
         }
         // Since we are trying to get by index, convert HashMap to a List of Converter<?> and get the item value.
