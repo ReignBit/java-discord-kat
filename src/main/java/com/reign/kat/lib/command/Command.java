@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import com.reign.kat.lib.converters.Converter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Command {
-
+    private static final Logger log = LoggerFactory.getLogger(Command.class);
 
     public String name = this.getClass().getCanonicalName();
     private final HashSet<String> aliases;
@@ -42,6 +44,30 @@ public abstract class Command {
     public String getName(){return primaryAlias;}
 
     public int getRequiredCount() { return converters.stream().filter(converter -> !converter.optional).toList().size();}
+
+    /**
+     * Returns the argument signature for the command.
+     * <br>For example, the `command !kick UserID opt:reason`
+     * <br>would build a signature string of:- <br><code>kick &#60;user:User&#62; [reason: String]</code>
+     * @return String signature
+     */
+    public String getSignature()
+    {
+        StringBuilder sb = new StringBuilder().append(getPrimaryAlias()).append(" ");
+
+        for (Converter<?> arg: converters)
+        {
+            if (arg.optional)
+            {
+                sb.append("[").append(arg.argName).append(" : ").append(arg.getType()).append("] ");
+            }
+            else
+            {
+                sb.append("<").append(arg.argName).append(" : ").append(arg.getType()).append("> ");
+            }
+        }
+        return sb.toString();
+    }
 
     public abstract void execute(Context ctx, CommandParameters args);
 }

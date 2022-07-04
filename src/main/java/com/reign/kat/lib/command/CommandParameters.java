@@ -39,8 +39,14 @@ public class CommandParameters {
         for (int i = 0; i < command.converters.size(); i++) {
             String s = i < strArgs.size() ? strArgs.get(i) : null;
 
-            Converter<?> converter = command.converters.get(i);
-            params.put(converter.argName, converter.convert(s, event));
+            Converter<?> converter = command.converters.get(0).convert(s, event);
+
+            if (converter.optional && converter.get() == null)
+            {
+                converter.setDefault();
+            }
+
+            params.put(converter.argName, converter);
         }
     }
 

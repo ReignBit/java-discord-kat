@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 public class StringConverter extends Converter<String> {
     private static final Logger log = LoggerFactory.getLogger(StringConverter.class);
 
-    public StringConverter(String argName, String description, boolean optional) {
-        super(argName, description, optional);
+    public StringConverter(String argName, String description, String defaultString) {
+        super(argName, description, defaultString, String.class);
     }
 
     @Override

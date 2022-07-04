@@ -98,7 +98,7 @@ public class Bot extends ListenerAdapter{
     {
         commandHandler.addCategory(cat);
         jda.addEventListener(cat);
-        log.info("Registered category {}", cat.name);
+        log.info("Registered category {} ({} commands)", cat.name, cat.getCommandsDistinct().size());
     }
 
     public void removeCategory(String name)

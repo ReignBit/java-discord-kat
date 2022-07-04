@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 public class UserConverter extends Converter<User> {
     private static final Logger log = LoggerFactory.getLogger(UserConverter.class);
 
-    public UserConverter(String argName, String description, boolean optional)
+    public UserConverter(String argName, String description, User defaultUser)
     {
-        super(argName, description, optional);
+        super(argName, description, defaultUser, User.class);
     }
 
     @Override

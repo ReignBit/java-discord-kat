@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 public class MemberConverter extends Converter<Member> {
     private static final Logger log = LoggerFactory.getLogger(MemberConverter.class);
 
-    public MemberConverter(String argName, String description, boolean optional)
+    public MemberConverter(String argName, String description, Member defaultMember)
     {
-        super(argName, description, optional);
+        super(argName, description, defaultMember, Member.class);
     }
 
     @Override
