@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 public class BooleanConverter extends Converter<Boolean> {
     private static final Logger log = LoggerFactory.getLogger(BooleanConverter.class);
 
-    public BooleanConverter(String argName, String description, boolean optional) {
-        super(argName, description, optional);
+    public BooleanConverter(String argName, String description, boolean defaultBoolean) {
+        super(argName, description, defaultBoolean, boolean.class);
     }
 
     @Override

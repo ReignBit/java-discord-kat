@@ -7,18 +7,21 @@ import com.reign.kat.lib.converters.BooleanConverter;
 import com.reign.kat.lib.utils.DiscordColor;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TimingCommand extends Command {
+    private static final Logger log = LoggerFactory.getLogger(TimingCommand.class);
 
     public TimingCommand() {
         super(new String[]{"timing"}, "timing", "Show average timing for each command");
         addConverter(new BooleanConverter(
                 "outputToConsole",
                 "Output full report to console?",
-                true
+                false
         ));
     }
 

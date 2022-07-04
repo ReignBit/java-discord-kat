@@ -26,7 +26,7 @@ public class HelpCommand extends Command {
         addConverter(new StringConverter(
                 "command",
                 "command to get help with",
-                true
+                null
         ));
     }
 
@@ -70,18 +70,7 @@ public class HelpCommand extends Command {
                 .setColor(DiscordColor.BACKGROUND_GREY);
 
         // Usage Help Section
-        StringBuilder usageHelp = new StringBuilder().append("`").append(command.getPrimaryAlias()).append(" ");
-        for(Converter<?> arg: command.converters)
-        {
-            if (arg.optional)
-            {
-                usageHelp.append("[").append(arg.argName).append("] ");
-            }
-            else
-            {
-                usageHelp.append("<").append(arg.argName).append("> ");
-            }
-        }
+        StringBuilder usageHelp = new StringBuilder().append("`").append(command.getSignature()).append(" ");
         usageHelp.append("`").append("\n*[]: Optional, <>: Required*");
 
         // Command Description section

@@ -4,7 +4,9 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.converters.MemberConverter;
+import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.converters.UserConverter;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -20,6 +22,16 @@ public class PlayCommand extends Command {
 
     public PlayCommand() {
         super(new String[]{"play","p"},"play" ,"Add song to queue");
+        addConverter(new StringConverter(
+                "test1",
+                "this is test 1 (required)",
+                null
+        ));
+        addConverter(new IntConverter(
+                "test2",
+                "this is test2 (optional)",
+                1
+        ));
     }
 
     @Override
