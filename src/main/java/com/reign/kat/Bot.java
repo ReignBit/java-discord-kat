@@ -25,7 +25,7 @@ import javax.security.auth.login.LoginException;
 
 public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
-    private static final String version = "0.0.1-alpha";
+    private static final String version = "2.0.0.15-alpha";
 
     public static Properties properties;
     public static final CommandHandler commandHandler = new CommandHandler();

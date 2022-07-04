@@ -25,7 +25,7 @@ public class SlapCommand extends Command {
 
     @Override
     public void execute(Context ctx, CommandParameters args){
-        Member user = args.get(0);
+        Member user = args.get("user");
 
         if (user != null)
         {
