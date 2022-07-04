@@ -20,6 +20,10 @@
 
 ### Core
  - [x] Command framework
+  - [x] Categories
+  - [x] Subcommands
+  - [ ] Slash Commands
+  - [x] Argument conversions
  - [ ] Metrics
  - [ ] Backend API
  - [ ] Timers/Events
