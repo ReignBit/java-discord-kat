@@ -1,6 +1,9 @@
 <a href="https://gitmoji.dev">
   <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
 </a>
+<a href="https://github.com/ReignBit/java-discord-kat/issues">
+   <img src="https://img.shields.io/github/issues/reignbit/java-discord-kat?style=flat-square">
+</a>
 
 # Kat - made in java
 [My discord bot](https://github.com/Reignbit/discord-kat) rewritten in Java 17 from the ground up.
