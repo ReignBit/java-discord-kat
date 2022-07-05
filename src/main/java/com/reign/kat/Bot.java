@@ -9,6 +9,7 @@ import com.reign.kat.lib.Properties;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
+import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -25,7 +26,7 @@ import javax.security.auth.login.LoginException;
 
 public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
-    private static final String version = "0.1.0";
+    private static final String version = getVersion();
 
     public static Properties properties;
     public static final CommandHandler commandHandler = new CommandHandler();
@@ -36,7 +37,7 @@ public class Bot extends ListenerAdapter{
 
     public static String getVersion()
     {
-        return version;
+        return Utilities.readVersion();
     }
 
     public Bot() throws Exception
