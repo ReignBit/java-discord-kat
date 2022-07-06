@@ -15,6 +15,9 @@ public class Properties {
     private String backend_api_key;
     private String backend_api_host;
 
+    private boolean isDebug;
+    private boolean ignorePermissions;
+
     private String tenorApiKey;
 
     public String getToken() { return token; }
@@ -23,7 +26,8 @@ public class Properties {
     public String getBackendApiHost() { return backend_api_host; }
     public String getTenorApiKey() { return tenorApiKey; }
 
-    private File propertiesFile;
+    public boolean isDebug() { return isDebug; }
+    public boolean isIgnorePermissions() { return ignorePermissions; }
 
     public Properties() throws Exception{
         log.debug("Reading config file");
@@ -35,13 +39,13 @@ public class Properties {
         instead of a switch case, maybe have some kind of Config model that is loaded
      */
     private void readPropertiesFile() throws Exception{
-        this.propertiesFile = new File("config.properties");
-        if(!this.propertiesFile.exists()){
+        File propertiesFile = new File("config.properties");
+        if(!propertiesFile.exists()){
             Exception e = new PropertiesException("config.properties file missing");
             log.error("config.properties file missing");
             throw e;
         }
-        Scanner fscan = new Scanner(this.propertiesFile);
+        Scanner fscan = new Scanner(propertiesFile);
         while(fscan.hasNext()){
             String line = fscan.nextLine();
             if(line.equals("\n"))
@@ -68,6 +72,10 @@ public class Properties {
                     this.backend_api_key = args[1];
                 case "backend_api_host":
                     this.backend_api_host = args[1];
+                case "debug-mode":
+                    this.isDebug = Boolean.parseBoolean(args[1]);
+                case "debug-ignore-permission-system":
+                    this.ignorePermissions = Boolean.parseBoolean(args[1]);
                 default:
                     break;
             }

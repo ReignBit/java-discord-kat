@@ -85,7 +85,7 @@ public class KatApi {
 
         // TODO: Remove this, testing only.
         HashMap<Long, PermissionGroupType> snowflakeStatus = new HashMap<>();
-        snowflakeStatus.put(318440174931673089L, PermissionGroupType.MODERATOR);
+        //snowflakeStatus.put(318440174931673089L, PermissionGroupType.MODERATOR);
         return snowflakeStatus;
 
 

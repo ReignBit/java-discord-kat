@@ -1,5 +1,17 @@
-bot_token=11=
-prefix=
-tenor_api_key=
-backend_api_key=
-backend_api_host=
+config.properties.example
+
+Customize these settings and rename the file to `config.properties`
+for your changes to take effect.
+
+---
+
+
+bot_token=YOUR BOT TOKEN HERE
+prefix=!
+tenor_api_key=YOUR TENOR API TOKEN HERE
+backend_api_key=YOUR BACKEND API KEY HERE
+backend_api_host=YOUR BACKEND API HOST HERE
+
+;Debug properties, only enable these if you know what you're doing!
+debug-mode=false
+debug-ignore-permission-system=false

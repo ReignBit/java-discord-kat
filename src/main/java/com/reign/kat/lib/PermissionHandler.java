@@ -26,11 +26,20 @@ public class PermissionHandler {
      */
     public static boolean isPrivileged(Member member, GuildChannel channel, long discordPerms, PermissionGroupType cmdPerm)
     {
-        log.info("Checking permission for {} in channel {} with permission requirements {} {}", member.getIdLong(), channel.getIdLong(), discordPerms, cmdPerm);
-        if (member.getIdLong() == channel.getGuild().getOwnerIdLong()) {
-            log.info("Permission check passed");
+        if (Bot.properties.isDebug() && Bot.properties.isIgnorePermissions())
+        {
+            log.warn("Permission system is disabled due to being in Developer mode.");
+            log.warn("All commands will pass permission checks, set debug-ignore-permission-system to false to stop this behaviour.");
             return true;
-        } // Always return true for the owner of the guild
+        }
+
+
+
+        log.info("Checking permission for {} in channel {} with permission requirements {} {}", member.getIdLong(), channel.getIdLong(), discordPerms, cmdPerm);
+//        if (member.getIdLong() == channel.getGuild().getOwnerIdLong()) {
+//            log.info("Permission check passed because member == owner");
+//            return true;
+//        } // Always return true for the owner of the guild
 
         // If member has role in needed permission role AND has the correct discord perms
         long rawPermission = Permission.getRaw(member.getPermissions());

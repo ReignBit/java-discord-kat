@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,9 +109,10 @@ public class Bot extends ListenerAdapter{
     }
 
     @Override
-    public void onReady(ReadyEvent event)
+    public void onReady(@NotNull ReadyEvent event)
     {
         log.info("==============================");
+        if (Bot.properties.isDebug()) { log.warn("! Debug Mode Enabled !"); }
         log.info("Logged in as {}", event.getJDA().getSelfUser().getName());
         log.info("I can see {} Users", event.getJDA().getUsers().size());
         log.info("I can see {}/{} Guilds", event.getGuildAvailableCount(), event.getGuildTotalCount());

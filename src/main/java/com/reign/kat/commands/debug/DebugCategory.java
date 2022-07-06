@@ -8,7 +8,7 @@ public class DebugCategory extends Category {
     public DebugCategory()
     {
         setRequiredPermissionGroup(PermissionGroupType.ADMINISTRATOR);
-        setRequiredDiscordPermissions(DiscordPermission.MANAGE_MESSAGES | DiscordPermission.MOVE_MEMBERS);
+        //setRequiredDiscordPermissions(0);
         setEmoji(":gear:");
         registerCommand(new TestCommand());
         registerCommand(new HelpCommand());
