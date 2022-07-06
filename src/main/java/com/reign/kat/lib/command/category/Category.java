@@ -1,10 +1,11 @@
 package com.reign.kat.lib.command.category;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.PermissionHandler;
 import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.exceptions.CommandException;
+import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
 import com.reign.kat.lib.utils.ExceptionMessageSender;
-import com.reign.kat.lib.utils.IPermissionable;
 import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.Permission;
@@ -130,6 +131,14 @@ public abstract class Category extends ListenerAdapter {
          */
         try
         {
+            if (!isPrivileged(Objects.requireNonNull(event.getMember()), event.getTextChannel()))
+            {
+                throw new InsufficientPermissionsCommandException("You are not permitted to use this command!");
+            }
+
+
+
+
             if (command instanceof ParentCommand parent)
             {
                 parent.executeCommands(ctx, event, args);
@@ -158,25 +167,15 @@ public abstract class Category extends ListenerAdapter {
         requiredPermission = permission;
     }
 
-    public void setRequiredDiscordPermission(int permBitfield)
+    public void setRequiredDiscordPermissions(int permBitfield)
     {
         requiredDiscordPermission = permBitfield;
     }
 
     public boolean isPrivileged(Member member, GuildChannel channel)
     {
-        // If member has role in needed permission role AND has the correct discord perms
-        long rawPermission = Permission.getRaw(member.getPermissions());
-        if ((rawPermission & requiredDiscordPermission) == requiredDiscordPermission)
-        {
-            // check snowflake permission
-            List<Long> snowflakes = member.getRoles().stream().map(ISnowflake::getIdLong).collect(Collectors.toList());
-            snowflakes.add(member.getIdLong());
-            if (Bot.api.getSnowflakePermission(snowflakes, requiredPermission));
-            {
-                return true;
-            }
-        }
-        return false;
+        log.info("isPrivileged {}", Category.class.getCanonicalName());
+        return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
     }
+
 }

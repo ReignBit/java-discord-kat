@@ -5,8 +5,15 @@ package com.reign.kat.lib.utils;
  * A Role of ADMINISTRATOR has access to the things MODERATOR and EVERYONE has, and so on.
  */
 public enum PermissionGroupType {
-    EVERYONE,
-    MODERATOR,
-    ADMINISTRATOR,
-    OWNER
+    EVERYONE("everyone"),
+    MODERATOR("moderator"),
+    ADMINISTRATOR("administrator"),
+    OWNER("owner");
+
+    public final String flag;
+
+    PermissionGroupType(String flag)
+    {
+        this.flag = flag;
+    }
 }

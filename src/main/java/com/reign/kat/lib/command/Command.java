@@ -3,9 +3,17 @@ package com.reign.kat.lib.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.reign.kat.Bot;
+import com.reign.kat.lib.PermissionHandler;
 import com.reign.kat.lib.converters.Converter;
-import com.reign.kat.lib.exceptions.CommandException;
+import com.reign.kat.lib.utils.PermissionGroupType;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +25,10 @@ public abstract class Command {
     private final HashSet<String> aliases;
     private final String primaryAlias;
     private final String description;
+
+    protected PermissionGroupType requiredPermission = PermissionGroupType.EVERYONE;
+    protected int requiredDiscordPermission = 0;
+
 
     public ArrayList<Converter<?>> converters = new ArrayList<>();
 
@@ -72,6 +84,21 @@ public abstract class Command {
             }
         }
         return sb.toString();
+    }
+
+    public void setRequiredPermissionGroup(PermissionGroupType permission)
+    {
+        requiredPermission = permission;
+    }
+
+    public void setRequiredDiscordPermission(int permBitfield)
+    {
+        requiredDiscordPermission = permBitfield;
+    }
+
+    public boolean isPrivileged(Member member, GuildChannel channel)
+    {
+        return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
     }
 
     public abstract void execute(Context ctx, CommandParameters args) throws Exception;

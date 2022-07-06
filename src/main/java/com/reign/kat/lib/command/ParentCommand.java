@@ -5,7 +5,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-    /**
+import java.util.Objects;
+
+/**
      TODO:
 
      What is a ParentCommand?
@@ -50,6 +52,12 @@ public abstract class ParentCommand extends Command {
          * @param args string args to convert into Converters
          */
     public void executeCommands(Context ctx, MessageReceivedEvent event, ArrayList<String> args) throws Exception {
+        if (!isPrivileged(Objects.requireNonNull(event.getMember()), event.getTextChannel()))
+        {
+            throw new IllegalStateException("You are not permitted to use this command!");
+        }
+
+
         String subAlias = null;
         if (args.size() > 0)
         {
@@ -62,7 +70,7 @@ public abstract class ParentCommand extends Command {
         Command subcommand = getSubcommand(subAlias);
         if (subcommand != null)
         {
-
+            // Subcommands do not need to check for permissions since they inherit the parent perms.
             cmdParams.parse(args, subcommand);
             subcommand.execute(ctx, cmdParams);
         }

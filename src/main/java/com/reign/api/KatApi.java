@@ -14,6 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
@@ -26,8 +27,7 @@ public class KatApi {
     private final String host;
     private final String authStr;
 
-    public KatApi(String host, String authentication)
-    {
+    public KatApi(String host, String authentication) {
         client = HttpClient.newHttpClient();
         this.host = host;
         this.authStr = authentication;
@@ -38,11 +38,10 @@ public class KatApi {
      */
 
 
-
     private <T> T get(String endpoint, Class<T> response) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(String.format("%s/%s", host, endpoint))
-        )
+                        URI.create(String.format("%s/%s", host, endpoint))
+                )
                 .setHeader("Authorization", authStr)
                 .build();
 
@@ -50,8 +49,7 @@ public class KatApi {
         HttpResponse<Supplier<T>> resp = client.sendAsync(request, new JsonBodyHandler<>(response)).get();
 
         // Ok status codes - Client Error status codes
-        if (resp.statusCode() >= 200 && resp.statusCode() < 400)
-        {
+        if (resp.statusCode() >= 200 && resp.statusCode() < 400) {
             log.info("Status code {}", resp.statusCode());
             return resp.body().get();
         }
@@ -59,39 +57,37 @@ public class KatApi {
         return null;
     }
 
-    public GuildsResponse getGuildIds()
-    {
-        try
-        {
+    public GuildsResponse getGuildIds() {
+        try {
             return get("/guilds", GuildsResponse.class);
 
-        } catch(ExecutionException | InterruptedException e)
-        {
+        } catch (ExecutionException | InterruptedException e) {
             log.error("Failed to GET /guilds {}", e);
             return null;
         }
     }
 
-    public boolean getSnowflakePermission(List<Long> snowflakes, PermissionGroupType req) {
-        // TODO: Api call for roles here
+    public HashMap<Long, PermissionGroupType> getSnowflakePermission(long guildId) {
+        // TODO: Api call for roles here with guildId
         /*
-           maybe the api returns something like
-           {
-                owner: 12315214124L,
-                admins: 123123213L, 235543345435L, 098098098098L,
-                mods:  1256757667L, 45634787865L, 4563634543536436L
-           }
-
+            api returns dict of ids and their status
+            {
+                "owner": 123123123213,
+                "snowflakes": {
+                    123123123213123: "admin",
+                    123143523532432: "admin",
+                    434325235325532: "mod",
+                    124414412421412: "dj",
+                    ...
+                }
+            }
          */
-        long ownerSnowflake = 1L;
-        Long[] moderatorSnowflakes = new Long[]{172408031060033537L};
-        Long[] adminSnowflakes = new Long[]{172408031060033537L, 343918462172921856L};
+
+        // TODO: Remove this, testing only.
+        HashMap<Long, PermissionGroupType> snowflakeStatus = new HashMap<>();
+        snowflakeStatus.put(318440174931673089L, PermissionGroupType.MODERATOR);
+        return snowflakeStatus;
 
 
-        if (req == PermissionGroupType.ADMINISTRATOR) {
-
-        }
-        return false;
     }
-
 }
