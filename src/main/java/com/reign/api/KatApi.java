@@ -89,9 +89,7 @@ public class KatApi {
 
 
         if (req == PermissionGroupType.ADMINISTRATOR) {
-            case MODERATOR -> {
-                return Arrays.stream(moderatorSnowflakes).anyMatch(snowflakes::contains);
-            }
+
         }
         return false;
     }

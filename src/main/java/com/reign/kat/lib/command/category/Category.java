@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public abstract class Category extends ListenerAdapter implements IPermissionable {
+public abstract class Category extends ListenerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(Category.class);
 
