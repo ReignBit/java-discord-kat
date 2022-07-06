@@ -1,9 +1,16 @@
 package com.reign.kat.lib.command.category;
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.utils.ExceptionMessageSender;
+import com.reign.kat.lib.utils.IPermissionable;
+import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.stats.BotStats;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
@@ -18,13 +25,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public abstract class Category extends ListenerAdapter {
+public abstract class Category extends ListenerAdapter implements IPermissionable {
 
     private static final Logger log = LoggerFactory.getLogger(Category.class);
 
     public final String name = this.getClass().getCanonicalName();
     public final String shortName = this.getClass().getSimpleName();
     public String emoji = ":bricks:";
+
+    private PermissionGroupType requiredPermission = PermissionGroupType.EVERYONE;
+    private int requiredDiscordPermission = 0;
 
     private final HashMap<String, Command> commands = new HashMap<>();
 
@@ -141,7 +151,32 @@ public abstract class Category extends ListenerAdapter {
             log.error(Arrays.toString(e.getStackTrace()));
             ExceptionMessageSender.sendMessage(ctx, e);
         }
+    }
 
+    public void setRequiredPermissionGroup(PermissionGroupType permission)
+    {
+        requiredPermission = permission;
+    }
 
+    public void setRequiredDiscordPermission(int permBitfield)
+    {
+        requiredDiscordPermission = permBitfield;
+    }
+
+    public boolean isPrivileged(Member member, GuildChannel channel)
+    {
+        // If member has role in needed permission role AND has the correct discord perms
+        long rawPermission = Permission.getRaw(member.getPermissions());
+        if ((rawPermission & requiredDiscordPermission) == requiredDiscordPermission)
+        {
+            // check snowflake permission
+            List<Long> snowflakes = member.getRoles().stream().map(ISnowflake::getIdLong).collect(Collectors.toList());
+            snowflakes.add(member.getIdLong());
+            if (Bot.api.getSnowflakePermission(snowflakes, requiredPermission));
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
