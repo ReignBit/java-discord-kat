@@ -4,6 +4,7 @@ import com.reign.api.KatApi;
 import com.reign.api.TenorApi;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
+import com.reign.kat.commands.helpful.HelpfulCategory;
 import com.reign.kat.commands.player.PlayerCategory;
 import com.reign.kat.lib.Properties;
 import com.reign.kat.lib.command.category.Category;
@@ -88,6 +89,7 @@ public class Bot extends ListenerAdapter{
 
     public void addCategories(){
         log.info("Adding Categories");
+        addCategory(new HelpfulCategory());
         addCategory(new DebugCategory());
         addCategory(new EmoteCategory());
         addCategory(new PlayerCategory());

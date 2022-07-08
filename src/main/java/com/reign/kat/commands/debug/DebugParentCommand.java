@@ -3,7 +3,6 @@ package com.reign.kat.commands.debug;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ParentCommand;
-import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
 
 public class DebugParentCommand extends ParentCommand {
     public DebugParentCommand() {
@@ -12,8 +11,9 @@ public class DebugParentCommand extends ParentCommand {
                 "debug",
                 "A collection of debugging commands"
         );
-        addSubcommand(new TimingCommand());
-        addSubcommand(new CommandExceptionTestCommand());
+        registerSubcommand(new TimingCommand());
+        registerSubcommand(new KillCommand());
+        registerSubcommand(new CommandExceptionTestCommand());
     }
 
     @Override

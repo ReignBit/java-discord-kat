@@ -11,8 +11,8 @@ public class DebugCategory extends Category {
         //setRequiredDiscordPermissions(0);
         setEmoji(":gear:");
         registerCommand(new TestCommand());
-        registerCommand(new HelpCommand());
-        registerCommand(new KillCommand());
+
+
         registerCommand(new DebugParentCommand());
     }
 

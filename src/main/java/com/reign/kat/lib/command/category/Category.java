@@ -1,6 +1,5 @@
 package com.reign.kat.lib.command.category;
 
-import com.reign.kat.Bot;
 import com.reign.kat.lib.PermissionHandler;
 import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.exceptions.CommandException;
@@ -8,9 +7,7 @@ import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
 import com.reign.kat.lib.utils.ExceptionMessageSender;
 import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.stats.BotStats;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

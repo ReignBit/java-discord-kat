@@ -36,10 +36,10 @@ public class PermissionHandler {
 
 
         log.info("Checking permission for {} in channel {} with permission requirements {} {}", member.getIdLong(), channel.getIdLong(), discordPerms, cmdPerm);
-//        if (member.getIdLong() == channel.getGuild().getOwnerIdLong()) {
-//            log.info("Permission check passed because member == owner");
-//            return true;
-//        } // Always return true for the owner of the guild
+        if (member.getIdLong() == channel.getGuild().getOwnerIdLong()) {
+            log.info("Permission check passed because member == owner");
+            return true;
+        } // Always return true for the owner of the guild
 
         // If member has role in needed permission role AND has the correct discord perms
         long rawPermission = Permission.getRaw(member.getPermissions());
@@ -77,7 +77,7 @@ public class PermissionHandler {
             }
         }
 
-        if (requiredGroup == PermissionGroupType.MODERATOR) {
+        else if (requiredGroup == PermissionGroupType.MODERATOR) {
             for (long id : snowflakesToCompare) {
                 switch (apiSnowflakes.getOrDefault(id, PermissionGroupType.EVERYONE)) {
                     case OWNER, ADMINISTRATOR, MODERATOR -> {

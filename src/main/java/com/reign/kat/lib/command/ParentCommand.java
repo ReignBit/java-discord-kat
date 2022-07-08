@@ -1,6 +1,5 @@
 package com.reign.kat.lib.command;
 
-import com.reign.kat.lib.exceptions.CommandException;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
@@ -29,10 +28,13 @@ public abstract class ParentCommand extends Command {
         super(aliases, primaryAlias, description);
     }
 
-    public void addSubcommand(Command command)
+    public void registerSubcommand(Command command)
     {
         for(String alias: command.getAliases())
         {
+            // Inherit parent permissions.
+            command.requiredDiscordPermission = requiredDiscordPermission;
+            command.requiredPermission = requiredPermission;
             children.put(alias, command);
         }
     }
