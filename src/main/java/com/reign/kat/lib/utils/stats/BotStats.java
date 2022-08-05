@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+/**
+ * Bot Statistics Monitor
+ * Contains information about recent command executions.
+ */
 public class BotStats {
     private static final Logger log = LoggerFactory.getLogger(BotStats.class);
 
@@ -19,24 +23,38 @@ public class BotStats {
         addCommands(commands);
     }
 
+    /**
+     * Add multiple commands to be monitored.
+     * @param commands Commands to be monitored.
+     */
     public static void addCommands(Command... commands)
     {
         for (Command cmd: commands)
         {
-            log.debug("Monitoring timings for {}", cmd.getClass().getCanonicalName());
+            log.trace("Monitoring timings for {}", cmd.getClass().getCanonicalName());
             lastCommandExecutions.put(cmd, new ArrayList<>());
         }
     }
 
+    /**
+     * Add a Collection of Command to be monitored and timed.
+     * @param commands Commands to add to the monitoring system.
+     */
     public static void addCommands(Collection<Command> commands)
     {
         for (Command cmd: commands)
         {
-            log.debug("Monitoring timings for {}", cmd.getClass().getCanonicalName());
+            log.trace("Monitoring timings for {}", cmd.getClass().getCanonicalName());
             lastCommandExecutions.put(cmd, new ArrayList<>());
         }
     }
 
+    /**
+     * Log a command execution and its stats to the BotStats history.
+     * @param command Command which was executed.
+     * @param timeTaken how long the command took to execute (ms).
+     * @param input The arguments passed to the command.
+     */
     public static void addCommandExecutionStat(Command command, long timeTaken, CommandParameters input)
     {
         if(!lastCommandExecutions.containsKey(command)) { return; /* Not tracking this command */ }
@@ -46,7 +64,7 @@ public class BotStats {
         {
             commandHistory.remove(0);
         }
-        log.info("Command {} finished execution in {}ms", command.getPrimaryAlias(), timeTaken);
+        log.debug("Command {} finished execution in {}ms", command.getPrimaryAlias(), timeTaken);
         CommandExecution ce = new CommandExecution(command, timeTaken, input);
         commandHistory.add(ce);
     }
@@ -70,6 +88,11 @@ public class BotStats {
         return histories;
     }
 
+    /**
+     * Returns the average execution time for a list of commands
+     * @param commands Commands to retrieve the avg. execution time for.
+     * @return Hashmap of commands and their execution times in ms.
+     */
     public static HashMap<Command, Float> getAvgExecutionTimeFor(Command... commands)
     {
         HashMap<Command, Float> avgs = new HashMap<>();
@@ -92,10 +115,17 @@ public class BotStats {
         return avgs;
     }
 
+    /**
+     * Get the last 10 average execution time of all commands monitored.
+     * @return Hashmap of the previous 10 execution timings.
+     */
     public static HashMap<Command, Float> getAvgExecutionTime() {
         return getAvgExecutionTimeFor(lastCommandExecutions.keySet().toArray(new Command[0]));
     }
 
+    /**
+     * Prints a nicely formatted table to the terminal of average execution times of all commands.
+     */
     public static void reportToConsole()
     {
         log.info("BotStat Timings");
