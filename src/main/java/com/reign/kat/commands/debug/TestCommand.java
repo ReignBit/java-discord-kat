@@ -1,5 +1,6 @@
 package com.reign.kat.commands.debug;
 
+import com.reign.api.kat.responses.ApiGuild;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.exceptions.CommandException;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -14,6 +15,8 @@ import com.reign.kat.lib.command.Context;
 
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class TestCommand extends Command {
@@ -26,7 +29,7 @@ public class TestCommand extends Command {
 
     @Override
     public void execute(Context ctx, CommandParameters params) {
-        ArrayList<Long> ids = Bot.api.getGuildIds().ids();
+        List<String> ids = Bot.api.getGuilds().stream().map(ApiGuild::getPrefix).collect(Collectors.toList());
 
         EmbedBuilder apiGuildsEmbedBuilder = new EmbedBuilder();
         apiGuildsEmbedBuilder.setTitle("Guilds which have API data")
@@ -44,10 +47,10 @@ public class TestCommand extends Command {
         ).queue();
     }
 
-    String getGuildDataFromIds(ArrayList<Long> ids)
+    String getGuildDataFromIds(List<String> ids)
     {
         StringBuilder sb = new StringBuilder().append("```\n");
-        for(long id: ids)
+        for(String id: ids)
         {
             Guild g = Bot.jda.getGuildById(id);
             if (g != null)
@@ -63,14 +66,14 @@ public class TestCommand extends Command {
         return sb.toString();
     }
 
-    String getMissingGuildsFromIds(ArrayList<Long> ids)
+    String getMissingGuildsFromIds(List<String> ids)
     {
         StringBuilder sb = new StringBuilder().append("```\n");
 
 
         for(Guild g: Bot.jda.getGuilds())
         {
-            if (!ids.contains(g.getIdLong()))
+            if (!ids.contains(g.getId()))
             {
                 sb.append(g.getName()).append("   ").append(g.getMemberCount()).append(" Users\n");
             }

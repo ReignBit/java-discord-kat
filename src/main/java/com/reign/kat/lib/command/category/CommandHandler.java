@@ -3,6 +3,7 @@ package com.reign.kat.lib.command.category;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 
+import com.reign.kat.lib.command.Context;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -84,20 +85,29 @@ public class CommandHandler extends ListenerAdapter {
         if (event.getAuthor().isBot()) { return; }
 
         Message message = event.getMessage();
-        String defaultPrefix = Bot.properties.getPrefix();
-        if (message.getContentRaw().startsWith(defaultPrefix))
+        String usedPrefix = Bot.api.getGuild(message.getGuild().getId(), true).getPrefix();
+
+        if (message.getContentRaw().startsWith(usedPrefix) || message.getMentions().isMentioned(Bot.jda.getSelfUser(), Message.MentionType.USER))
         {
+            if (message.getMentions().isMentioned(Bot.jda.getSelfUser(), Message.MentionType.USER))
+            {
+                usedPrefix = String.format("<@%s>", Bot.jda.getSelfUser().getId());
+            }
+
             // Split the message up into cmd, args
-            log.info(message.getContentRaw());
             ArrayList<String> cmdArgs = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
-            String cmd = cmdArgs.get(0).substring(defaultPrefix.length());
+            String cmd = cmdArgs.get(0).substring(usedPrefix.length());
+
+            log.debug(cmd);
+
             cmdArgs.remove(0); // Remove the command from the args list
             // cmd = test
             for (Category category : categories) {
 
                 Command command = category.findCommand(event, cmd);
                 if (command != null) {
-                    category.executeCommand(event, command, cmdArgs);
+                    Context ctx = new Context(event, cmdArgs, usedPrefix, command);
+                    category.executeCommand(ctx);
                 }
             }
         }

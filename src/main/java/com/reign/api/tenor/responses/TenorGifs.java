@@ -1,4 +1,4 @@
-package com.reign.api.responses.tenor;
+package com.reign.api.tenor.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

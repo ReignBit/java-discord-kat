@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +12,7 @@ import java.util.Objects;
 public class Context {
     public MessageReceivedEvent event;
     public JDA jda;
+
 
     public Message message;
     public Member author;
@@ -25,7 +25,9 @@ public class Context {
     public Guild guild;
     public PrivateChannel privateChannel;
 
-    @Deprecated
+    public String prefixUsed;
+    public Command command;
+
     public ArrayList<String> args;
 
     public boolean isGuild()
@@ -37,7 +39,7 @@ public class Context {
         return privateChannel != null;
     }
 
-    public Context(MessageReceivedEvent event, ArrayList<String> args)
+    public Context(MessageReceivedEvent event, ArrayList<String> args, String prefixUsed, Command command)
     {
         message = event.getMessage();
         author = event.getMember();
@@ -57,5 +59,8 @@ public class Context {
         this.args = args;
         this.event = event;
         this.jda = Bot.jda;
+
+        this.prefixUsed = prefixUsed;
+        this.command = command;
     }
 }

@@ -1,7 +1,7 @@
-package com.reign.api;
+package com.reign.api.tenor;
 
-import com.reign.api.bodyhandlers.JsonBodyHandler;
-import com.reign.api.responses.tenor.TenorGifs;
+import com.reign.api.lib.JsonBodyHandler;
+import com.reign.api.tenor.responses.TenorGifs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,11 +50,11 @@ public class TenorApi{
     {
         if (gifCache.containsKey(endpoint + q))
         {
-            log.info("Cache hit!");
+            log.debug("Cache hit!");
             return fetchFromCache(endpoint + q);
         }
 
-        log.info("Cache miss!");
+        log.debug("Cache miss!");
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(host + endpoint + String.format("?q=%s&key=%s&limit=20&anon_id=%s", q, apiKey, anonKey))
         ).build();

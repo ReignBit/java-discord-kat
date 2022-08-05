@@ -112,13 +112,12 @@ public abstract class Category extends ListenerAdapter {
         return null;
     }
 
-    public void executeCommand(MessageReceivedEvent event, Command command, ArrayList<String> args)
+    public void executeCommand(Context ctx)
     {
-        log.debug("COMMAND {} started execution.", command.getPrimaryAlias());
+        log.debug("COMMAND {} started execution.", ctx.command.getPrimaryAlias());
         long then = Instant.now().toEpochMilli();
 
-        CommandParameters params = new CommandParameters(event);
-        Context ctx = new Context(event, args);
+        CommandParameters params = new CommandParameters(ctx.event);
         /*
             In order to accommodate ParentCommands, we need to check if the 1st arg matches
             any subcommand alias in ParentCommand
@@ -128,27 +127,23 @@ public abstract class Category extends ListenerAdapter {
          */
         try
         {
-            if (!isPrivileged(Objects.requireNonNull(event.getMember()), event.getTextChannel()))
+            if (!isPrivileged(Objects.requireNonNull(ctx.event.getMember()), ctx.event.getTextChannel()))
             {
                 throw new InsufficientPermissionsCommandException("You are not permitted to use this command!");
             }
 
-
-
-
-            if (command instanceof ParentCommand parent)
+            if (ctx.command instanceof ParentCommand parent)
             {
-                parent.executeCommands(ctx, event, args);
+                parent.executeCommands(ctx, ctx.event, ctx.args);
             }
             else
             {
-
-                params.parse(args, command);
-                command.execute(ctx, params);
+                params.parse(ctx.args, ctx.command);
+                ctx.command.execute(ctx, params);
             }
 
             long l = Instant.now().toEpochMilli() - then;
-            BotStats.addCommandExecutionStat(command, l, params);
+            BotStats.addCommandExecutionStat(ctx.command, l, params);
 
         } catch (CommandException e)
         {

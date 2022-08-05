@@ -1,7 +1,7 @@
 package com.reign.kat;
 
-import com.reign.api.KatApi;
-import com.reign.api.TenorApi;
+import com.reign.api.kat.KatApi;
+import com.reign.api.tenor.TenorApi;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
 import com.reign.kat.commands.helpful.HelpfulCategory;
@@ -11,11 +11,13 @@ import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
 import com.reign.kat.lib.utils.Utilities;
-import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -120,6 +122,22 @@ public class Bot extends ListenerAdapter{
         log.info("I can see {}/{} Guilds", event.getGuildAvailableCount(), event.getGuildTotalCount());
         log.info("Invite me to your server: {}", event.getJDA().getInviteUrl(Permission.ADMINISTRATOR));
         log.info("==============================");
+    }
+
+    @Override
+    public void onGuildJoin(@NotNull GuildJoinEvent event)
+    {
+        Guild guild = event.getGuild();
+        log.info("Joined a new guild. {} | {}", guild.getId(), guild.getName());
+
+    }
+
+    @Override
+    public void onGuildLeave(@NotNull GuildLeaveEvent event)
+    {
+        Guild guild = event.getGuild();
+        log.info("Joined a new guild. {} | {}", guild.getId(), guild.getName());
+
     }
 
 }

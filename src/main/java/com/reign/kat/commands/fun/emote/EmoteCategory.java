@@ -1,7 +1,5 @@
 package com.reign.kat.commands.fun.emote;
 
-import com.reign.kat.commands.debug.HelpCommand;
-import com.reign.kat.commands.debug.TestCommand;
 import com.reign.kat.lib.command.category.Category;
 
 public class EmoteCategory extends Category {

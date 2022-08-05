@@ -16,6 +16,11 @@
         </encoder>
     </appender>
 
+    <logger name="net.dv8tion.jda.core" level="INFO"/>
+    <logger name="com.reign.kat" level="DEBUG" />
+    <logger name="com.reign.api" level="DEBUG" />
+
+
     <root level="info">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />

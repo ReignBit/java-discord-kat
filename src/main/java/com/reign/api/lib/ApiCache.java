@@ -1,4 +1,4 @@
-package com.reign.api;
+package com.reign.api.lib;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package com.reign.kat.commands.debug;
+package com.reign.kat.commands.helpful;
 
 import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
@@ -8,7 +8,6 @@ import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
-import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.utils.DiscordColor;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -133,7 +132,9 @@ public class HelpCommand extends Command {
     {
         EmbedBuilder embedBuilder = new GenericEmbedBuilder()
                 .setTitle("Kat Commands")
-                .setDescription("You can get more information about a command by doing `!devhelp [command]`")
+                .setDescription(
+                        String.format("You can get more information about a command by doing `%s [command]`", ctx.prefixUsed)
+                )
                 .setColor(DiscordColor.BACKGROUND_GREY);
 
         for (Category cat: categories)
