@@ -7,18 +7,13 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
-     TODO:
-
-     What is a ParentCommand?
-     - A command that has subcommands, in that the subcommand is a argument to the ParentCommand
-     $warn          add    <User> <reason>
-     _____          ___    _______________
-     ParentCommand Command      Args
-
-     What do they need to be able to do?
-     - Be able to add ParentCommands to Category.
-     - Function similarly to Commands (in that they can be shown in !help <Command>)
-     */
+ * ParentCommand
+ * A command which can have multiple subcommands attached to it.
+ *
+ * Acts like a regular command, with extra methods for children commands.
+ * Add a new child command with `registerSubcommand(command);`, this can then be called
+ * in Discord with `!command subcommand`.
+ */
 public abstract class ParentCommand extends Command {
 
 
