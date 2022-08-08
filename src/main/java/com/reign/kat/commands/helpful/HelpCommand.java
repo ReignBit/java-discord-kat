@@ -133,7 +133,7 @@ public class HelpCommand extends Command {
         EmbedBuilder embedBuilder = new GenericEmbedBuilder()
                 .setTitle("Kat Commands")
                 .setDescription(
-                        String.format("You can get more information about a command by doing `%s [command]`", ctx.prefixUsed)
+                        String.format("You can get more information about a command by doing `%shelp [command]`", ctx.prefixGuild)
                 )
                 .setColor(DiscordColor.BACKGROUND_GREY);
 
