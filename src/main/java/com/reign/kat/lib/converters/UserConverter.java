@@ -19,9 +19,9 @@ public class UserConverter extends Converter<User> {
         if (toConvert == null) { set(null); return this; }
         if (toConvert.length() == 18)
         {
-            log.info(toConvert);
+            log.debug(toConvert);
             User user = Bot.jda.getUserById(toConvert);
-            log.info("User = {}", user);
+            log.debug("User = {}", user);
             if (user != null) {
                 set(user);
                 return this;

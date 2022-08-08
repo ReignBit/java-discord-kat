@@ -83,11 +83,15 @@ public class CommandHandler extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event)
     {
         if (event.getAuthor().isBot()) { return; }
+        handleCommandParsing(event);
+    }
 
+    private void handleCommandParsing(MessageReceivedEvent event) {
         Message message = event.getMessage();
-        String usedPrefix = Bot.api.getGuild(message.getGuild().getId(), true).getPrefix();
+        String prefixGuild = Bot.api.getGuildPrefix(message.getGuild().getId(), true);
 
-        if (message.getContentRaw().startsWith(usedPrefix) || message.getMentions().isMentioned(Bot.jda.getSelfUser(), Message.MentionType.USER))
+        String usedPrefix = prefixGuild;
+        if (message.getContentRaw().startsWith(prefixGuild) || message.getMentions().isMentioned(Bot.jda.getSelfUser(), Message.MentionType.USER))
         {
             if (message.getMentions().isMentioned(Bot.jda.getSelfUser(), Message.MentionType.USER))
             {
@@ -95,6 +99,7 @@ public class CommandHandler extends ListenerAdapter {
             }
 
             // Split the message up into cmd, args
+            // ["help", "debug", "timing"] for example
             ArrayList<String> cmdArgs = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
             String cmd = cmdArgs.get(0).substring(usedPrefix.length());
 
@@ -106,7 +111,7 @@ public class CommandHandler extends ListenerAdapter {
 
                 Command command = category.findCommand(event, cmd);
                 if (command != null) {
-                    Context ctx = new Context(event, cmdArgs, usedPrefix, command);
+                    Context ctx = new Context(event, cmdArgs, prefixGuild, usedPrefix, command);
                     category.executeCommand(ctx);
                 }
             }

@@ -3,6 +3,7 @@ package com.reign.api.kat.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.reign.api.kat.models.ApiGuild;
 
 import java.util.ArrayList;
 

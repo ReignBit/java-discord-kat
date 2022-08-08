@@ -1,10 +1,9 @@
 package com.reign.api.kat;
 
-import com.reign.api.kat.responses.ApiGuild;
-import com.reign.api.kat.responses.GuildResponse;
+import com.reign.api.kat.models.ApiGuild;
+import com.reign.api.kat.models.ApiGuildData;
+import com.reign.api.kat.responses.*;
 import com.reign.api.lib.JsonBodyHandler;
-import com.reign.api.kat.responses.GuildsResponse;
-import com.reign.api.kat.responses.HelloResponse;
 import com.reign.kat.Bot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,10 @@ public class KatApi {
         }
     }
 
+    /**
+     * Sends a GET requst to the api root endpoint to ensure its alive.
+     * @return boolean if request was successfully made
+     */
     public boolean getTestConnection()
     {
         HelloResponse resp = get("", HelloResponse.class);
@@ -52,8 +55,8 @@ public class KatApi {
 
     /**
      * Retrieve a Guild from the Api with snowflake = id.
-     * @param id
-     * @return
+     * @param id Snowflake of the guild
+     * @return ApiGuild - Guild data retrieved from api.
      */
     public ApiGuild getGuild(String id)
     {
@@ -67,14 +70,72 @@ public class KatApi {
     }
 
     /**
+     * Retrieve a GuildData entry from the Api, creating it in the Api if ensureExists = true
+     * @param id Snowflake of the guild
+     * @param ensureExists If true, POST request to guilds and create an entry
+     *                     for the guild if an entry doesnt already exist
+     * @return ApiGuild - GuildData data retrieved from api.
+     */
+    public ApiGuildData getGuildData(String id, boolean ensureExists)
+    {
+        GuildDataResponse resp = get(String.format("%s/%s", Endpoints.Guilds, id), GuildDataResponse.class);
+        if (resp != null) {
+            if (resp.get() == null && ensureExists) {
+                // Guild doesn't exist in the Api.
+                return createGuildData(id);
+            }
+
+            log.debug(resp.get().toString());
+            return resp.get();
+        }
+        return null;
+    }
+
+
+    /**
+     * Create a new guildData entry in the api.
+     * @param id Snowflake of the guild.
+     * @return A new ApiGuildData with the required data loaded.
+     */
+    public ApiGuildData createGuildData(String id)
+    {
+        ApiGuildData newGuildData = new ApiGuildData();
+        newGuildData.snowflake = id;
+
+        GuildDataResponse resp = post(String.format("%s/%s/data", Endpoints.Guilds, id), GuildDataResponse.class, newGuildData);
+        if (resp != null)
+        {
+            log.debug("Created new Guild Entry {}", resp.get().toString());
+            return resp.get();
+        }
+        return null;
+    }
+
+    /**
+     * Update a guild's entry in the api.
+     * @param guild ApiGuild data to update.
+     * @return The updated ApiGuild object.
+     */
+    public ApiGuildData updateGuildData(ApiGuildData guildData)
+    {
+        GuildDataResponse resp = post(String.format("%s/%s/data", Endpoints.Guilds, guildData.snowflake), GuildDataResponse.class, guildData.toString());
+        if (resp != null)
+        {
+            return resp.get();
+        }
+        return null;
+    }
+
+    /**
      * Retrieve a Guild from the Api, creating it in the Api if ensureExists = true
-     * @param id
-     * @param ensureExists
-     * @return
+     * @param id Snowflake of the guild
+     * @param ensureExists If true, POST request to guilds and create an entry
+     *                     for the guild if an entry doesnt already exist
+     * @return ApiGuild - Guild data retrieved from api.
      */
     public ApiGuild getGuild(String id, boolean ensureExists)
     {
-        GuildResponse resp = get(String.format("%s/%s", Endpoints.Guilds, id), GuildResponse.class);
+        GuildResponse resp = get(String.format(Endpoints.Guild, id), GuildResponse.class);
         if (resp != null) {
             if (resp.get() == null && ensureExists) {
                 // Guild doesn't exist in the Api.
@@ -84,6 +145,22 @@ public class KatApi {
             log.debug(resp.get().toString());
             return resp.get();
         }
+        return null;
+    }
+
+    public String getGuildPrefix(String id, boolean ensureExists)
+    {
+        GuildPrefixResponse resp = get(String.format(Endpoints.GuildPrefix, id), GuildPrefixResponse.class);
+        if (resp != null)
+        {
+            if (resp.get() == null && ensureExists)
+            {
+                return createGuild(id).getPrefix();
+            }
+
+            return resp.data;
+        }
+        log.error("Something horribly wrong has happened when trying to request the prefix for guild ${id}");
         return null;
     }
 
@@ -100,6 +177,11 @@ public class KatApi {
         return new ArrayList<>();
     }
 
+    /**
+     * Create a new guild entry in the api.
+     * @param id Snowflake of the guild.
+     * @return A new ApiGuild with the required data loaded.
+     */
     public ApiGuild createGuild(String id)
     {
         ApiGuild newGuild = new ApiGuild();
@@ -117,6 +199,29 @@ public class KatApi {
         return null;
     }
 
+    /**
+     * Update a guild's entry in the api.
+     * @param guild ApiGuild data to update.
+     * @return The updated ApiGuild object.
+     */
+    public ApiGuild updateGuild(ApiGuild guild)
+    {
+        GuildResponse resp = post(String.format(Endpoints.Guild, guild.snowflake), GuildResponse.class, guild.toString());
+        if (resp != null)
+        {
+            return resp.get();
+        }
+        return null;
+    }
+
+
+    /**
+     * Base method for all GET requests.
+     * @param endpoint URI to request.
+     * @param response JSON-Serializable class which the response will be transformed into.
+     * @return
+     * @param <T>
+     */
     private <T> T get(String endpoint, Class<T> response) {
         HttpRequest request = HttpRequest.newBuilder(
                         URI.create(String.format("%s/%s", host, endpoint))
@@ -124,24 +229,34 @@ public class KatApi {
                 .setHeader("Authorization", authStr)
                 .build();
 
-        log.debug("GET Requesting {}", String.format("%s%s", host, endpoint));
+        log.debug("GET Requesting {}", String.format("%s/%s", host, endpoint));
         try
         {
             HttpResponse<Supplier<T>> resp = client.sendAsync(request, new JsonBodyHandler<>(response)).get();
 
             // Ok status codes - Client Error status codes
             if (resp.statusCode() >= 200 && resp.statusCode() < 400) {
-                log.debug("Status code {}", resp.statusCode());
+                log.trace("Status code {}", resp.statusCode());
                 return resp.body().get();
             }
             log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s%s", host, endpoint));
         } catch (ExecutionException | InterruptedException e)
         {
+            log.error(String.valueOf(e));
             log.error("An error occurred whilst trying to GET request {}/{}", host, endpoint);
         }
         return null;
     }
 
+    /**
+     * Base method for all POST requests
+     * @param endpoint Request URI.
+     * @param response Class in which the response will be serialized into.
+     * @param body JSON-Serializable object containing the body data.
+     * @return Generic T; Serialized JSON data into an object of type T response.
+     * @param <T> T JSON-Serializable class which the response will be serialized into.
+     * @param <Y> Y JSON-Serializable object which the request body will be transformed from.
+     */
     private <T,Y> T post(String endpoint, Class<T> response, Y body) {
         HttpRequest request = HttpRequest.newBuilder(
                         URI.create(String.format("%s/%s", host, endpoint))
@@ -150,14 +265,15 @@ public class KatApi {
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
-        log.debug("POST Requesting {}, body: {}", String.format("%s%s", host, endpoint), body.toString());
+        log.debug("POST Requesting {}", String.format("%s%s", host, endpoint));
+        log.trace("body: {}", body);
         try
         {
             HttpResponse<Supplier<T>> resp = client.sendAsync(request, new JsonBodyHandler<>(response)).get();
 
             // Ok status codes - Client Error status codes
             if (resp.statusCode() >= 200 && resp.statusCode() < 400) {
-                log.debug("Status code {}", resp.statusCode());
+                log.trace("Status code {}", resp.statusCode());
                 return resp.body().get();
             }
             log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s%s", host, endpoint));

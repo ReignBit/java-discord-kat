@@ -13,7 +13,6 @@ public class Context {
     public MessageReceivedEvent event;
     public JDA jda;
 
-
     public Message message;
     public Member author;
     public User authorAsUser;
@@ -25,6 +24,7 @@ public class Context {
     public Guild guild;
     public PrivateChannel privateChannel;
 
+    public String prefixGuild;
     public String prefixUsed;
     public Command command;
 
@@ -39,8 +39,9 @@ public class Context {
         return privateChannel != null;
     }
 
-    public Context(MessageReceivedEvent event, ArrayList<String> args, String prefixUsed, Command command)
+    public Context(MessageReceivedEvent event, ArrayList<String> args, String prefixGuild, String prefixUsed, Command command)
     {
+        guild = event.getGuild();
         message = event.getMessage();
         author = event.getMember();
         authorAsUser = event.getAuthor();
@@ -61,6 +62,7 @@ public class Context {
         this.jda = Bot.jda;
 
         this.prefixUsed = prefixUsed;
+        this.prefixGuild = prefixGuild;
         this.command = command;
     }
 }

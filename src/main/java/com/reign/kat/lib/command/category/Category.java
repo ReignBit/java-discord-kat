@@ -149,7 +149,8 @@ public abstract class Category extends ListenerAdapter {
         {
             ExceptionMessageSender.sendMessage(ctx, e);
         } catch (Exception e) {
-            log.error(Arrays.toString(e.getStackTrace()));
+            log.error(String.valueOf(e));
+            Arrays.stream(e.getStackTrace()).forEach(s -> log.error(String.valueOf(s)));
             ExceptionMessageSender.sendMessage(ctx, e);
         }
     }
@@ -166,7 +167,7 @@ public abstract class Category extends ListenerAdapter {
 
     public boolean isPrivileged(Member member, GuildChannel channel)
     {
-        log.info("isPrivileged {}", Category.class.getCanonicalName());
+        log.debug("isPrivileged {}", Category.class.getCanonicalName());
         return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
     }
 

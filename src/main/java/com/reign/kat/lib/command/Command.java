@@ -86,11 +86,22 @@ public abstract class Command {
         return sb.toString();
     }
 
+    /**
+     * Set the required permission type a user must have to execute the command.
+     * @param permission PermissionGroupType to limit execution to (and above).
+     */
     public void setRequiredPermissionGroup(PermissionGroupType permission)
     {
         requiredPermission = permission;
     }
 
+    /**
+     * Set the required Discord permissions a user must have to execute the command.
+     * Examples: <code>MANAGE_MESSAGES, ADMINISTRATOR`</code>.<br>
+     * It may be better to use setRequiredPermissionGroup instead, unless the command action would require
+     * a Discord permission - a command to delete messages, for example.
+     * @param permBitfield DiscordPermission bitfield of permissions.
+     */
     public void setRequiredDiscordPermission(int permBitfield)
     {
         requiredDiscordPermission = permBitfield;
