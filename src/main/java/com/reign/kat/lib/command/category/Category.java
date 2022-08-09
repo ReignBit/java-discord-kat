@@ -9,8 +9,10 @@ import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,4 +173,18 @@ public abstract class Category extends ListenerAdapter {
         return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
     }
 
+    public void onMessageReceivedNotBot(MessageReceivedEvent event)
+    {
+
+    }
+
+    @Override
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        if (!event.getAuthor().isSystem() && !event.getAuthor().isBot())
+        {
+            onMessageReceivedNotBot(event);
+        }
+
+        super.onMessageReceived(event);
+    }
 }

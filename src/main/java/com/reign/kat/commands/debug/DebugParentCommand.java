@@ -14,6 +14,7 @@ public class DebugParentCommand extends ParentCommand {
         registerSubcommand(new TimingCommand());
         registerSubcommand(new KillCommand());
         registerSubcommand(new CommandExceptionTestCommand());
+        registerSubcommand(new TestCommand());
     }
 
     @Override

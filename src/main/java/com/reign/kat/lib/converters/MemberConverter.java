@@ -13,6 +13,12 @@ public class MemberConverter extends Converter<Member> {
         super(argName, description, defaultMember, Member.class);
     }
 
+    public MemberConverter(String argName, String description, Member defaultMember, boolean optional)
+    {
+        super(argName, description, defaultMember, Member.class);
+        setOptional(optional);
+    }
+
     @Override
     public Converter<Member> convert(String toConvert, MessageReceivedEvent event) throws IllegalArgumentException{
         if (toConvert == null) { set(null); return this; }

@@ -1,5 +1,6 @@
 package com.reign.kat.lib;
 
+import com.reign.api.kat.models.ApiGuild;
 import com.reign.api.kat.responses.PermissionGroups;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.utils.PermissionGroupType;
@@ -48,7 +49,7 @@ public class PermissionHandler {
             List<String> snowflakes = member.getRoles().stream().map(ISnowflake::getId).collect(Collectors.toList());
             snowflakes.add(member.getId()); // Since the member's snowflake could specifically be set to a group
 
-            return checkSnowflakePermissions(Bot.api.getGuild(channel.getGuild().getId()).getPermissionGroups(), snowflakes, cmdPerm);
+            return checkSnowflakePermissions(ApiGuild.get(channel.getGuild().getId()).getPermissionGroups(), snowflakes, cmdPerm);
         }
         log.debug("Permission check failed");
         return false;

@@ -45,4 +45,9 @@ public abstract class Converter<T> {
     public void setDefault(T item) {
         set(item);
     }
+
+    public void setOptional(boolean isOptional)
+    {
+        this.optional = isOptional;
+    }
 }

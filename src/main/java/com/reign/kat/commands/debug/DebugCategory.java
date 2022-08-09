@@ -10,7 +10,6 @@ public class DebugCategory extends Category {
         setRequiredPermissionGroup(PermissionGroupType.ADMINISTRATOR);
         //setRequiredDiscordPermissions(0);
         setEmoji(":gear:");
-        registerCommand(new TestCommand());
 
 
         registerCommand(new DebugParentCommand());

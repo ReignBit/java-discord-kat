@@ -5,6 +5,7 @@ import com.reign.api.tenor.TenorApi;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
 import com.reign.kat.commands.helpful.HelpfulCategory;
+import com.reign.kat.commands.level.LevelCategory;
 import com.reign.kat.commands.player.PlayerCategory;
 import com.reign.kat.lib.Properties;
 import com.reign.kat.lib.command.category.Category;
@@ -63,8 +64,6 @@ public class Bot extends ListenerAdapter{
 
        tenorApi = new TenorApi(properties.getTenorApiKey(), "kat-java-bot");
 
-       api = new KatApi(properties.getBackendApiHost(), properties.getBackendApiKey());
-
        try
        {
            jda = JDABuilder.createDefault(token)
@@ -95,6 +94,7 @@ public class Bot extends ListenerAdapter{
         addCategory(new DebugCategory());
         addCategory(new EmoteCategory());
         addCategory(new PlayerCategory());
+        addCategory(new LevelCategory());
         log.info("Categories Loaded");
     }
 

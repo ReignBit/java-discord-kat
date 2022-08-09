@@ -2,18 +2,20 @@ package com.reign.api.kat.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.reign.api.kat.models.ApiGuildData;
+import com.reign.api.kat.models.ApiModel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GuildDataResponse extends ApiResponse<ApiGuildData> {
-    public @JsonProperty("data") List<ApiGuildData> data;
+public class ApiResponse<T extends ApiModel> {
+    public @JsonProperty("data") List<T> data;
     public @JsonProperty("msg") String message;
     public @JsonProperty("error") String err;
     public @JsonProperty("status") int status;
 
-    public ApiGuildData get() {
+    public T get() {
         if (data.size() > 0)
             return data.get(0);
         return null;

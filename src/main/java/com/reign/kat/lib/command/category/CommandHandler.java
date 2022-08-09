@@ -1,5 +1,6 @@
 package com.reign.kat.lib.command.category;
 
+import com.reign.api.kat.models.ApiGuild;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 
@@ -19,9 +20,9 @@ import java.util.*;
  */
 public class CommandHandler extends ListenerAdapter {
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
-    private static final ArrayList<Category> categories = new ArrayList<Category>();
+    private static final ArrayList<Category> categories = new ArrayList<>();
 
-    private static final HashMap<String, Category> cmdCatMap = new HashMap<String, Category>();
+    private static final HashMap<String, Category> cmdCatMap = new HashMap<>();
 
     public void addCategory(Category cat)
     {
@@ -88,7 +89,10 @@ public class CommandHandler extends ListenerAdapter {
 
     private void handleCommandParsing(MessageReceivedEvent event) {
         Message message = event.getMessage();
-        String prefixGuild = Bot.api.getGuildPrefix(message.getGuild().getId(), true);
+
+        String prefixGuild = ApiGuild.get(message.getGuild().getId()).getPrefix();
+
+
 
         String usedPrefix = prefixGuild;
         if (message.getContentRaw().startsWith(prefixGuild) || message.getMentions().isMentioned(Bot.jda.getSelfUser(), Message.MentionType.USER))

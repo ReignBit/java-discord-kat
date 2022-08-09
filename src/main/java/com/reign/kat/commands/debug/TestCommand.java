@@ -1,8 +1,8 @@
 package com.reign.kat.commands.debug;
 
 import com.reign.api.kat.models.ApiGuild;
+import com.reign.api.kat.models.ApiGuildData;
 import com.reign.kat.Bot;
-import com.reign.kat.lib.converters.StringConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,20 +17,21 @@ public class TestCommand extends Command {
 
     public TestCommand() {
         super(new String[]{"prefix"}, "prefix","Change the prefix of the server.");
-        addConverter(new StringConverter("newPrefix", "The prefix to use", null));
     }
 
 
     @Override
     public void execute(Context ctx, CommandParameters params) {
-        ApiGuild guild = Bot.api.getGuild(ctx.guild.getId());
-        guild.prefix = params.get("newPrefix");
+        ApiGuildData guild = ApiGuildData.get(ctx.guild.getId());
 
-        Bot.api.updateGuild(guild);
 
-        ApiGuild updatedGuild = Bot.api.getGuild(ctx.guild.getId());
+        ctx.channel.sendMessage(String.format("**%s** Before changes\n```\n%s\n```", ctx.guild.getId(), guild.toString())).queue();
+        guild.level.enabled = !guild.level.enabled;
 
-        ctx.channel.sendMessage(updatedGuild.toString()).queue();
+        ctx.channel.sendMessage(String.format("**%s** Before commit\n```\n%s\n```", ctx.guild.getId(), guild)).queue();
+        guild.save();
+
+        ctx.channel.sendMessage(String.format("**%s** after changes\n```\n%s\n```", ctx.guild.getId(), guild)).queue();
     }
 
 }

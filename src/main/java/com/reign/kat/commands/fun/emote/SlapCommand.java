@@ -19,7 +19,8 @@ public class SlapCommand extends Command {
         addConverter(new MemberConverter(
                 "user",
                 "The user you want to slap",
-                null
+                null,
+                true
         ));
     }
 

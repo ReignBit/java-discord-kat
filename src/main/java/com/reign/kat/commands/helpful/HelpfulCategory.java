@@ -7,5 +7,6 @@ public class HelpfulCategory extends Category {
     {
         setEmoji(":information_source:");
         registerCommand(new HelpCommand());
+        registerCommand(new ConfigParentCommand());
     }
 }
