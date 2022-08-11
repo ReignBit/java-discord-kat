@@ -32,7 +32,7 @@
     - [ ] Slash Commands
     - [x] Argument conversions
  - [ ] Metrics
- - [ ] Backend API
+ - [x] Backend API
  - [ ] Timers/Events
  - [ ] Interactions
 
