@@ -104,6 +104,22 @@ public class CommandHandler extends ListenerAdapter {
 
             // Split the message up into cmd, args
             // ["help", "debug", "timing"] for example
+
+            /*
+                TODO: Better commandargs parsing
+                Need to be able to do the following:
+                    - Consume by space ($level set 123 => ['level', 'set', '123'])
+                    - Consume by quotes ($say "Hello everybody" => ['say', 'hello everybody'])
+                    - Greedily consume ($play that one song => ['play', 'that one song'])
+
+                Converter ( CommandArguments.consumeBySpace(), CommandArguments.consumeByDelimiter('"'), CommandArguments.consumeGreedy() )
+
+                consumeBySpace() => stream.until(' ');
+                consumeByQuote() => if startswith('"') -> stream.until('"')
+                consumeGreedy() => stream.until().end();
+
+             */
+
             ArrayList<String> cmdArgs = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
             String cmd = cmdArgs.get(0).substring(usedPrefix.length());
 

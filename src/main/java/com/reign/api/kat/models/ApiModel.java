@@ -92,6 +92,11 @@ public abstract class ApiModel {
                 log.trace("Status code {}", resp.statusCode());
             }
             else{
+                if (resp.statusCode() == 401)
+                {
+                    log.error("API Request returned status code 401.");
+                    log.error("Ensure you have set `backend_api_key` in config.properties");
+                }
                 log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", host, endpoint));
             }
             return resp.body().get();

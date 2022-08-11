@@ -4,9 +4,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-
 @SuppressWarnings({"unchecked"})
 public abstract class Converter<T> {
     private static final Logger log = LoggerFactory.getLogger(Converter.class);
