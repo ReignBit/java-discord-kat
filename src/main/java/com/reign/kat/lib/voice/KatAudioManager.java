@@ -25,14 +25,22 @@ public class KatAudioManager {
     public GuildAudioManager getGuildManager(Guild guild)
     {
         String id = guild.getId();
-        return guildPlayers.getOrDefault(id, createGuildManager(guild));
+        if (guildPlayers.containsKey(id))
+        {
+            log.trace("GUILD MANAGER ALREADY EXISTS. RETURNING");
+            return guildPlayers.get(id);
+        }
+        log.trace("NO GUILD MANAGER FOR {}, CREATING", id);
+        GuildAudioManager gam = createGuildManager(guild);
+        guildPlayers.put(id, gam);
+        return gam;
     }
 
     public GuildAudioManager createGuildManager(Guild guild)
     {
         GuildAudioManager guildManager = new GuildAudioManager(guild, playerManager);
         guild.getAudioManager().setSendingHandler(guildManager.getSendHandler());
-        return guildPlayers.put(guild.getId(), guildManager);
+        return guildManager;
     }
 
 }

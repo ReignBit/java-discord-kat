@@ -14,6 +14,7 @@ public abstract class Converter<T> {
     public String argName;
     public String description;
     public boolean optional;
+    public boolean isGreedy = false;
 
     public Converter(String argName, String description, T defaultObject , Class<?> type) {
         this.argName = argName;
@@ -46,5 +47,9 @@ public abstract class Converter<T> {
     public void setOptional(boolean isOptional)
     {
         this.optional = isOptional;
+    }
+
+    public void setGreedy(boolean greedy) {
+        isGreedy = greedy;
     }
 }

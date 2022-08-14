@@ -5,41 +5,31 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.GreedyStringConverter;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
-import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.voice.GuildAudioManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.VoiceChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
-public class PlayCommand extends Command {
-    private static final Logger log = LoggerFactory.getLogger(PlayCommand.class);
-    public PlayCommand()
+public class SkipCommand extends Command {
+
+    public SkipCommand()
     {
-        super(new String[]{"play","p"},"play" ,"Add song to queue");
-        addConverter(new GreedyStringConverter(
-                "search",
-                "Name of a song or URL",
-                null
-        ));
+        super(new String[]{"skip","s"},"skip" ,"Skips the playing song");
     }
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Guild guild = ctx.guild;
         GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(guild);
-        log.info(String.valueOf(guildAudioManager));
+
         GuildVoiceState userVoiceState = ctx.author.getVoiceState();
-
-        log.info("PlayCommand.execute({})", (String) args.get("search"));
-
         assert userVoiceState != null;
+
         if (userVoiceState.inAudioChannel())
         {
             guildAudioManager.setTextChannel(ctx.channel);
-            guildAudioManager.loadSearch((VoiceChannel) userVoiceState.getChannel(), args.get("search"), ctx.author);
+            guildAudioManager.skip();
         }
         else
         {

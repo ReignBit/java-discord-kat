@@ -60,7 +60,7 @@ public abstract class ParentCommand extends Command {
         {
             subAlias = args.remove(0);
         }
-        CommandParameters cmdParams = new CommandParameters(event);
+        CommandParameters cmdParams = new CommandParameters(event, String.join("", args));
 
         execute(ctx, cmdParams);
 
@@ -68,7 +68,7 @@ public abstract class ParentCommand extends Command {
         if (subcommand != null)
         {
             // Subcommands do not need to check for permissions since they inherit the parent perms.
-            cmdParams.parse(args, subcommand);
+            cmdParams.parse(subcommand);
             subcommand.execute(ctx, cmdParams);
         }
     }

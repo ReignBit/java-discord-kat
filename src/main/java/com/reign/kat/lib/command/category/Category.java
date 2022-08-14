@@ -119,7 +119,7 @@ public abstract class Category extends ListenerAdapter {
         log.debug("COMMAND {} started execution.", ctx.command.getPrimaryAlias());
         long then = Instant.now().toEpochMilli();
 
-        CommandParameters params = new CommandParameters(ctx.event);
+        CommandParameters params = new CommandParameters(ctx.event, String.join(" ", ctx.args).strip());
         /*
             In order to accommodate ParentCommands, we need to check if the 1st arg matches
             any subcommand alias in ParentCommand
@@ -140,7 +140,7 @@ public abstract class Category extends ListenerAdapter {
             }
             else
             {
-                params.parse(ctx.args, ctx.command);
+                params.parse(ctx.command);
                 ctx.command.execute(ctx, params);
             }
 

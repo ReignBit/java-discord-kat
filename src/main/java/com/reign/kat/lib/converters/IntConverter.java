@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 public class IntConverter extends Converter<Integer> {
     private static final Logger log = LoggerFactory.getLogger(IntConverter.class);
 
-    public IntConverter(String argName, String description, int defaultInt) {
+    public IntConverter(String argName, String description, Integer defaultInt) {
         super(argName, description, defaultInt, int.class);
     }
 

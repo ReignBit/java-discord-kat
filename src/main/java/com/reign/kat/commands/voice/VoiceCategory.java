@@ -14,5 +14,11 @@ public class VoiceCategory extends Category {
         setEmoji(":microphone:");
 
         registerCommand(new PlayCommand());
+        registerCommand(new SkipCommand());
+        registerCommand(new QueueCommand());
+        registerCommand(new MoveCommand());
+        registerCommand(new ShuffleCommand());
+        registerCommand(new SeekCommand());
+        registerCommand(new RemoveCommand());
     }
 }
