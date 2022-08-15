@@ -7,11 +7,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
-import org.apache.commons.lang3.ObjectUtils;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.reign.kat.lib.voice.GuildAudioManager.timeConversion;
 
@@ -20,6 +18,7 @@ public class TrackScheduler extends AudioEventAdapter  {
     public final ArrayList<RequestedTrack> queue;
     private RequestedTrack nowPlaying;
     private GuildMessageChannel lastTextChannel;
+    private Message lastMessage;
 
     public TrackScheduler(AudioPlayer player)
     {
@@ -67,6 +66,7 @@ public class TrackScheduler extends AudioEventAdapter  {
             return;
         }
         nowPlaying = null;
+        lastMessage = null;
         player.stopTrack();
     }
 
@@ -84,6 +84,7 @@ public class TrackScheduler extends AudioEventAdapter  {
         else
         {
             nowPlaying = null;
+            lastMessage = null;
         }
     }
 
@@ -104,7 +105,18 @@ public class TrackScheduler extends AudioEventAdapter  {
                                     track.getRequester().getAsMention()
                             )
                     );
-            lastTextChannel.sendMessageEmbeds(eb.build()).queue();
+            if (lastMessage == null)
+            {
+                lastTextChannel.sendMessageEmbeds(eb.build()).queue(message -> {
+                    lastMessage = message;
+                });
+            }
+            else
+            {
+                lastMessage.editMessageEmbeds(eb.build()).queue(message -> {
+                    lastMessage = message;
+                });
+            }
         }
         catch (NullPointerException ignored) {}
     }

@@ -1,5 +1,6 @@
 package com.reign.kat.lib.voice;
 
+import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -109,8 +110,21 @@ public class GuildAudioManager {
             @Override
             public void loadFailed(FriendlyException exception) {
                 log.warn("Failed to load track: {}", exception.getMessage());
+                onFailedToLoadTrack(exception);
             }
         });
+    }
+
+    private void onFailedToLoadTrack(FriendlyException exception)
+    {
+        if (lastTextChannel == null) {
+            log.warn("Tried to send a message but lastTextChannel is null!");
+            return;
+        }
+        EmbedBuilder eb = new ExceptionEmbedBuilder(":x:",
+                "Failed to load track",
+                "The track failed to load, this is normally due to the video being unavailable.\n" + exception.getMessage());
+        lastTextChannel.sendMessageEmbeds(eb.build()).queue();
     }
 
     private void onNoMatchesFound()
@@ -123,9 +137,7 @@ public class GuildAudioManager {
         EmbedBuilder eb = new VoiceEmbed()
                 .setTitle("No matches found")
                 .setDescription("No videos could be found for your search.");
-        lastTextChannel.sendMessageEmbeds(eb.build()).queue(message -> {
-
-        });
+        lastTextChannel.sendMessageEmbeds(eb.build()).queue();
     }
     private void onTrackAddedToQueue(RequestedTrack track)
     {
