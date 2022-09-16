@@ -50,9 +50,9 @@ public class GuildAudioManager {
 
     public void loadSearch(VoiceChannel channel, String searchQuery, Member requester)
     {
-        log.info("Loading query: {}...", searchQuery);
+        log.debug("Loading query: {}...", searchQuery);
         String finalSearchQuery = getLavalinkSearchQuery(searchQuery);
-        log.info(finalSearchQuery);
+        log.debug(finalSearchQuery);
 
         KatAudioManager.playerManager.loadItemOrdered(this, finalSearchQuery, new AudioLoadResultHandler() {
             @Override
