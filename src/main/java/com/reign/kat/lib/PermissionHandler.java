@@ -36,7 +36,7 @@ public class PermissionHandler {
             return true;
         }
 
-        log.debug("Checking permission for {} in channel {} with permission requirements {} {}", member.getIdLong(), channel.getIdLong(), discordPerms, cmdPerm);
+        log.trace("Checking permission for {} in channel {} with permission requirements {} {}", member.getIdLong(), channel.getIdLong(), discordPerms, cmdPerm);
         if (isOwner(channel, member)) {
             return true;
         }
@@ -51,13 +51,13 @@ public class PermissionHandler {
 
             return checkSnowflakePermissions(ApiGuild.get(channel.getGuild().getId()).getPermissionGroups(), snowflakes, cmdPerm);
         }
-        log.debug("Permission check failed");
+        log.trace("Permission check failed");
         return false;
     }
 
     static boolean checkSnowflakePermissions(PermissionGroups permissionGroups, List<String> snowflakesToCompare, PermissionGroupType requiredGroup) {
         if (requiredGroup == PermissionGroupType.EVERYONE) {
-            log.debug("Permission check passed, group level EVERYONE");
+            log.trace("Permission check passed, group level EVERYONE");
             return true;
         }
         else if (requiredGroup == PermissionGroupType.MODERATOR) {
@@ -65,7 +65,7 @@ public class PermissionHandler {
             {
                 if (permissionGroups.mod.contains(id))
                 {
-                    log.debug("Permission check passed, group level MODERATOR");
+                    log.trace("Permission check passed, group level MODERATOR");
                     return true;
                 }
             }
@@ -75,7 +75,7 @@ public class PermissionHandler {
             {
                 if (permissionGroups.admin.contains(id))
                 {
-                    log.debug("Permission check passed, group level ADMINISTRATOR");
+                    log.trace("Permission check passed, group level ADMINISTRATOR");
                     return true;
                 }
             }
@@ -85,13 +85,13 @@ public class PermissionHandler {
 
     static boolean isOwner(Guild guild, Member member)
     {
-        log.debug("Permission check passed because member == owner");
+        log.trace("Permission check passed because member == owner");
         return guild.getOwnerIdLong() == (member.getIdLong());
     }
 
     static boolean isOwner(GuildChannel guildc, Member member)
     {
-        log.debug("Permission check passed because member == owner");
+        log.trace("Permission check passed because member == owner");
         return guildc.getGuild().getOwnerIdLong() == (member.getIdLong());
     }
 }
