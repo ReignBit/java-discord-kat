@@ -1,5 +1,6 @@
 package com.reign.kat.lib.command.category;
 
+
 import com.reign.kat.lib.PermissionHandler;
 import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.exceptions.CommandException;
@@ -9,10 +10,9 @@ import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,7 @@ public abstract class Category extends ListenerAdapter {
             }
             commands.put(alias, command);
             BotStats.addCommands(getCommandsDistinct());
-            log.info("Registered command {} (alias {})", command.name, alias);
+            log.trace("Registered command {} (alias {})", command.name, alias);
         }
     }
 
@@ -116,7 +116,7 @@ public abstract class Category extends ListenerAdapter {
 
     public void executeCommand(Context ctx)
     {
-        log.debug("COMMAND {} started execution.", ctx.command.getPrimaryAlias());
+        log.trace("COMMAND {} started execution.", ctx.command.getPrimaryAlias());
         long then = Instant.now().toEpochMilli();
 
         CommandParameters params = new CommandParameters(ctx.event, String.join(" ", ctx.args).strip());
@@ -169,22 +169,15 @@ public abstract class Category extends ListenerAdapter {
 
     public boolean isPrivileged(Member member, GuildChannel channel)
     {
-        log.debug("isPrivileged {}", Category.class.getCanonicalName());
+        log.trace("isPrivileged {}", Category.class.getCanonicalName());
         return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
     }
 
-    public void onMessageReceivedNotBot(MessageReceivedEvent event)
+    /**
+     * Overridable, executed every hour since Bot start time.
+     */
+    public void onHourEvent()
     {
-
-    }
-
-    @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        if (!event.getAuthor().isSystem() && !event.getAuthor().isBot())
-        {
-            onMessageReceivedNotBot(event);
-        }
-
-        super.onMessageReceived(event);
+        // Does nothing by default
     }
 }
