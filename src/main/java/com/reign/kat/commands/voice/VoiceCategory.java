@@ -21,5 +21,6 @@ public class VoiceCategory extends Category {
         registerCommand(new SeekCommand());
         registerCommand(new RemoveCommand());
         registerCommand(new NowPlayingCommand());
+        registerCommand(new LeaveCommand());
     }
 }
