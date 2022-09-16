@@ -20,11 +20,15 @@ public class Properties {
 
     private String tenorApiKey;
 
+    private int voice_autodisconnect_mins = 5;
+
     public String getToken() { return token; }
     public String getPrefix() { return prefix; }
     public String getBackendApiKey() { return backend_api_key; }
     public String getBackendApiHost() { return backend_api_host; }
     public String getTenorApiKey() { return tenorApiKey; }
+
+    public int getVoiceAutoDisconnectMinutes() { return voice_autodisconnect_mins; }
 
     public boolean isDebug() { return isDebug; }
     public boolean isIgnorePermissions() { return ignorePermissions; }
@@ -70,12 +74,19 @@ public class Properties {
                     break;
                 case "backend_api_key":
                     this.backend_api_key = args[1];
+                    break;
                 case "backend_api_host":
                     this.backend_api_host = args[1];
+                    break;
+                case "voice_autodisconnect_mins":
+                    this.voice_autodisconnect_mins = Integer.parseInt(args[1]);
+                    break;
                 case "debug-mode":
                     this.isDebug = Boolean.parseBoolean(args[1]);
+                    break;
                 case "debug-ignore-permission-system":
                     this.ignorePermissions = Boolean.parseBoolean(args[1]);
+                    break;
                 default:
                     break;
             }
