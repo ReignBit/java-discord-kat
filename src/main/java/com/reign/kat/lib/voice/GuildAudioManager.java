@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class GuildAudioManager {
     private static Logger log;
     public final AudioPlayer player;
-    public final TrackScheduler scheduler;
+    public TrackScheduler scheduler;
 
     public final Guild guild;
 
@@ -42,6 +42,7 @@ public class GuildAudioManager {
         log = LoggerFactory.getLogger(String.format("GuildAudioManager_%s", guild.getId()));
         log.debug("Created GuildAudioManager for {}", guild.getId());
     }
+
 
     public void setTextChannel(GuildMessageChannel channel)
     {
@@ -232,6 +233,8 @@ public class GuildAudioManager {
         if (audioManager.isConnected())
         {
             audioManager.closeAudioConnection();
+            scheduler = new TrackScheduler(player, this);
+
         }
     }
 
