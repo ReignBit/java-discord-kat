@@ -2,6 +2,7 @@ package com.reign.kat.lib.voice;
 
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
+import com.reign.kat.lib.utils.Utilities;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -11,14 +12,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Audio for a single guild
@@ -38,8 +35,9 @@ public class GuildAudioManager {
 
         player = manager.createPlayer();
 
-        scheduler = new TrackScheduler(player);
+        scheduler = new TrackScheduler(player, this);
         player.addListener(scheduler);
+        player.setVolume(50);
 
         log = LoggerFactory.getLogger(String.format("GuildAudioManager_%s", guild.getId()));
         log.debug("Created GuildAudioManager for {}", guild.getId());
@@ -69,7 +67,6 @@ public class GuildAudioManager {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                log.info(String.valueOf(playlist.getTracks().size()));
                 AudioTrack firstTrack = playlist.getSelectedTrack();
 
                 if (firstTrack == null)
@@ -115,6 +112,20 @@ public class GuildAudioManager {
         });
     }
 
+    public void autoDisconnect()
+    {
+        if (lastTextChannel == null) {
+            log.warn("Tried to send a message but lastTextChannel is null!");
+            return;
+        }
+        EmbedBuilder eb = new VoiceEmbed()
+                .setTitle("Auto Disconnecting")
+                .setDescription("Leaving voice chat since no tracks have been played in 5 minutes.");
+        lastTextChannel.sendMessageEmbeds(eb.build()).queue();
+
+        guild.getAudioManager().closeAudioConnection();
+    }
+
     private void onFailedToLoadTrack(FriendlyException exception)
     {
         if (lastTextChannel == null) {
@@ -152,7 +163,7 @@ public class GuildAudioManager {
                         String.format(
                                 "**%s**\n%s Requested by: %s",
                                 track.getTrack().getInfo().title,
-                                timeConversion(track.getTrack().getDuration()),
+                                Utilities.timeConversion(track.getTrack().getDuration()),
                                 track.getRequester().getAsMention()
                         )
                 );
@@ -215,6 +226,15 @@ public class GuildAudioManager {
         }
     }
 
+    public void disconnect()
+    {
+        AudioManager audioManager = guild.getAudioManager();
+        if (audioManager.isConnected())
+        {
+            audioManager.closeAudioConnection();
+        }
+    }
+
     private void moveChannel(VoiceChannel channel)
     {
         AudioManager audioManager = guild.getAudioManager();
@@ -230,43 +250,4 @@ public class GuildAudioManager {
         return new AudioPlayerSendHandler(player);
     }
 
-    public static String timeConversion(Long millie) {
-        if (millie != null) {
-            long seconds = (millie / 1000);
-            long sec = seconds % 60;
-            long min = (seconds / 60) % 60;
-            long hrs = (seconds / (60 * 60)) % 24;
-            if (hrs > 0) {
-                return String.format("%02d:%02d:%02d", hrs, min, sec);
-            } else {
-                return String.format("%02d:%02d", min, sec);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    public static Long stringToTimeConversion(String timestamp) {
-        List<String> times = new ArrayList<>(Arrays.stream(timestamp.split(":")).toList());
-        times.sort(Collections.reverseOrder());
-
-        // 0 => seconds, 1 => minutes
-
-        if (times.size() == 0)
-        {
-            return -1L;
-        }
-
-        long seconds = Long.parseLong(times.get(0)) * 1000;
-
-        long minutes = 0L;
-        if (times.size() > 1)
-        {
-            minutes = Long.parseLong(times.get(1)) * 60000;
-        }
-
-        log.debug("Position: {}", seconds + minutes);
-        return seconds + minutes;
-
-    }
 }
