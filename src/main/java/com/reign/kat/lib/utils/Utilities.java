@@ -9,7 +9,7 @@ public class Utilities {
 
     public static String readVersion()
     {
-        File file = new File("./version");
+        File file = new File(Objects.requireNonNull(Utilities.class.getResource("/version")).getFile());
         try
         {
             Scanner scan = new Scanner(file);
