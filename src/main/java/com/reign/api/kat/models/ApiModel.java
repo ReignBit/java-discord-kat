@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reign.api.kat.KatApi;
 import com.reign.api.kat.responses.ApiResponse;
 import com.reign.api.lib.JsonBodyHandler;
-import com.reign.kat.Bot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +12,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
@@ -83,6 +81,7 @@ public abstract class ApiModel {
                 .build();
 
         log.debug("GET Requesting {}", String.format("%s/%s", host, endpoint));
+
         try
         {
             HttpResponse<Supplier<T>> resp = client.sendAsync(request, new JsonBodyHandler<>(response)).get();
