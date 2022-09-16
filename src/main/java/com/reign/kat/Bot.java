@@ -15,6 +15,7 @@ import com.reign.kat.lib.utils.Utilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -28,6 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
@@ -38,7 +43,7 @@ public class Bot extends ListenerAdapter{
 
     public static JDA jda;
     public static TenorApi tenorApi;
-    public static KatApi api;
+    public static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     public static String getVersion()
     {
@@ -58,12 +63,12 @@ public class Bot extends ListenerAdapter{
 
     public void initialize() throws Exception{
 
-        log.info("Getting bot properties");
+        log.info("Loading Config...");
         properties = new Properties();
        String token = properties.getToken();
 
        tenorApi = new TenorApi(properties.getTenorApiKey(), "kat-java-bot");
-       api = new KatApi(Bot.properties.getBackendApiHost(), Bot.properties.getBackendApiKey());
+       KatApi.setAuthorization(Bot.properties.getBackendApiHost(), Bot.properties.getBackendApiKey());
 
        try
        {
@@ -87,6 +92,17 @@ public class Bot extends ListenerAdapter{
 
        }
        addCategories();
+       postInit();
+    }
+
+    public void postInit()
+    {
+        ScheduledFuture<?> firstTimeOnHour = executorService.scheduleAtFixedRate(
+                this::onHourEvent,
+                10,
+                60,
+                TimeUnit.MINUTES
+        );
     }
 
     public void addCategories(){
@@ -139,6 +155,14 @@ public class Bot extends ListenerAdapter{
         Guild guild = event.getGuild();
         log.info("Joined a new guild. {} | {}", guild.getId(), guild.getName());
 
+    }
+
+    private void onHourEvent()
+    {
+        log.info("Running hour event?");
+        jda.getPresence().setActivity(Activity.playing("Test?"));
+
+        commandHandler.getCategories().forEach(Category::onHourEvent);
     }
 
 }
