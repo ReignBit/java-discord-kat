@@ -1,5 +1,6 @@
 package com.reign.kat.lib.voice;
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -8,22 +9,33 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-import static com.reign.kat.lib.voice.GuildAudioManager.timeConversion;
+import static com.reign.kat.lib.utils.Utilities.timeConversion;
+
 
 public class TrackScheduler extends AudioEventAdapter  {
+    private static final Logger log = LoggerFactory.getLogger(TrackScheduler.class);
     private final AudioPlayer player;
     public final ArrayList<RequestedTrack> queue;
     private RequestedTrack nowPlaying;
     private GuildMessageChannel lastTextChannel;
     private Message lastMessage;
 
-    public TrackScheduler(AudioPlayer player)
+    private ScheduledFuture<?> autoDisconnectTimer;
+
+    private final GuildAudioManager guildAudioManager;
+
+    public TrackScheduler(AudioPlayer player, GuildAudioManager guildAudioManager)
     {
         this.player = player;
         this.queue = new ArrayList<>();
+        this.guildAudioManager = guildAudioManager;
     }
 
     public void setTextChannel(GuildMessageChannel channel)
@@ -43,6 +55,15 @@ public class TrackScheduler extends AudioEventAdapter  {
 
     public void queue(RequestedTrack track)
     {
+
+        if (autoDisconnectTimer != null)
+        {
+            // Cancel any auto disconnect timer before queuing tracks.
+            autoDisconnectTimer.cancel(true);
+            log.info("Cancelled auto disconnect timer for : {}", guildAudioManager.guild.getId());
+
+        }
+
         if (!player.startTrack(track.getTrack(), true))
         {
 
@@ -68,11 +89,21 @@ public class TrackScheduler extends AudioEventAdapter  {
         nowPlaying = null;
         lastMessage = null;
         player.stopTrack();
+
+        // Start an auto disconnect timer in case no tracks are queued in
+        autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Bot.properties.getVoiceAutoDisconnectMinutes(), TimeUnit.MINUTES);
+        log.debug("started auto disconnect timer for: {}", guildAudioManager.guild.getId());
     }
 
     public ArrayList<RequestedTrack> getQueue()
     {
         return queue;
+    }
+
+
+    public void onAutoDisconnect()
+    {
+        guildAudioManager.autoDisconnect();
     }
 
     @Override
@@ -107,15 +138,11 @@ public class TrackScheduler extends AudioEventAdapter  {
                     );
             if (lastMessage == null)
             {
-                lastTextChannel.sendMessageEmbeds(eb.build()).queue(message -> {
-                    lastMessage = message;
-                });
+                lastTextChannel.sendMessageEmbeds(eb.build()).queue(message -> lastMessage = message);
             }
             else
             {
-                lastMessage.editMessageEmbeds(eb.build()).queue(message -> {
-                    lastMessage = message;
-                });
+                lastMessage.editMessageEmbeds(eb.build()).queue(message -> lastMessage = message);
             }
         }
         catch (NullPointerException ignored) {}
