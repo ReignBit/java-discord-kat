@@ -12,7 +12,7 @@ public class KatApi {
     public static String host;
     public static String authStr;
 
-    public KatApi(String host, String authentication) {
+    public static void setAuthorization(String host, String authentication) {
         KatApi.host = host;
         KatApi.authStr = authentication;
 
