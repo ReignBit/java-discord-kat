@@ -7,7 +7,6 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.KatColor;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -27,26 +26,29 @@ public class LevelCategory extends Category {
         registerCommand(new LevelCommand());
     }
 
-    @Override
-    public void onMessageReceivedNotBot(@NotNull MessageReceivedEvent event) {
-        Message message = event.getMessage();
-        ApiGuildData guild = ApiGuildData.get(message.getGuild().getId());
-        if (guild.level.enabled)
-        {
-            if (isMeaningfulMessage(message))
-            {
-                processLevel(message, guild);
-            }
-        }
-    }
+    // TODO: Need to rework this to get the guild prefix used without calling the api.
+    //      We could maybe get the command Context passed through here somehow?
+//    @Override
+//    public void onMessageRecieved(@NotNull MessageReceivedEvent event, String prefix) {
+//        Message message = event.getMessage();
+//        ApiGuildData guild = ApiGuildData.get(message.getGuild().getId());
+//        if (guild.level.enabled)
+//        {
+//            if (isMeaningfulMessage(message, prefix))
+//            {
+//                processLevel(message, guild);
+//            }
+//        }
+//    }
 
-    private boolean isMeaningfulMessage(Message message)
+    private boolean isMeaningfulMessage(Message message, String prefix)
     {
         return message.getContentStripped().length() > 10 &&
                 !message.getContentStripped().startsWith("!") &&
                 !message.getContentStripped().startsWith("$") &&
                 !message.getContentStripped().startsWith("%") &&
-                !message.getContentStripped().startsWith(".");
+                !message.getContentStripped().startsWith(".") &&
+                !message.getContentStripped().startsWith(prefix);
     }
 
     private void processLevel(Message message, ApiGuildData guild)
