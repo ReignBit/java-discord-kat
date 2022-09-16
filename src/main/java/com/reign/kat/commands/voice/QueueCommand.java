@@ -3,14 +3,12 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
+import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.voice.GuildAudioManager;
 import com.reign.kat.lib.voice.RequestedTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import okhttp3.Request;
-import org.apache.http.protocol.RequestExpectContinue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +57,7 @@ public class QueueCommand extends Command {
         return String.format("%d. %s [%s] : %s\n",
                 i+1,
                 track.getTrack().getInfo().title,
-                GuildAudioManager.timeConversion(track.getTrack().getDuration()),
+                Utilities.timeConversion(track.getTrack().getDuration()),
                 track.getRequester().getAsMention()
         );
     }
