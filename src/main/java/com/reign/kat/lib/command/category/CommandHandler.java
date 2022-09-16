@@ -108,7 +108,7 @@ public class CommandHandler extends ListenerAdapter {
             ArrayList<String> cmdArgs = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
             String cmd = cmdArgs.get(0).substring(usedPrefix.length());
 
-            log.debug(cmd);
+            log.trace(cmd);
 
             cmdArgs.remove(0); // Remove the command from the args list
             // cmd = test
