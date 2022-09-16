@@ -3,21 +3,17 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.converters.GreedyStringConverter;
 import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
+import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.voice.GuildAudioManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sun.jdi.VoidType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.reign.kat.lib.voice.GuildAudioManager.stringToTimeConversion;
 
 
 public class SeekCommand extends Command {
@@ -51,7 +47,7 @@ public class SeekCommand extends Command {
 
     private void seek(String timestamp, GuildAudioManager g, Context ctx)
     {
-        Long position = GuildAudioManager.stringToTimeConversion(timestamp);
+        Long position = Utilities.stringToTimeConversion(timestamp);
 
         if (g.scheduler.getNowPlaying() == null)
         {
