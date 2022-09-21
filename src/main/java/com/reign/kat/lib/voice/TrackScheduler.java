@@ -91,8 +91,9 @@ public class TrackScheduler extends AudioEventAdapter  {
         player.stopTrack();
 
         // Start an auto disconnect timer in case no tracks are queued in
-        autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Bot.properties.getVoiceAutoDisconnectMinutes(), TimeUnit.MINUTES);
-        log.debug("started auto disconnect timer for: {}", guildAudioManager.guild.getId());
+        // TODO: Fix this - still disconnects even if a song is playing.
+        //autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Bot.properties.getVoiceAutoDisconnectMinutes(), TimeUnit.MINUTES);
+        //log.debug("started auto disconnect timer for: {}", guildAudioManager.guild.getId());
     }
 
     public ArrayList<RequestedTrack> getQueue()
