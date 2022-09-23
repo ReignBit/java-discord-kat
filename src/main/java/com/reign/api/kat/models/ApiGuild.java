@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.reign.api.kat.Endpoints;
 import com.reign.api.kat.responses.GuildResponse;
 import com.reign.api.kat.responses.PermissionGroups;
-import com.reign.kat.Bot;
-import lombok.NoArgsConstructor;
+import com.reign.kat.lib.Config;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class ApiGuild extends ApiModel {
         super();
         this.snowflake = snowflake;
         this.discoveredAt = Instant.now().getEpochSecond();
-        this.prefix = Bot.properties.getPrefix();
+        this.prefix = Config.PREFIX;
     }
 
 

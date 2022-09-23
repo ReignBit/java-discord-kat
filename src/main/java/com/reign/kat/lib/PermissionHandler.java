@@ -29,7 +29,7 @@ public class PermissionHandler {
      */
     public static boolean isPrivileged(Member member, GuildChannel channel, long discordPerms, PermissionGroupType cmdPerm)
     {
-        if (Bot.properties.isDebug() && Bot.properties.isIgnorePermissions())
+        if (Config.DEBUG_MODE && Config.DEBUG_IGNORE_PERMISSION_SYS)
         {
             log.warn("Permission system is disabled due to being in DEBUG mode.");
             log.warn("All commands will pass permission checks, set debug-ignore-permission-system to false to stop this behaviour.");

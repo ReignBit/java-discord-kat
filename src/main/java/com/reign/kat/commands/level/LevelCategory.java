@@ -4,6 +4,7 @@ package com.reign.kat.commands.level;
 import com.reign.api.kat.models.ApiGuildData;
 import com.reign.api.kat.models.ApiMemberData;
 import com.reign.kat.Bot;
+import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.KatColor;
@@ -53,7 +54,7 @@ public class LevelCategory extends Category {
 
     private void processLevel(Message message, ApiGuildData guild)
     {
-        if (Bot.properties.isDebug())
+        if (Config.DEBUG_MODE)
         {
             if (!message.getChannel().getId().equals("502238372299931677")) { return; }
         }

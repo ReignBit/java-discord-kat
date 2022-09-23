@@ -7,7 +7,7 @@ import com.reign.kat.commands.fun.emote.EmoteCategory;
 import com.reign.kat.commands.helpful.HelpfulCategory;
 import com.reign.kat.commands.level.LevelCategory;
 import com.reign.kat.commands.voice.VoiceCategory;
-import com.reign.kat.lib.Properties;
+import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
@@ -38,7 +38,6 @@ public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
     private static final String version = getVersion();
 
-    public static Properties properties;
     public static final CommandHandler commandHandler = new CommandHandler();
 
     public static JDA jda;
@@ -62,13 +61,17 @@ public class Bot extends ListenerAdapter{
     }
 
     public void initialize() throws Exception{
+       log.info("Loading Config...");
 
-        log.info("Loading Config...");
-        properties = new Properties();
-       String token = properties.getToken();
+       if (!Config.load())
+       {
+           log.error("Failed to load config. Bot is in an undefined state!");
+       }
 
-       tenorApi = new TenorApi(properties.getTenorApiKey(), "kat-java-bot");
-       KatApi.setAuthorization(Bot.properties.getBackendApiHost(), Bot.properties.getBackendApiKey());
+       String token = Config.BOT_TOKEN;
+
+       tenorApi = new TenorApi(Config.TENOR_API_KEY, "kat-java-bot");
+       KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
 
        try
        {
@@ -133,7 +136,8 @@ public class Bot extends ListenerAdapter{
     public void onReady(@NotNull ReadyEvent event)
     {
         log.info("==============================");
-        if (Bot.properties.isDebug()) { log.warn("! Debug Mode Enabled !"); }
+        log.info("Started Kat v" + version);
+        if (Config.DEBUG_MODE) { log.warn("! Debug Mode Enabled !"); }
         log.info("Logged in as {}", event.getJDA().getSelfUser().getName());
         log.info("I can see {} Users", event.getJDA().getUsers().size());
         log.info("I can see {}/{} Guilds", event.getGuildAvailableCount(), event.getGuildTotalCount());
