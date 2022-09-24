@@ -5,7 +5,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import com.reign.kat.lib.voice.RequestedTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -31,7 +31,7 @@ public class MoveCommand extends Command {
         Integer from = args.get("from");
         Integer to = args.get("to");
 
-        GuildAudioManager audioManager = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
+        GuildAudio audioManager = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
         if (from > audioManager.scheduler.getQueue().size() || to > audioManager.scheduler.getQueue().size())
         {
             throw new IllegalArgumentException("You have entered positions bigger than the current queue!");

@@ -4,14 +4,11 @@ import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.embeds.VoiceEmbed;
-import com.reign.kat.lib.voice.GuildAudioManager;
-import com.reign.kat.lib.voice.RequestedTrack;
+import com.reign.kat.lib.voice.GuildAudio;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 
 public class ShuffleCommand extends Command {
@@ -23,10 +20,10 @@ public class ShuffleCommand extends Command {
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Guild guild = ctx.guild;
-        GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(guild);
+        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
 
 
-        Collections.shuffle(guildAudioManager.scheduler.queue);
+        Collections.shuffle(guildAudio.scheduler.queue);
         sendShuffleEmbed(ctx);
 
     }

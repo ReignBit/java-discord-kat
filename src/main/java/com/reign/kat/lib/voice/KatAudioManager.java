@@ -1,5 +1,8 @@
 package com.reign.kat.lib.voice;
 
+import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifyConfig;
+import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifySourceManager;
+import com.reign.kat.lib.Config;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -15,14 +18,20 @@ import java.util.HashMap;
 public class KatAudioManager {
     private static final Logger log = LoggerFactory.getLogger(KatAudioManager.class);
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-    private static final HashMap<String, GuildAudioManager> guildPlayers = new HashMap<>();
+    private static final HashMap<String, GuildAudio> guildPlayers = new HashMap<>();
 
     public KatAudioManager()
     {
+
+        SpotifyConfig spotifyConfig = new SpotifyConfig();
+        spotifyConfig.setClientId(Config.VOICE_SPOTIFY_CLIENT_ID);
+        spotifyConfig.setClientSecret(Config.VOICE_SPOTIFY_CLIENT_SECRET);
+        spotifyConfig.setCountryCode(Config.VOICE_SPOTIFY_COUNTRY_CODE);
+        playerManager.registerSourceManager(new SpotifySourceManager(null, spotifyConfig, playerManager));
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
 
-    public GuildAudioManager getGuildManager(Guild guild)
+    public GuildAudio getGuildManager(Guild guild)
     {
         String id = guild.getId();
         if (guildPlayers.containsKey(id))
@@ -31,16 +40,22 @@ public class KatAudioManager {
             return guildPlayers.get(id);
         }
         log.trace("NO GUILD MANAGER FOR {}, CREATING", id);
-        GuildAudioManager gam = createGuildManager(guild);
+        GuildAudio gam = createGuildManager(guild);
         guildPlayers.put(id, gam);
         return gam;
     }
 
-    public GuildAudioManager createGuildManager(Guild guild)
+    public GuildAudio createGuildManager(Guild guild)
     {
-        GuildAudioManager guildManager = new GuildAudioManager(guild, playerManager);
+        GuildAudio guildManager = new GuildAudio(guild, playerManager);
         guild.getAudioManager().setSendingHandler(guildManager.getSendHandler());
         return guildManager;
+    }
+
+    public static void deleteGuildManager(Guild guild)
+    {
+        guildPlayers.get(guild.getId()).disconnect();
+        guildPlayers.remove(guild.getId());
     }
 
 }

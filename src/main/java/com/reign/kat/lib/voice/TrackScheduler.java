@@ -1,6 +1,7 @@
 package com.reign.kat.lib.voice;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.Config;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -29,13 +30,13 @@ public class TrackScheduler extends AudioEventAdapter  {
 
     private ScheduledFuture<?> autoDisconnectTimer;
 
-    private final GuildAudioManager guildAudioManager;
+    private final GuildAudio guildAudio;
 
-    public TrackScheduler(AudioPlayer player, GuildAudioManager guildAudioManager)
+    public TrackScheduler(AudioPlayer player, GuildAudio guildAudio)
     {
         this.player = player;
         this.queue = new ArrayList<>();
-        this.guildAudioManager = guildAudioManager;
+        this.guildAudio = guildAudio;
     }
 
     public void setTextChannel(GuildMessageChannel channel)
@@ -60,8 +61,8 @@ public class TrackScheduler extends AudioEventAdapter  {
         {
             // Cancel any auto disconnect timer before queuing tracks.
             autoDisconnectTimer.cancel(true);
-            log.info("Cancelled auto disconnect timer for : {}", guildAudioManager.guild.getId());
-
+            log.info("Cancelled auto disconnect timer for : {}", guildAudio.guild.getId());
+            log.debug(String.valueOf(autoDisconnectTimer.isCancelled()));
         }
 
         if (!player.startTrack(track.getTrack(), true))
@@ -82,7 +83,15 @@ public class TrackScheduler extends AudioEventAdapter  {
         {
             RequestedTrack next = queue.remove(0);
             nowPlaying = next;
-            player.startTrack(next.getTrack(), false);
+            try
+            {
+                player.startTrack(next.getTrack(), false);
+            }
+            catch (Exception e)
+            {
+                log.debug("Failed to queue track. Trying again...");
+                player.startTrack(next.getTrack(), false);
+            }
             onSendNowPlayingMessage(nowPlaying);
             return;
         }
@@ -90,10 +99,8 @@ public class TrackScheduler extends AudioEventAdapter  {
         lastMessage = null;
         player.stopTrack();
 
-        // Start an auto disconnect timer in case no tracks are queued in
-        // TODO: Fix this - still disconnects even if a song is playing.
-        //autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Bot.properties.getVoiceAutoDisconnectMinutes(), TimeUnit.MINUTES);
-        //log.debug("started auto disconnect timer for: {}", guildAudioManager.guild.getId());
+        autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Config.VOICE_AUTODISCONNECT_MINUTES, TimeUnit.MINUTES);
+        log.debug("started auto disconnect timer for: {}", guildAudio.guild.getId());
     }
 
     public ArrayList<RequestedTrack> getQueue()
@@ -104,7 +111,9 @@ public class TrackScheduler extends AudioEventAdapter  {
 
     public void onAutoDisconnect()
     {
-        guildAudioManager.autoDisconnect();
+        guildAudio.autoDisconnect();
+        // Cancel the timer in case another one is still running, for whatever reason.
+        autoDisconnectTimer.cancel(true);
     }
 
     @Override
@@ -152,10 +161,11 @@ public class TrackScheduler extends AudioEventAdapter  {
     @Override
     public String toString() {
         return String.format(
-                "<TrackScheduler: GuildChannel: %s NowPlaying: %s QueueSize= %d",
+                "<TrackScheduler GuildChannel: %s, NowPlaying: %s, QueueSize= %d, autoDisconnectDone: %b",
                 lastTextChannel,
                 nowPlaying,
-                queue.size()
+                queue.size(),
+                autoDisconnectTimer.isCancelled() || autoDisconnectTimer.isDone()
         );
     }
 }

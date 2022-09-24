@@ -3,13 +3,11 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.converters.GreedyStringConverter;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.VoiceChannel;
 
 
 public class SkipCommand extends Command {
@@ -21,15 +19,15 @@ public class SkipCommand extends Command {
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Guild guild = ctx.guild;
-        GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(guild);
+        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
 
         GuildVoiceState userVoiceState = ctx.author.getVoiceState();
         assert userVoiceState != null;
 
         if (userVoiceState.inAudioChannel())
         {
-            guildAudioManager.setTextChannel(ctx.channel);
-            guildAudioManager.skip();
+            guildAudio.setTextChannel(ctx.channel);
+            guildAudio.skip();
         }
         else
         {

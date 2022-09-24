@@ -7,7 +7,7 @@ import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.utils.Utilities;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -30,14 +30,14 @@ public class SeekCommand extends Command {
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Guild guild = ctx.guild;
-        GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(guild);
+        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
 
         GuildVoiceState userVoiceState = ctx.author.getVoiceState();
         assert userVoiceState != null;
         if (userVoiceState.inAudioChannel())
         {
-            guildAudioManager.setTextChannel(ctx.channel);
-            seek(args.get("position"), guildAudioManager, ctx);
+            guildAudio.setTextChannel(ctx.channel);
+            seek(args.get("position"), guildAudio, ctx);
         }
         else
         {
@@ -45,7 +45,7 @@ public class SeekCommand extends Command {
         }
     }
 
-    private void seek(String timestamp, GuildAudioManager g, Context ctx)
+    private void seek(String timestamp, GuildAudio g, Context ctx)
     {
         Long position = Utilities.stringToTimeConversion(timestamp);
 

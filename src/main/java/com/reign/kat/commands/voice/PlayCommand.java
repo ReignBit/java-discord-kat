@@ -5,8 +5,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.GreedyStringConverter;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
-import com.reign.kat.lib.embeds.GenericEmbedBuilder;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -29,8 +28,8 @@ public class PlayCommand extends Command {
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Guild guild = ctx.guild;
-        GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(guild);
-        log.info(String.valueOf(guildAudioManager));
+        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
+        log.info(String.valueOf(guildAudio));
         GuildVoiceState userVoiceState = ctx.author.getVoiceState();
 
         log.info("PlayCommand.execute({})", (String) args.get("search"));
@@ -38,8 +37,8 @@ public class PlayCommand extends Command {
         assert userVoiceState != null;
         if (userVoiceState.inAudioChannel())
         {
-            guildAudioManager.setTextChannel(ctx.channel);
-            guildAudioManager.loadSearch((VoiceChannel) userVoiceState.getChannel(), args.get("search"), ctx.author);
+            guildAudio.setTextChannel(ctx.channel);
+            guildAudio.loadSearch((VoiceChannel) userVoiceState.getChannel(), args.get("search"), ctx.author);
         }
         else
         {

@@ -20,7 +20,8 @@ import java.util.ArrayList;
 /**
  * Audio for a single guild
  */
-public class GuildAudioManager {
+public class GuildAudio
+{
     private static Logger log;
     public final AudioPlayer player;
     public TrackScheduler scheduler;
@@ -30,7 +31,7 @@ public class GuildAudioManager {
     public GuildMessageChannel lastTextChannel;
     public Message lastMessage = null;
 
-    public GuildAudioManager(Guild guild, AudioPlayerManager manager) {
+    public GuildAudio(Guild guild, AudioPlayerManager manager) {
         this.guild = guild;
 
         player = manager.createPlayer();
@@ -123,7 +124,7 @@ public class GuildAudioManager {
                 .setTitle("Auto Disconnecting")
                 .setDescription("Leaving voice chat since no tracks have been played in 5 minutes.");
         lastTextChannel.sendMessageEmbeds(eb.build()).queue();
-
+        KatAudioManager.deleteGuildManager(guild);
         guild.getAudioManager().closeAudioConnection();
     }
 
@@ -197,6 +198,7 @@ public class GuildAudioManager {
 
     private String getLavalinkSearchQuery(String searchQuery) {
         log.trace("WE GOT '{}'", searchQuery);
+
         if (searchQuery.startsWith("http")) {
             // Links do not need any prefix - just return the link.
             return searchQuery;
@@ -236,6 +238,7 @@ public class GuildAudioManager {
             scheduler = new TrackScheduler(player, this);
 
         }
+        KatAudioManager.deleteGuildManager(guild);
     }
 
     private void moveChannel(VoiceChannel channel)

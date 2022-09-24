@@ -5,7 +5,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.utils.Utilities;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import com.reign.kat.lib.voice.RequestedTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -23,11 +23,11 @@ public class QueueCommand extends Command {
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Guild guild = ctx.guild;
-        GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(guild);
+        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
 
-        List<RequestedTrack> tracks = new ArrayList<>(guildAudioManager.scheduler.getQueue());
+        List<RequestedTrack> tracks = new ArrayList<>(guildAudio.scheduler.getQueue());
 
-        sendQueueEmbed(ctx, generateQueueString(guildAudioManager.scheduler.getNowPlaying(), tracks, 0));
+        sendQueueEmbed(ctx, generateQueueString(guildAudio.scheduler.getNowPlaying(), tracks, 0));
 
     }
 

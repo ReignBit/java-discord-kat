@@ -5,7 +5,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import com.reign.kat.lib.voice.RequestedTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -24,7 +24,7 @@ public class RemoveCommand extends Command {
     public void execute(Context ctx, CommandParameters args) throws Exception {
         Integer from = args.get("from");
 
-        GuildAudioManager audioManager = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
+        GuildAudio audioManager = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
         if (from > audioManager.scheduler.getQueue().size() || from < 0)
         {
             throw new IllegalArgumentException("You have entered an invalid position in the current queue!");

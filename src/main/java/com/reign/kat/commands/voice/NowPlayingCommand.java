@@ -5,7 +5,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.utils.Utilities;
-import com.reign.kat.lib.voice.GuildAudioManager;
+import com.reign.kat.lib.voice.GuildAudio;
 import com.reign.kat.lib.voice.RequestedTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -33,10 +33,10 @@ public class NowPlayingCommand extends Command
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception
     {
-        GuildAudioManager guildAudioManager = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
-        if (guildAudioManager.scheduler.isPlaying())
+        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
+        if (guildAudio.scheduler.isPlaying())
         {
-            RequestedTrack track = guildAudioManager.scheduler.getNowPlaying();
+            RequestedTrack track = guildAudio.scheduler.getNowPlaying();
 
             MessageEmbed e = buildNowPlayingEmbed(track);
             ctx.message.replyEmbeds(e).queue();
