@@ -3,11 +3,10 @@ package com.reign.api.kat.responses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.reign.api.kat.models.ApiModel;
-import lombok.NoArgsConstructor;
+
 
 import java.util.List;
 
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse<T extends ApiModel> {
     public @JsonProperty("data") List<T> data;

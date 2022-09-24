@@ -80,7 +80,7 @@ public abstract class ApiModel {
                 .setHeader("Authorization", authStr)
                 .build();
 
-        log.debug("GET Requesting {}", String.format("%s/%s", host, endpoint));
+        log.trace("GET Requesting {}", String.format("%s/%s", host, endpoint));
 
         try
         {
@@ -125,7 +125,7 @@ public abstract class ApiModel {
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
-        log.debug("POST Requesting {}", String.format("%s/%s", host, endpoint));
+        log.trace("POST Requesting {}", String.format("%s/%s", host, endpoint));
         log.trace("body: {}", body);
         try
         {
