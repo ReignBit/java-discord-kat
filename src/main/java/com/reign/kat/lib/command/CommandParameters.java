@@ -42,7 +42,7 @@ public class CommandParameters {
 
         for (int i = 0; i < command.converters.size(); i++) {
 //            String s = i < strArgs.size() ? strArgs.get(i) : null;
-            log.debug(String.valueOf(command.converters.get(i).isGreedy));
+            log.trace("CommandParameters.isGreedy: " + command.converters.get(i).isGreedy);
             String s = command.converters.get(i).isGreedy ? scanner.all() : scanner.next();
 
             Converter<?> converter = command.converters.get(i).convert(s, event);
