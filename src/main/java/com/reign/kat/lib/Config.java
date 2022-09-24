@@ -125,10 +125,15 @@ public class Config {
 
     public static String BOT_TOKEN = "<BOT TOKEN HERE>";
     public static String PREFIX = "!";
-    public static String TENOR_API_KEY = "<TENOR API KEY>";
     public static String BACKEND_API_KEY = "<BACKEND API KEY>";
     public static String BACKEND_API_HOST = "http://localhost";
+
+    public static String TENOR_API_KEY = "<TENOR API KEY>";
+
     public static int VOICE_AUTODISCONNECT_MINUTES = 5;
+    public static String VOICE_SPOTIFY_CLIENT_ID = "";
+    public static String VOICE_SPOTIFY_CLIENT_SECRET = "";
+    public static String VOICE_SPOTIFY_COUNTRY_CODE = "GB";
 
     public static boolean DEBUG_MODE;
     public static boolean DEBUG_IGNORE_PERMISSION_SYS;
@@ -151,6 +156,11 @@ public class Config {
                 VOICE_AUTODISCONNECT_MINUTES = Integer.parseInt(
                         config.getProperty("voice-autodisconnect-minutes")
                 );
+                VOICE_SPOTIFY_CLIENT_ID = config.getProperty("voice-spotify-client-id");
+                VOICE_SPOTIFY_CLIENT_SECRET = config.getProperty("voice-spotify-client-secret");
+                VOICE_SPOTIFY_COUNTRY_CODE = config.getProperty("voice-spotify-country-code");
+
+
 
                 DEBUG_MODE = Boolean.parseBoolean(config.getProperty("debug-mode"));
                 DEBUG_IGNORE_PERMISSION_SYS = Boolean.parseBoolean(config.getProperty("debug-ignore-permission-sys"));
@@ -173,12 +183,22 @@ public class Config {
         try
         {
             FileWriter fw = new FileWriter("config.properties");
+            // Core bot stuff
             fw.write("bot-token=" + BOT_TOKEN + "\n");
             fw.write("prefix=" + BOT_TOKEN + "\n");
-            fw.write("tenor-api-key=" + TENOR_API_KEY + "\n");
             fw.write("backend-api-key=" + BACKEND_API_KEY + "\n");
             fw.write("backend-api-host=" + BACKEND_API_HOST + "\n");
+
+            // Misc.
+            fw.write("tenor-api-key=" + TENOR_API_KEY + "\n");
+
+            // Voice specific
             fw.write("voice-autodisconnect-minutes=" + VOICE_AUTODISCONNECT_MINUTES + "\n");
+            fw.write("voice-spotify-client-id=" + VOICE_SPOTIFY_CLIENT_ID + "\n");
+            fw.write("voice-spotify-client-secret=" + VOICE_SPOTIFY_CLIENT_SECRET + "\n");
+            fw.write("voice-spotify-country-code=" + VOICE_SPOTIFY_COUNTRY_CODE + "\n");
+
+            // Debug
             fw.write("debug-mode=" + DEBUG_MODE + "\n");
             fw.write("debug-ignore-permission-sys=" + DEBUG_IGNORE_PERMISSION_SYS + "\n");
             fw.close();
