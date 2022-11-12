@@ -5,6 +5,7 @@ import com.reign.kat.lib.Config;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -92,6 +93,8 @@ public class TrackScheduler extends AudioEventAdapter  {
                 log.debug("Failed to queue track. Trying again...");
                 player.startTrack(next.getTrack(), false);
             }
+            if (autoDisconnectTimer != null)
+                autoDisconnectTimer.cancel(true);
             onSendNowPlayingMessage(nowPlaying);
             return;
         }
@@ -99,7 +102,7 @@ public class TrackScheduler extends AudioEventAdapter  {
         lastMessage = null;
         player.stopTrack();
 
-        autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Config.VOICE_AUTODISCONNECT_MINUTES, TimeUnit.MINUTES);
+        //autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Config.VOICE_AUTODISCONNECT_MINUTES, TimeUnit.MINUTES);
         log.debug("started auto disconnect timer for: {}", guildAudio.guild.getId());
     }
 
@@ -113,7 +116,14 @@ public class TrackScheduler extends AudioEventAdapter  {
     {
         guildAudio.autoDisconnect();
         // Cancel the timer in case another one is still running, for whatever reason.
-        autoDisconnectTimer.cancel(true);
+        //autoDisconnectTimer.cancel(true);
+    }
+
+    @Override
+    public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception)
+    {
+        super.onTrackException(player, track, exception);
+        log.warn(exception.toString());
     }
 
     @Override
@@ -127,6 +137,7 @@ public class TrackScheduler extends AudioEventAdapter  {
             nowPlaying = null;
             lastMessage = null;
         }
+        log.debug("Finished track");
     }
 
     private void onSendNowPlayingMessage(RequestedTrack track)

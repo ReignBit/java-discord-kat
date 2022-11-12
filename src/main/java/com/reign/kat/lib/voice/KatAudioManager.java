@@ -11,9 +11,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Manages all Guild audio interactions
+ *
+ *
+ * KatAudio - Main API for interacting with voice
+ *
+ * GuildAudioManager - Manages voice and track flow for an individual guild
+ * VoiceMusicPlayer - System responsible for queueing music and controlling its flow
+ * VoiceAssistantPlayer - System responsible for queueing voice responses and their actions
+ *
+ *
+ *
  */
 public class KatAudioManager {
     private static final Logger log = LoggerFactory.getLogger(KatAudioManager.class);
@@ -49,7 +62,13 @@ public class KatAudioManager {
     {
         GuildAudio guildManager = new GuildAudio(guild, playerManager);
         guild.getAudioManager().setSendingHandler(guildManager.getSendHandler());
+        guild.getAudioManager().setReceivingHandler(guildManager.getRecvHandler());
         return guildManager;
+    }
+
+    public Set<Map.Entry<String, GuildAudio>> all()
+    {
+        return guildPlayers.entrySet();
     }
 
     public static void deleteGuildManager(Guild guild)
