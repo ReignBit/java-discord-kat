@@ -73,6 +73,7 @@ public class TrackScheduler extends AudioEventAdapter  {
         }
         else
         {
+            guildAudio.setStatus(VoiceStatus.PLAYING_TRACK);
             nowPlaying = track;
             onSendNowPlayingMessage(track);
         }
@@ -100,6 +101,7 @@ public class TrackScheduler extends AudioEventAdapter  {
         }
         nowPlaying = null;
         lastMessage = null;
+        guildAudio.setStatus(VoiceStatus.QUEUE_EMPTY);
         player.stopTrack();
 
         //autoDisconnectTimer = Bot.executorService.schedule(this::onAutoDisconnect, Config.VOICE_AUTODISCONNECT_MINUTES, TimeUnit.MINUTES);

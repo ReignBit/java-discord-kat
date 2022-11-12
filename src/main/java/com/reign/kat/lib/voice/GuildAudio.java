@@ -24,6 +24,8 @@ import java.util.ArrayList;
 public class GuildAudio
 {
     private static Logger log;
+    private VoiceStatus status;
+
     public final AudioPlayer player;
     public TrackScheduler scheduler;
 
@@ -34,6 +36,7 @@ public class GuildAudio
 
     public GuildAudio(Guild guild, AudioPlayerManager manager) {
         this.guild = guild;
+        this.status = VoiceStatus.NOT_INITIALIZED;
 
         player = manager.createPlayer();
 
@@ -60,6 +63,7 @@ public class GuildAudio
         KatAudioManager.playerManager.loadItemOrdered(this, finalSearchQuery, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
+                status = VoiceStatus.LOADING_TRACK;
                 RequestedTrack t = new RequestedTrack(requester, track);
                 if (scheduler.isPlaying())
                 {
@@ -70,6 +74,7 @@ public class GuildAudio
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
+                status = VoiceStatus.LOADING_PLAYLIST;
                 AudioTrack firstTrack = playlist.getSelectedTrack();
 
                 if (firstTrack == null)
@@ -109,12 +114,15 @@ public class GuildAudio
 
             @Override
             public void loadFailed(FriendlyException exception) {
+                status = VoiceStatus.LOAD_TRACK_ERROR;
                 log.warn("Failed to load track: {}", exception.getMessage());
                 onFailedToLoadTrack(exception);
             }
         });
     }
 
+    public VoiceStatus getStatus() { return status; }
+    public void setStatus(VoiceStatus vs) { this.status = vs; }
     public void autoDisconnect()
     {
         if (lastTextChannel == null) {
@@ -227,6 +235,7 @@ public class GuildAudio
         if (!audioManager.isConnected())
         {
             audioManager.openAudioConnection(channel);
+            status = VoiceStatus.JOINED_CHANNEL;
         }
     }
 
@@ -239,6 +248,7 @@ public class GuildAudio
             scheduler = new TrackScheduler(player, this);
 
         }
+        status = VoiceStatus.NOT_INITIALIZED;
         KatAudioManager.deleteGuildManager(guild);
     }
 

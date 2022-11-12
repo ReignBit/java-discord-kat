@@ -46,7 +46,7 @@ public class CommandHandler extends ListenerAdapter {
             for (String a: aliases) {
                 cmdCatMap.put(a, cat);
             }
-            System.out.println(cmd);
+            log.debug(String.valueOf(cmd));
             commands.addCommands(cmd.updateSlashData());
         }
 
