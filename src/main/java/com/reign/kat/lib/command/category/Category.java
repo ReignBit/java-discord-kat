@@ -105,7 +105,7 @@ public abstract class Category extends ListenerAdapter {
         }
     }
 
-    public Command findCommand(MessageReceivedEvent event, String alias)
+    public Command findCommand(String alias)
     {
         if(commands.containsKey(alias))
         {
@@ -142,6 +142,9 @@ public abstract class Category extends ListenerAdapter {
             {
                 params.parse(ctx.command);
                 ctx.command.execute(ctx, params);
+
+
+
             }
 
             long l = Instant.now().toEpochMilli() - then;

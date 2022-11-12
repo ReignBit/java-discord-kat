@@ -1,7 +1,7 @@
 package com.reign.kat.lib.converters;
 
+import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ public class MemberConverter extends Converter<Member> {
     }
 
     @Override
-    public Converter<Member> convert(String toConvert, MessageReceivedEvent event) throws IllegalArgumentException{
+    public Converter<Member> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException{
         if (toConvert == null) { set(null); return this; }
         if (toConvert.length() == 18)
         {

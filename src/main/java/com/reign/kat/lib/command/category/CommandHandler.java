@@ -5,9 +5,14 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +37,20 @@ public class CommandHandler extends ListenerAdapter {
         }
         categories.add(cat);
 
+        CommandListUpdateAction commands = Bot.jda.updateCommands();
+
+
         // Populate the Command Category map for ease of finding commands.
-        for (Command cmd: cat.getCommands()) {
+        for (Command cmd: cat.getCommandsDistinct()) {
             HashSet<String> aliases = cmd.getAliases();
             for (String a: aliases) {
                 cmdCatMap.put(a, cat);
             }
+            System.out.println(cmd);
+            commands.addCommands(cmd.updateSlashData());
         }
 
+        commands.queue();
     }
 
     public Category removeCategory(String name)
@@ -84,10 +95,37 @@ public class CommandHandler extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event)
     {
         if (event.getAuthor().isBot()) { return; }
-        handleCommandParsing(event);
+        handleMessageCommandParsing(event);
     }
 
-    private void handleCommandParsing(MessageReceivedEvent event) {
+    @Override
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event)
+    {
+        if (event.getGuild() == null)
+            return;
+
+        handleSlashCommandParsing(event);
+    }
+
+    private void handleSlashCommandParsing(SlashCommandInteractionEvent event)
+    {
+        String cmd = event.getName();
+
+        for (Category category : categories) {
+
+            Command command = category.findCommand(cmd);
+            if (command != null) {
+
+                ArrayList<String> cmdArgs = new ArrayList<>();
+                event.getOptions().forEach(option -> cmdArgs.add(option.getAsString()));
+
+                Context ctx = new Context(new ContextEventAdapter(event), cmdArgs, "/", "/", command);
+                category.executeCommand(ctx);
+            }
+        }
+    }
+
+    private void handleMessageCommandParsing(MessageReceivedEvent event) {
         Message message = event.getMessage();
 
         String prefixGuild = ApiGuild.get(message.getGuild().getId()).getPrefix();
@@ -114,9 +152,9 @@ public class CommandHandler extends ListenerAdapter {
             // cmd = test
             for (Category category : categories) {
 
-                Command command = category.findCommand(event, cmd);
+                Command command = category.findCommand(cmd);
                 if (command != null) {
-                    Context ctx = new Context(event, cmdArgs, prefixGuild, usedPrefix, command);
+                    Context ctx = new Context(new ContextEventAdapter(event), cmdArgs, prefixGuild, usedPrefix, command);
                     category.executeCommand(ctx);
                 }
             }

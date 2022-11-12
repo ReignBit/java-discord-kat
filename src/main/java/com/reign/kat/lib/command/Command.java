@@ -1,9 +1,6 @@
 package com.reign.kat.lib.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.reign.kat.Bot;
@@ -14,6 +11,10 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,16 @@ public abstract class Command {
         this.converters.add(converter);
     }
 
+    public CommandData updateSlashData()
+    {
+        SlashCommandData slashCmd = Commands.slash(primaryAlias, description);
+
+        ArrayList<OptionData> options = new ArrayList<>();
+        converters.forEach(converter -> options.add(converter.getSlashOptionData()));
+
+        slashCmd.addOptions(options);
+        return slashCmd;
+    }
 
     public HashSet<String> getAliases() { return aliases; }
     public String getPrimaryAlias() { return primaryAlias; }

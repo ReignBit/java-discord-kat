@@ -1,8 +1,8 @@
 package com.reign.kat.lib.converters;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class UserOrAuthorConverter extends Converter<User> {
     }
 
     @Override
-    public Converter<User> convert(String toConvert, MessageReceivedEvent event) throws IllegalArgumentException{
+    public Converter<User> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException{
         if (toConvert == null) { set(event.getAuthor()); return this; }
         if (toConvert.length() == 18)
         {

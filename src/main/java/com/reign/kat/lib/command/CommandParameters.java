@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.exceptions.MissingArgumentCommandException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * Converts a command's arguments into objects, decided by Command.converters
@@ -17,12 +15,12 @@ import java.util.Scanner;
 public class CommandParameters {
     private static final Logger log = LoggerFactory.getLogger(CommandParameters.class);
 
-    private final MessageReceivedEvent event;
+    private final ContextEventAdapter event;
     private final SmartStringSplitter scanner;
 
     public HashMap<String, Converter<?>> params = new HashMap<>();
 
-    public CommandParameters(MessageReceivedEvent event, String commandline) {
+    public CommandParameters(ContextEventAdapter event, String commandline) {
         this.event = event;
         this.scanner = new SmartStringSplitter(commandline);
 

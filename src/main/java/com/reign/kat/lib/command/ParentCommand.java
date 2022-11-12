@@ -1,7 +1,5 @@
 package com.reign.kat.lib.command;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -48,7 +46,7 @@ public abstract class ParentCommand extends Command {
          * @param ctx Context of the command
          * @param args string args to convert into Converters
          */
-    public void executeCommands(Context ctx, MessageReceivedEvent event, ArrayList<String> args) throws Exception {
+    public void executeCommands(Context ctx, ContextEventAdapter event, ArrayList<String> args) throws Exception {
         if (!isPrivileged(Objects.requireNonNull(event.getMember()), event.getTextChannel()))
         {
             throw new IllegalStateException("You are not permitted to use this command!");

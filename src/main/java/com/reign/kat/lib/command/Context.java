@@ -6,11 +6,12 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class Context {
-    public MessageReceivedEvent event;
+    public ContextEventAdapter event;
     public JDA jda;
 
     public Message message;
@@ -38,8 +39,33 @@ public class Context {
     {
         return privateChannel != null;
     }
+    public boolean isSlashInteraction() { return event.slashCommandInteractionEvent != null; }
 
-    public Context(MessageReceivedEvent event, ArrayList<String> args, String prefixGuild, String prefixUsed, Command command)
+    public void sendMessage(String msg)
+    {
+        if (isSlashInteraction())
+        {
+            event.slashCommandInteractionEvent.reply(msg).queue();
+        }
+        else
+        {
+            channel.sendMessage(msg).queue();
+        }
+    }
+
+    public void sendEmbeds(MessageEmbed... embeds)
+    {
+        if (isSlashInteraction())
+        {
+            event.slashCommandInteractionEvent.replyEmbeds(Arrays.asList(embeds)).queue();
+        }
+        else
+        {
+            channel.sendMessageEmbeds(Arrays.asList(embeds)).queue();
+        }
+    }
+
+    public Context(ContextEventAdapter event, ArrayList<String> args, String prefixGuild, String prefixUsed, Command command)
     {
         guild = event.getGuild();
         message = event.getMessage();
@@ -53,10 +79,7 @@ public class Context {
           voiceChannel = null;
         }
 
-
-        embeds = event.getMessage().getEmbeds();
-        if (embeds.size() > 0) { embed = embeds.get(0); }
-
+        embeds = event.getEmbeds();
         this.args = args;
         this.event = event;
         this.jda = Bot.jda;

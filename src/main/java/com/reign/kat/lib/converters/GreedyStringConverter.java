@@ -1,6 +1,6 @@
 package com.reign.kat.lib.converters;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import com.reign.kat.lib.command.ContextEventAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ public class GreedyStringConverter extends Converter<String> {
     }
 
     @Override
-    public Converter<String> convert(String toConvert, MessageReceivedEvent event) throws IllegalArgumentException {
+    public Converter<String> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException {
         set(toConvert);
         return this;
     }

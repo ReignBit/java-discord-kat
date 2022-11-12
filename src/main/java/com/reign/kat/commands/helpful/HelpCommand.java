@@ -74,15 +74,15 @@ public class HelpCommand extends Command {
     {
         if (searchTerm == null || searchTerm.trim().isEmpty())
         {
-            ctx.channel.sendMessageEmbeds(generateGenericHelp(ctx, categories).build()).queue();
+            ctx.sendEmbeds(generateGenericHelp(ctx, categories).build());
         }
         else if (command != null)
         {
-            ctx.channel.sendMessageEmbeds(generateSpecificHelp(ctx, command).build()).queue();
+            ctx.sendEmbeds(generateSpecificHelp(ctx, command).build());
         }
         else
         {
-            ctx.channel.sendMessageEmbeds(generateNoHelp(ctx, searchTerm).build()).queue();
+            ctx.sendEmbeds(generateNoHelp(ctx, searchTerm).build());
         }
     }
 

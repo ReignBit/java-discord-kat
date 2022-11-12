@@ -3,6 +3,7 @@ package com.reign.kat.lib.voice;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.utils.Utilities;
+import com.reign.kat.lib.voice.receive.AudioPlayerReceiveHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -254,6 +255,11 @@ public class GuildAudio
     public AudioPlayerSendHandler getSendHandler()
     {
         return new AudioPlayerSendHandler(player);
+    }
+
+    public AudioPlayerReceiveHandler getRecvHandler()
+    {
+        return new AudioPlayerReceiveHandler();
     }
 
 }
