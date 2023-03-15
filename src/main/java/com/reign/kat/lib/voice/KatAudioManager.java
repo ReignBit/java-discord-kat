@@ -3,6 +3,7 @@ package com.reign.kat.lib.voice;
 import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifyConfig;
 import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifySourceManager;
 import com.reign.kat.lib.Config;
+import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -62,7 +63,8 @@ public class KatAudioManager {
     {
         GuildAudio guildManager = new GuildAudio(guild, playerManager);
         guild.getAudioManager().setSendingHandler(guildManager.getSendHandler());
-        guild.getAudioManager().setReceivingHandler(guildManager.getRecvHandler());
+        // guild.getAudioManager().setReceivingHandler(guildManager.getRecvHandler());
+        guild.getAudioManager().setConnectionListener(guildManager.voiceRecognition);
         return guildManager;
     }
 

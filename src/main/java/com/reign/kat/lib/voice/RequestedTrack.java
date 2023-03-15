@@ -1,6 +1,7 @@
 package com.reign.kat.lib.voice;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.utils.Utilities;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -10,6 +11,7 @@ public class RequestedTrack {
     public final String guildId;
     public final String userId;
     public final AudioTrack track;
+
 
     public RequestedTrack(String guildId, String userId, AudioTrack track)
     {
@@ -29,6 +31,10 @@ public class RequestedTrack {
     {
         return Objects.requireNonNull(Bot.jda.getGuildById(guildId)).getMemberById(userId);
     }
+
+    public String getTrackTitle() { return track.getInfo().title; }
+
+    public String getDurationTimestamp() { return Utilities.timeConversion(track.getDuration()); }
 
     public AudioTrack getTrack()
     {

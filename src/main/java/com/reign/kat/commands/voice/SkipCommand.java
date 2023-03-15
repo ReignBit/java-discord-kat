@@ -5,6 +5,8 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.voice.GuildAudio;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -15,25 +17,14 @@ public class SkipCommand extends Command {
     public SkipCommand()
     {
         super(new String[]{"skip","s"},"skip" ,"Skips the playing song");
+        addPreCommand(GuildPlaylist::ensureTrackPlaying);
     }
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
-        Guild guild = ctx.guild;
-        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
+        GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
+        playlist.skip();
 
-        GuildVoiceState userVoiceState = ctx.author.getVoiceState();
-        assert userVoiceState != null;
-
-        if (userVoiceState.inAudioChannel())
-        {
-            guildAudio.setTextChannel(ctx.channel);
-            guildAudio.skip();
-        }
-        else
-        {
-            onUserNotInVoiceChannel(ctx);
-        }
-
+        log.debug("SKIP::::: " + playlist.nowPlaying());
 
 
     }

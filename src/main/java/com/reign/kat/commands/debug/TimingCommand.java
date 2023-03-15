@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class TimingCommand extends Command {
@@ -30,20 +31,21 @@ public class TimingCommand extends Command {
     public void execute(Context ctx, CommandParameters args) {
         HashMap<Command, Float> avgTimings = BotStats.getAvgExecutionTime();
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("```\n");
+        for(Iterator<String> it = BotStats.buildReport(); it.hasNext();)
+        {
+            String ln = it.next();
+            sb.append(ln).append("\n");
+        }
+        sb.append("\n```");
 
         EmbedBuilder eb = new EmbedBuilder()
                 .setTitle(":stopwatch: BotStats Command Timings")
                 .setColor(DiscordColor.BACKGROUND_GREY)
-                .setDescription(
-                        String.format("Average command execution time based on the last %s executions", BotStats.HISTORY_SIZE)
-                );
+                .setDescription(sb.toString());
 
-        for (Map.Entry<Command, Float> entry: avgTimings.entrySet())
-        {
-            Command c = entry.getKey();
-            float f = entry.getValue();
-            eb.addField(c.getClass().getSimpleName(), String.format("%.2fms", f), true);
-        }
+
 
         ctx.channel.sendMessageEmbeds(eb.build()).queue();
 

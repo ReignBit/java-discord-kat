@@ -33,6 +33,7 @@ public class VoiceStateCommand extends Command {
 
     @Override
     public void execute(Context ctx, CommandParameters params) {
+/*
         KatAudioManager kam = VoiceCategory.guildAudio;
 
         GuildAudio ga = kam.getGuildManager(params.get("guild"));
@@ -47,6 +48,7 @@ public class VoiceStateCommand extends Command {
 
 
         ctx.sendEmbeds(eb.build());
+*/
 
     }
 

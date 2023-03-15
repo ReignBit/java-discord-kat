@@ -3,8 +3,10 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.voice.GuildAudio;
-import com.reign.kat.lib.voice.KatAudioManager;
+import com.reign.kat.lib.embeds.LeftChannelEmbed;
+import com.reign.kat.lib.exceptions.MissingArgumentCommandException;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 
 public class LeaveCommand extends Command
 {
@@ -16,8 +18,6 @@ public class LeaveCommand extends Command
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception
     {
-        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
-        guildAudio.disconnect();
-        KatAudioManager.deleteGuildManager(ctx.guild);
+        GuildPlaylistPool.remove(ctx.guild.getIdLong());
     }
 }

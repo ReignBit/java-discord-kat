@@ -4,12 +4,9 @@ import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.embeds.VoiceEmbed;
-import com.reign.kat.lib.utils.Utilities;
-import com.reign.kat.lib.voice.GuildAudio;
-import com.reign.kat.lib.voice.RequestedTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import com.reign.kat.lib.voice.newvoice.RequestedTrack;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,44 +25,27 @@ public class NowPlayingCommand extends Command
     public NowPlayingCommand()
     {
         super(new String[]{"nowplaying", "now", "np"}, "np", "Information about the current track");
+        addPreCommand(GuildPlaylist::ensureTrackPlaying);
     }
 
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception
     {
-        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
-        if (guildAudio.scheduler.isPlaying())
+        GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
+
+        RequestedTrack track = playlist.nowPlaying();
+        if (track != null)
         {
-            RequestedTrack track = guildAudio.scheduler.getNowPlaying();
-
-            MessageEmbed e = buildNowPlayingEmbed(track);
-            ctx.message.replyEmbeds(e).queue();
+            ctx.sendEmbeds(new VoiceEmbed().setTitle("Now Playing").setDescription(track + "\n" + buildProgressBar(track)).build());
         }
+
+
     }
 
-    private MessageEmbed buildNowPlayingEmbed(RequestedTrack track)
-    {
-        EmbedBuilder eb = new VoiceEmbed()
-                .setTitle("Now Playing")
-                .setDescription(
-                        String.format(
-                                "[**%s**](%s)\nRequested by: %s\n%s\n[%s:%s]",
-                                track.getTrack().getInfo().title,
-                                track.getTrack().getInfo().uri,
-                                track.getRequester().getAsMention(),
-                                buildProgressBar(track.getTrack()),
-                                Utilities.timeConversion(track.getTrack().getPosition()),
-                                Utilities.timeConversion(track.getTrack().getDuration())
-                        )
-                );
 
-        return eb.build();
-    }
-
-    String buildProgressBar(AudioTrack track)
+    String buildProgressBar(RequestedTrack track)
     {
-        long totalTime = track.getDuration();
-        int before = (int) (totalBarSize * track.getPosition() / (float)totalTime);
+        int before = (int) (totalBarSize * track.getPercentComplete());
         return trackSymbol.repeat(before) + currentTimeSymbol + trackSymbol.repeat(totalBarSize - before);
     }
 }

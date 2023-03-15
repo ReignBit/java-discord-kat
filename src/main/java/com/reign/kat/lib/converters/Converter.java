@@ -61,7 +61,7 @@ public abstract class Converter<T> {
         return type.getSimpleName();
     }
 
-    public <T> T get() { return (T) item; }
+    public <T> T get() { return (T)item; }
     public void set(T obj) { item = obj; }
 
     public void setDefault() {

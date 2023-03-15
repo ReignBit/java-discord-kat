@@ -43,24 +43,35 @@ public class Utilities {
 
     public static Long stringToTimeConversion(String timestamp) {
         List<String> times = new ArrayList<>(Arrays.stream(timestamp.split(":")).toList());
-        times.sort(Collections.reverseOrder());
+        Collections.reverse(times);
 
-        // 0 => seconds, 1 => minutes
+        // 0 => seconds, 1 => minutes, 2 => hours
+
+        log.debug(String.valueOf(times));
 
         if (times.size() == 0)
         {
             return -1L;
         }
 
-        long seconds = Long.parseLong(times.get(0)) * 1000;
-
-        long minutes = 0L;
-        if (times.size() > 1)
+        try
         {
-            minutes = Long.parseLong(times.get(1)) * 60000;
-        }
+            long seconds = Long.parseLong(times.get(0)) * 1000;
+            log.debug("seconds: " + seconds);
+            long minutes = 0L;
+            if (times.size() > 1)
+            {
+                minutes = Long.parseLong(times.get(1)) * 60000;
+                log.debug("Mins: " + minutes);
+            }
 
-        return seconds + minutes;
+            return seconds + minutes;
+        }
+        catch (NumberFormatException e)
+        {
+            log.warn(String.format("Failed to convert from timestamp [%s] -> -1L",timestamp));
+            return -1L;
+        }
 
     }
 }

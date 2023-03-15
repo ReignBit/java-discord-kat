@@ -126,10 +126,10 @@ public class BotStats {
     /**
      * Prints a nicely formatted table to the terminal of average execution times of all commands.
      */
-    public static void reportToConsole()
+    public static Iterator<String> buildReport()
     {
-        log.info("BotStat Timings");
         AsciiTable table = new AsciiTable();
+        table.getContext().setWidth(60);
         table.addRule();
         table.addRow("Command", "Time (ms)", "Severity");
         for (Map.Entry<Command, Float> entry: getAvgExecutionTime().entrySet())
@@ -154,10 +154,15 @@ public class BotStats {
 
         }
         table.addRule();
-        for (Iterator<String> it = table.renderAsIterator(); it.hasNext(); ) {
+        return table.renderAsIterator();
+    }
+
+    public static void reportToConsole()
+    {
+        for(Iterator<String> it = buildReport(); it.hasNext();)
+        {
             String ln = it.next();
             log.info(ln);
-
         }
     }
 }

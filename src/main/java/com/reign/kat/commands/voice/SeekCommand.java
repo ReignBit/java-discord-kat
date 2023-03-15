@@ -4,10 +4,14 @@ import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.StringConverter;
+import com.reign.kat.lib.embeds.ExceptionEmbed;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
+import com.reign.kat.lib.handlers.GuildPlaylistResponseHandler;
 import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.voice.GuildAudio;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -23,52 +27,37 @@ public class SeekCommand extends Command {
         super(new String[]{"seek"},"seek" ,"Seek through the current track");
         addConverter(new StringConverter(
                 "position",
-                "Position in the track to seek to.",
+                "Position in the track to seek to. Formatted as a timestamp (eg: 15:24)",
                 "0"
         ));
+
+        addPreCommand(GuildPlaylist::ensureTrackPlaying);
     }
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
-        Guild guild = ctx.guild;
-        GuildAudio guildAudio = VoiceCategory.guildAudio.getGuildManager(guild);
+        GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
 
-        GuildVoiceState userVoiceState = ctx.author.getVoiceState();
-        assert userVoiceState != null;
-        if (userVoiceState.inAudioChannel())
+        long pos = Utilities.stringToTimeConversion(args.get("position"));
+        if (pos < 0L)
         {
-            guildAudio.setTextChannel(ctx.channel);
-            seek(args.get("position"), guildAudio, ctx);
-        }
-        else
-        {
-            onUserNotInVoiceChannel(ctx);
-        }
-    }
-
-    private void seek(String timestamp, GuildAudio g, Context ctx)
-    {
-        Long position = Utilities.stringToTimeConversion(timestamp);
-
-        if (g.scheduler.getNowPlaying() == null)
-        {
-            onNotPlaying(ctx);
+            // Failed to convert to a timestamp
+            ctx.sendEmbeds(new ExceptionEmbed()
+                    .setTitle("Invalid time to seek to")
+                    .setDescription(String.format("`{}` is an invalid timestamp!",args.get("position"))).build());
             return;
         }
 
-        AudioTrack now = g.scheduler.getNowPlaying().getTrack();
-        if (position > now.getDuration() || position < 0)
+        if (pos > playlist.nowPlaying().duration)
         {
-            onInvalidTimestamp(timestamp, ctx);
-            return;
+            pos = playlist.nowPlaying().duration;
         }
+        playlist.seek(pos);
 
-        g.scheduler.getNowPlaying().track.setPosition(position);
-
-        EmbedBuilder eb = new VoiceEmbed()
-                .setTitle("Seeked song")
-                .setDescription(String.format("Seeked to %s", timestamp));
-        ctx.message.replyEmbeds(eb.build()).queue();
+        ctx.sendEmbeds(new VoiceEmbed()
+                .setTitle("Seeked track")
+                .setDescription("Set track position to " + Utilities.timeConversion(pos)).build());
     }
+
 
     private void onNotPlaying(Context ctx)
     {

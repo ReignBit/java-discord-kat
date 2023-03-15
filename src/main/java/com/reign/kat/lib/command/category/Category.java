@@ -7,10 +7,10 @@ import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
 import com.reign.kat.lib.utils.ExceptionMessageSender;
 import com.reign.kat.lib.utils.PermissionGroupType;
+import com.reign.kat.lib.utils.PreCommandResult;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ import com.reign.kat.lib.command.Context;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 
@@ -37,6 +38,7 @@ public abstract class Category extends ListenerAdapter {
     private int requiredDiscordPermission = 0;
 
     private final HashMap<String, Command> commands = new HashMap<>();
+    private final LinkedList<BiFunction<Context, CommandParameters, PreCommandResult>> precommands = new LinkedList<>();
 
     /**
      * Get a Collection of all commands in the category.
@@ -65,6 +67,16 @@ public abstract class Category extends ListenerAdapter {
         this.emoji = emoji;
     }
 
+
+    /**
+     * Add a Pre-command to all new commands registered
+     * @param precommand A Function with return type boolean, `boolean myFunc(Context, CommandParameters)`
+     */
+    public void addPrecommand(BiFunction<Context, CommandParameters, PreCommandResult> precommand)
+    {
+        precommands.add(precommand);
+    }
+
     /**
      * Register a command to listen for.
      * @param command Command to listen for.
@@ -76,8 +88,17 @@ public abstract class Category extends ListenerAdapter {
             log.warn("Tried to register Command without any aliases. Ignoring command.");
             return;
         }
+
+        // precommands
+        for (BiFunction<Context, CommandParameters, PreCommandResult> precommand :
+                precommands)
+        {
+            command.addPreCommand(precommand);
+        }
+
         for (String alias: command.getAliases())
         {
+
             if (commands.containsKey(alias))
             {
                 Command orig = commands.get(alias);
@@ -141,7 +162,7 @@ public abstract class Category extends ListenerAdapter {
             else
             {
                 params.parse(ctx.command);
-                ctx.command.execute(ctx, params);
+                ctx.command.invokeCommand(ctx, params);
 
 
 

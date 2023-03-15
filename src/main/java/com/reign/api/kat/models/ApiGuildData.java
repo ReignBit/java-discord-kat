@@ -16,10 +16,6 @@ public class ApiGuildData extends ApiModel {
     public @JsonProperty("snowflake") String snowflake;
     public @JsonProperty("level") LevelData level;
 
-    public ApiGuildData()
-    {
-        super();
-    }
     public ApiGuildData(String snowflake)
     {
         this.snowflake = snowflake;

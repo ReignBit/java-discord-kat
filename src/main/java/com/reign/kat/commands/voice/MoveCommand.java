@@ -5,8 +5,9 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
-import com.reign.kat.lib.voice.GuildAudio;
-import com.reign.kat.lib.voice.RequestedTrack;
+import com.reign.kat.lib.voice.newvoice.RequestedTrack;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class MoveCommand extends Command {
@@ -28,26 +29,27 @@ public class MoveCommand extends Command {
     }
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception {
-        Integer from = args.get("from");
-        Integer to = args.get("to");
+        GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
 
-        GuildAudio audioManager = VoiceCategory.guildAudio.getGuildManager(ctx.guild);
-        if (from > audioManager.scheduler.getQueue().size() || to > audioManager.scheduler.getQueue().size())
+        int from = (Integer)args.get("from") - 1; // 1 = next in queue, so  pos 0
+        int to = (Integer)args.get("to") - 1;
+
+        if (from > playlist.getQueue().size() || to > playlist.getQueue().size())
         {
             throw new IllegalArgumentException("You have entered positions bigger than the current queue!");
         }
-        if (from-1 < 1 || to-1 < 1)
+        if (from < 0 || to < 0)
         {
             throw new IllegalArgumentException("Positions entered must be bigger than 0");
         }
 
-        RequestedTrack pulledFromQueue = audioManager.scheduler.getQueue().remove(from-1);
-        audioManager.scheduler.getQueue().add(to-1, pulledFromQueue);
+        RequestedTrack pulledFromQueue = playlist.getQueue().remove(from);
+        playlist.getQueue().add(to, pulledFromQueue);
 
         EmbedBuilder eb = new VoiceEmbed()
                 .setTitle("Moved tracks!")
                 .setDescription(
-                        String.format("Moved %s to position %d", pulledFromQueue.getTrack().getInfo().title, to)
+                        String.format("Moved %s to position %d", pulledFromQueue.title, to + 1)
                 );
 
         ctx.message.replyEmbeds(eb.build()).queue();

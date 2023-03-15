@@ -1,6 +1,7 @@
 package com.reign.kat;
 
 import com.reign.api.kat.KatApi;
+import com.reign.api.lib.providers.ApiHttpProvider;
 import com.reign.api.tenor.TenorApi;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
@@ -72,6 +73,7 @@ public class Bot extends ListenerAdapter{
 
        tenorApi = new TenorApi(Config.TENOR_API_KEY, "kat-java-bot");
        KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
+       KatApi.setProvider(new ApiHttpProvider());
 
        try
        {
@@ -143,6 +145,8 @@ public class Bot extends ListenerAdapter{
         log.info("I can see {}/{} Guilds", event.getGuildAvailableCount(), event.getGuildTotalCount());
         log.info("Invite me to your server: {}", event.getJDA().getInviteUrl(Permission.ADMINISTRATOR));
         log.info("==============================");
+
+        jda.getPresence().setActivity(Activity.playing(Bot.version));
     }
 
     @Override
@@ -164,7 +168,6 @@ public class Bot extends ListenerAdapter{
     private void onHourEvent()
     {
         log.info("Running hour event?");
-        jda.getPresence().setActivity(Activity.playing("Test?"));
 
         commandHandler.getCategories().forEach(Category::onHourEvent);
     }

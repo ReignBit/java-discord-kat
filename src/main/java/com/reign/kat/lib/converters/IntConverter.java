@@ -13,12 +13,14 @@ public class IntConverter extends Converter<Integer> {
 
     @Override
     public Converter<Integer> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException {
-        try
+
+        if (toConvert == null)
         {
-            set(Integer.parseInt(toConvert));
-        } catch (NumberFormatException e)
+            set(defaultObject);
+        }
+        else
         {
-            throw new IllegalArgumentException(String.format("Tried to convert %s into Integer and failed!",toConvert));
+            set(Integer.valueOf(toConvert));
         }
         return this;
     }

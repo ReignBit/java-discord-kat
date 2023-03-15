@@ -4,6 +4,7 @@ import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.voice.receive.AudioPlayerReceiveHandler;
+import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -33,6 +34,9 @@ public class GuildAudio
 
     public GuildMessageChannel lastTextChannel;
     public Message lastMessage = null;
+
+    //public VoiceRecognition voiceRecognition = new VoiceRecognition();
+    public VoiceRecognition voiceRecognition = null;
 
     public GuildAudio(Guild guild, AudioPlayerManager manager) {
         this.guild = guild;
@@ -67,7 +71,7 @@ public class GuildAudio
                 RequestedTrack t = new RequestedTrack(requester, track);
                 if (scheduler.isPlaying())
                 {
-                    onTrackAddedToQueue(t);
+                    onTrackAddedToQueue(t, scheduler.queue.size());
                 }
                 play(channel, t);
             }
@@ -88,7 +92,7 @@ public class GuildAudio
                     RequestedTrack track = new RequestedTrack(requester, firstTrack);
                     if (scheduler.isPlaying())
                     {
-                        onTrackAddedToQueue(track);
+                        onTrackAddedToQueue(track, scheduler.queue.size());
                     }
                     play(channel, track);
                 }
@@ -161,7 +165,7 @@ public class GuildAudio
                 .setDescription("No videos could be found for your search.");
         lastTextChannel.sendMessageEmbeds(eb.build()).queue();
     }
-    private void onTrackAddedToQueue(RequestedTrack track)
+    private void onTrackAddedToQueue(RequestedTrack track, int position)
     {
         if (lastTextChannel == null) {
             log.warn("Tried to send a message but lastTextChannel is null!");
@@ -169,11 +173,12 @@ public class GuildAudio
         }
 
         EmbedBuilder eb = new VoiceEmbed()
-                .setTitle("Added a track to the queue")
+                .setTitle(String.format("Added a track to the queue (%d)", position))
                 .setDescription(
                         String.format(
-                                "**%s**\n%s Requested by: %s",
+                                "**[%s](%s)**\n%s Requested by: %s",
                                 track.getTrack().getInfo().title,
+                                track.getTrack().getInfo().uri,
                                 Utilities.timeConversion(track.getTrack().getDuration()),
                                 track.getRequester().getAsMention()
                         )
@@ -252,6 +257,11 @@ public class GuildAudio
         KatAudioManager.deleteGuildManager(guild);
     }
 
+    public void connect(VoiceChannel channel)
+    {
+        moveChannel(channel);
+    }
+
     private void moveChannel(VoiceChannel channel)
     {
         AudioManager audioManager = guild.getAudioManager();
@@ -269,7 +279,8 @@ public class GuildAudio
 
     public AudioPlayerReceiveHandler getRecvHandler()
     {
-        return new AudioPlayerReceiveHandler();
+
+        return new AudioPlayerReceiveHandler(this);
     }
 
 }

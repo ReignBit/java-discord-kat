@@ -37,7 +37,7 @@ public class CommandHandler extends ListenerAdapter {
         }
         categories.add(cat);
 
-        CommandListUpdateAction commands = Bot.jda.updateCommands();
+//        CommandListUpdateAction commands = Bot.jda.updateCommands();
 
 
         // Populate the Command Category map for ease of finding commands.
@@ -46,11 +46,10 @@ public class CommandHandler extends ListenerAdapter {
             for (String a: aliases) {
                 cmdCatMap.put(a, cat);
             }
-            log.debug(String.valueOf(cmd));
-            commands.addCommands(cmd.updateSlashData());
+//            commands.addCommands(cmd.updateSlashData());
         }
 
-        commands.queue();
+//        commands.queue();
     }
 
     public Category removeCategory(String name)

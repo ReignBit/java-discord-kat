@@ -31,16 +31,29 @@ public class Context {
 
     public ArrayList<String> args;
 
+    /**
+     * Returns if the Context is within a guild or not.
+     * @return boolean if context came from a guild.
+     */
     public boolean isGuild()
     {
         return guild != null;
     }
+
+    /**
+     * Shows whether the Context is within a private channel
+     * @return If context comes from a private channel.
+     */
     public boolean isPrivateChannel()
     {
         return privateChannel != null;
     }
     public boolean isSlashInteraction() { return event.slashCommandInteractionEvent != null; }
 
+    /**
+     * Send a message to the TextChannel within the Context.
+     * @param msg String message to send.
+     */
     public void sendMessage(String msg)
     {
         if (isSlashInteraction())
@@ -53,6 +66,9 @@ public class Context {
         }
     }
 
+    /**
+     * Send embeds to the channel.
+     */
     public void sendEmbeds(MessageEmbed... embeds)
     {
         if (isSlashInteraction())

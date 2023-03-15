@@ -6,6 +6,7 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.command.category.Category;
+import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.DiscordColor;
@@ -105,6 +106,7 @@ public class HelpCommand extends Command {
         StringBuilder usageHelp = new StringBuilder().append("`").append(command.getSignature()).append(" ");
         usageHelp.append("`").append("\n*[]: Optional, <>: Required*");
 
+
         // Command Description section
         String commandHelp = command.getDescription() +
                 "\n\n" +
@@ -113,6 +115,21 @@ public class HelpCommand extends Command {
         // Add em all
         embedBuilder.addField("Command Help", commandHelp, false)
                 .addField("Usage", usageHelp.toString(), false);
+
+
+        // Arguments
+
+        if (command.converters.size() > 0)
+        {
+            StringBuilder argsStr = new StringBuilder();
+            for (Converter<?> converter :
+                    command.converters)
+            {
+                argsStr.append("`").append(converter.argName).append(" ` : ").append(converter.description).append("\n");
+            }
+            embedBuilder.addField("Arguments", argsStr.toString(), false);
+        }
+
 
 
         // Aliases Section (extra only if command has more than 1 alias

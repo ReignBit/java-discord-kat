@@ -1,15 +1,18 @@
 package com.reign.kat.lib.command;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import com.reign.kat.Bot;
 import com.reign.kat.lib.PermissionHandler;
 import com.reign.kat.lib.converters.Converter;
+import com.reign.kat.lib.embeds.ExceptionEmbed;
+import com.reign.kat.lib.exceptions.PreconditionFailedCommandException;
 import com.reign.kat.lib.utils.PermissionGroupType;
-import net.dv8tion.jda.api.Permission;
+import com.reign.kat.lib.utils.PreCommandResult;
 import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -19,19 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class Command {
-    private static final Logger log = LoggerFactory.getLogger(Command.class);
-
+    protected static final Logger log = LoggerFactory.getLogger(Command.class);
 
     public String name = this.getClass().getCanonicalName();
     private final HashSet<String> aliases;
     private final String primaryAlias;
     private final String description;
 
+    private boolean showTyping = false;
+
     protected PermissionGroupType requiredPermission = PermissionGroupType.EVERYONE;
     protected int requiredDiscordPermission = 0;
 
 
     public ArrayList<Converter<?>> converters = new ArrayList<>();
+    public LinkedList<BiFunction<Context, CommandParameters, PreCommandResult>> precommands = new LinkedList<>();
 
     public Command(String[] aliases, String primaryAlias, String description)
     {
@@ -55,6 +60,11 @@ public abstract class Command {
         this.converters.add(converter);
     }
 
+    public void addPreCommand(BiFunction<Context, CommandParameters, PreCommandResult> precommand)
+    {
+        precommands.add(precommand);
+    }
+
     public CommandData updateSlashData()
     {
         SlashCommandData slashCmd = Commands.slash(primaryAlias, description);
@@ -70,6 +80,8 @@ public abstract class Command {
     public String getPrimaryAlias() { return primaryAlias; }
     public String getDescription() { return description; }
     public String getName(){return primaryAlias;}
+
+    public void setShowTyping(boolean status) {this.showTyping = status; }
 
     public int getRequiredCount() { return converters.stream().filter(converter -> !converter.optional).toList().size();}
 
@@ -124,4 +136,34 @@ public abstract class Command {
     }
 
     public abstract void execute(Context ctx, CommandParameters args) throws Exception;
+
+
+    public void invokeCommand(Context c, CommandParameters args) throws Exception
+    {
+        Method executeMethod = Arrays.stream(getClass().getDeclaredMethods()).filter(method -> method.getName().equals("execute")).toList().get(0);
+
+
+        for (BiFunction<Context, CommandParameters, PreCommandResult> func :
+                precommands)
+        {
+            PreCommandResult result = func.apply(c, args);
+            if (result != null && !result.passed)
+            {
+                // false means that the pre-command has failed its checks. We should exit command execution here
+                // and send the message returned instead.
+
+                c.sendEmbeds(new ExceptionEmbed()
+//                        .setTitle("Failed to run command " + c.command.getPrimaryAlias())
+                        .setDescription(result.message).build());
+
+                return;
+            }
+        }
+
+
+        c.channel.sendTyping().queue();
+        execute(c, args);
+
+    }
+
 }

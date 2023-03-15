@@ -1,7 +1,9 @@
+com.reign.api.genius
 com.reign.api.kat
 com.reign.api.kat.models
 com.reign.api.kat.responses
 com.reign.api.lib
+com.reign.api.lib.providers
 com.reign.api.tenor
 com.reign.api.tenor.responses
 com.reign.kat
@@ -16,7 +18,10 @@ com.reign.kat.lib.command.category
 com.reign.kat.lib.converters
 com.reign.kat.lib.embeds
 com.reign.kat.lib.exceptions
-com.reign.kat.lib.permission
+com.reign.kat.lib.handlers
+com.reign.kat.lib.snowflake
 com.reign.kat.lib.utils
 com.reign.kat.lib.utils.stats
 com.reign.kat.lib.voice
+com.reign.kat.lib.voice.newvoice
+com.reign.kat.lib.voice.receive

@@ -54,19 +54,20 @@ public class CommandParameters {
         }
     }
 
-    @Deprecated
-    public <T> T get(int index) {
-        if (params.isEmpty() || index >= params.size()) {
-            return null;
-        }
-        // Since we are trying to get by index, convert HashMap to a List of Converter<?> and get the item value.
-        return params.values().stream().toList().get(index).get();
-    }
+//    @Deprecated
+//    public T get(int index) {
+//        if (params.isEmpty() || index >= params.size()) {
+//            return null;
+//        }
+//        // Since we are trying to get by index, convert HashMap to a List of Converter<?> and get the item value.
+//        return params.values().stream().toList().get(index).get();
+//    }
 
     public <T> T get(String key)
     {
         if (!params.containsKey(key))
         {
+            log.warn("Tried to get a invalid CommandParameter with key `%s`!");
             return null;
         }
         return params.get(key).get();
