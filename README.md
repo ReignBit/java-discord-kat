@@ -1,27 +1,33 @@
-<a href="https://gitmoji.dev">
-  <img src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square" alt="Gitmoji">
-</a>
 <a href="https://github.com/ReignBit/java-discord-kat/issues">
    <img src="https://img.shields.io/github/issues/reignbit/java-discord-kat?style=flat-square">
 </a>
 
 # Kat - made in java
-[My discord bot](https://github.com/Reignbit/discord-kat) rewritten in Java 17 from the ground up.
+[My discord bot](https://github.com/Reignbit/discord-kat) rewritten in Java 17 from the ground up using JDA.
 
 ## Features [WIP]
  - Automod
  - Welcomer
  - Leveling system
  - Music player
- - Voice commands
+ - Speech recognition & Voice commands
 
-## Requirements
- - Java 17+
- - Gradle
- - Lavalink
- - JDA
- - Jackson
+---
+## How to build & run for the first time
 
+If you just want to run the bot you can download the [latest compiled version here](
+https://github.com/reignbit/java-discord-kat/releases/latest)
+
+Otherwise, follow these instructions to build it yourself:
+1. Clone this repo `git clone https://github.com/reignbit/java-discord-kat`
+2. Run `./gradlew build`
+3. Customize properties inside of `config.properties.example` and rename to `config.properties`
+4. Start the Bot!
+   1. Run `./gradlew run`
+   2. Or you can run using the jar archive built at `build/libs/kat-VERSION-NUMBER.jar`
+
+## Documentation
+Documentation for the latest stable releases of Kat are included in the repo under `docs/`.
 
 ## TODO
 
@@ -39,7 +45,7 @@
 ### Command Categories
  - [ ] Debug System commands
  - [ ] Fun (Emote)
- - [ ] Music Player
+ - [x] Music Player
  - [ ] Automod
  - [ ] Administration
  - [ ] Welcomer
