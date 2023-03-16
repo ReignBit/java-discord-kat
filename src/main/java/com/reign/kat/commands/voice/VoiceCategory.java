@@ -1,20 +1,20 @@
 package com.reign.kat.commands.voice;
 
-import com.reign.kat.lib.command.CommandParameters;
-import com.reign.kat.lib.command.Context;
+
 import com.reign.kat.lib.command.category.Category;
-import com.reign.kat.lib.exceptions.PreconditionFailedCommandException;
-import com.reign.kat.lib.utils.PreCommandResult;
-import com.reign.kat.lib.voice.KatAudioManager;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
-
+import com.reign.kat.lib.voice.receive.VoiceRecognition;
 
 
 public class VoiceCategory extends Category {
     public VoiceCategory()
     {
         GuildPlaylistPool.init();
+
+//        Thread t = new Thread(VoiceRecognition::init);
+//        t.start();
+
 
         setEmoji(":microphone:");
         addPrecommand(GuildPlaylist::ensureVoiceStatePreCommand);
@@ -38,5 +38,7 @@ public class VoiceCategory extends Category {
         registerCommand(new JoinCommand());
 
         registerCommand(new LyricsCommand());
+
+        registerCommand(new VoiceRecogDebugCommand());
     }
 }

@@ -5,6 +5,9 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.handlers.GuildPlaylistResponseHandler;
 import com.reign.kat.lib.utils.PreCommandResult;
+import com.reign.kat.lib.voice.receive.AudioRecvHandler;
+import com.reign.kat.lib.voice.receive.AudioRecvManager;
+import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -27,7 +30,7 @@ public class GuildPlaylist extends AudioEventAdapter
     public final long guildID;
 
     public final GuildPlaylistResponseHandler responseHandler;
-
+    public final AudioRecvManager audioRecvManager;
 
 
     private final AudioManager jdaVoiceState;   // JDA Voice state (state in discord VC)
@@ -50,6 +53,11 @@ public class GuildPlaylist extends AudioEventAdapter
 
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
         jdaVoiceState.setSendingHandler(player.getSendHandler());
+
+        audioRecvManager = new AudioRecvManager(this);
+        audioRecvManager.addListener(VoiceRecognition.instance());
+
+        jdaVoiceState.setReceivingHandler(audioRecvManager.handler);
     }
 
 
@@ -65,12 +73,17 @@ public class GuildPlaylist extends AudioEventAdapter
         if (!queuedTracks.isEmpty())
         {
             responseHandler.onRequestedTracks(queuedTracks, player);
+
+            if (player.nowPlaying == null && prevSize == 0)
+            {
+                player.play(queue.dequeue());
+            }
+        }
+        else
+        {
+            responseHandler.onNoMatches(searchQuery);
         }
 
-        if (player.nowPlaying == null && prevSize == 0)
-        {
-            player.play(queue.dequeue());
-        }
 
     }
 

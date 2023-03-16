@@ -137,6 +137,10 @@ public class Config {
 
     public static boolean DEBUG_MODE;
     public static boolean DEBUG_IGNORE_PERMISSION_SYS;
+
+    public static String SPEECH_RECOGNITION_MODEL_NAME = "";
+    public static String[] SPEECH_RECOGNITION_WAKE_WORDS = new String[]{};
+
     public static boolean load()
     {
         try
@@ -164,6 +168,9 @@ public class Config {
 
                 DEBUG_MODE = Boolean.parseBoolean(config.getProperty("debug-mode"));
                 DEBUG_IGNORE_PERMISSION_SYS = Boolean.parseBoolean(config.getProperty("debug-ignore-permission-sys"));
+
+                SPEECH_RECOGNITION_MODEL_NAME = config.getProperty("speech-recognition-model-name");
+                SPEECH_RECOGNITION_WAKE_WORDS = config.getProperty("speech-recognition-wake-words").split(", ");
                 return true;
             } catch (Exception e)
             {

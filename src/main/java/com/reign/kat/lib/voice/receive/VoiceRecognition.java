@@ -1,8 +1,10 @@
 package com.reign.kat.lib.voice.receive;
 
+import com.reign.kat.lib.Config;
 import net.dv8tion.jda.api.audio.SpeakingMode;
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -12,102 +14,121 @@ import org.vosk.Recognizer;
 import org.vosk.LibVosk;
 import org.vosk.Model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.HashMap;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-
-public class VoiceRecognition implements ConnectionListener
+/*
+    TODO:
+        - Figure a solution for hot-mics
+        - Start/Stop listening commands
+ */
+public class VoiceRecognition implements IAudioRecvListener
 {
     private static final Logger log = LoggerFactory.getLogger(VoiceRecognition.class);
-    Recognizer recognizer;
+    private static VoiceRecognition instance;
+    private static Recognizer recognizer;
 
-    public ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    public HashMap<String, ByteArrayOutputStream> userAudios = new HashMap<>();
+    private static final AtomicBoolean isLoaded = new AtomicBoolean(false);
+
+    public static VoiceRecognition instance() { return instance; }
 
     public VoiceRecognition()
     {
-        LibVosk.setLogLevel(LogLevel.DEBUG);
+        if (instance != null)
+        {
+            log.warn("Tried to create a VoiceRecognition instance when one already exists!");
+            return;
+        }
+        instance = this;
+    }
 
+    public static void init()
+    {
+        new VoiceRecognition();
+        LibVosk.setLogLevel(LogLevel.WARNINGS);
         try
         {
-            Model model = new Model("model");
-
+            log.info("Loading voice model. This may take a while...");
+            Model model = new Model("voice-models/" + Config.SPEECH_RECOGNITION_MODEL_NAME);
             recognizer = new Recognizer(model, 16000);
-
+            isLoaded.set(true);
         } catch (IOException e)
         {
-            throw new RuntimeException(e);
+            log.error("Failed to initialize Recognizer.", e);
         }
 
     }
 
+    public static boolean isRecognizerReady() { return isLoaded.get(); }
 
-    public void addUserAudio(String id, byte[] audio)
+    @Override
+    public void onUserFinishedSpeaking(Member member, byte[] data)
     {
+        String speech = recognize(data).split("\" : \"")[1].split("\"")[0];
 
-        if (!userAudios.containsKey(id))
+        if (speech.length() > 0)
         {
-            userAudios.put(id, new ByteArrayOutputStream());
-        }
+            log.debug("{} might have said: {}", member.getEffectiveName(), speech);
 
-        userAudios.get(id).write(audio, 0, audio.length);
-//        log.debug("written {} data to userAudio {}", audio.length, id);
-    }
-
-    public String recognize(ByteArrayOutputStream stream)
-    {
-
-        if (recognizer.acceptWaveForm(stream.toByteArray(), stream.size())) {
-             log.debug(recognizer.getResult());
-            } else {
-                log.debug(recognizer.getPartialResult());
+            if (wakeWordUttered(speech))
+            {
+                //TODO: Fake a Command execution here.
             }
-        stream.reset();
-        return recognizer.getFinalResult();
+        }
     }
 
-    @Override
-    public void onPing(long ping)
-    {
 
+    private boolean wakeWordUttered(String speech)
+    {
+        for (String wakeWord :
+                Config.SPEECH_RECOGNITION_WAKE_WORDS)
+        {
+            if (speech.startsWith(wakeWord))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
-    public void onStatusChange(@NotNull ConnectionStatus status)
+    public static String recognize(byte[] stream)
     {
-
+        if (isRecognizerReady())
+        {
+            byte[] transcodedAudio = transcode(stream);
+            recognizer.acceptWaveForm(transcodedAudio, transcodedAudio.length);
+            return recognizer.getFinalResult();
+        }
+        return "";
     }
 
-    @Override
-    public void onUserSpeaking(@NotNull User user, boolean speaking)
-    {
-        log.debug("USER {} SPEAKING: {}", user.getName(), speaking);
-//        if (userAudios.containsKey(user.getId()))
-//        {
-//            if (!speaking)
-//            {
-//                log.debug("Stopped speaking?");
-//                recognize(userAudios.get(user.getId()));
-//            }
-//        }
-//        else
-//        {
-//            userAudios.put(user.getId(), new ByteArrayOutputStream());
-//        }
-    }
 
-    @Override
-    public void onUserSpeaking(@NotNull User user, @NotNull EnumSet<SpeakingMode> modes)
+    /**
+     * Converts audio data from Discord's format (48Khz, 16-Bit Big-endian Stereo) to a format
+     * that VOSK needs (16Khz 16-Bit Little-endian Mono).
+     * @param origData audio PCM data to convert
+     * @return 16Khz mono audio
+     */
+    private static byte[] transcode(byte[] origData)
     {
-        ConnectionListener.super.onUserSpeaking(user, modes);
-    }
+        AudioFormat original = new AudioFormat(48000.0f, 16, 2, true, true);
+        AudioFormat target = new AudioFormat(16000.f, 16, 1, true,false);
 
-    @Override
-    public void onUserSpeaking(@NotNull User user, boolean speaking, boolean soundshare)
-    {
-        log.info("user: {} speaking: {}, soundshare: {}", user.getName(), speaking, soundshare);
-        ConnectionListener.super.onUserSpeaking(user, speaking, soundshare);
+        ByteArrayInputStream byteStream = new ByteArrayInputStream(origData);
+        AudioInputStream originalStream = new AudioInputStream(byteStream, original, origData.length);
+        try
+        {
+            return AudioSystem.getAudioInputStream(target, originalStream).readAllBytes();
+        }
+        catch (IOException e)
+        {
+            log.error("Failed to transcode audio stream.", e);
+            return new byte[]{};
+        }
     }
 }

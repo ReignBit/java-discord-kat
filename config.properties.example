@@ -5,13 +5,19 @@ for your changes to take effect.
 
 ---
 
-
-bot_token=YOUR BOT TOKEN HERE
+bot-token=Your.Token.Here
 prefix=!
-tenor_api_key=YOUR TENOR API TOKEN HERE
-backend_api_key=YOUR BACKEND API KEY HERE
-backend_api_host=YOUR BACKEND API HOST HERE
+tenor-api-key=APIKEYHERE
+backend-api-key=
+backend-api-host=
 
-;Debug properties, only enable these if you know what you're doing!
-debug-mode=false
-debug-ignore-permission-system=false
+voice-autodisconnect-minutes=5
+voice-spotify-client-id=
+voice-spotify-client-secret=
+voice-spotify-country-code=
+
+debug-mode=true
+debug-ignore-permission-sys=false
+
+speech-recognition-model-name=[folder name inside of voice-models/]
+speech-recognition-wake-words=a, list, of, comma, separated, english, words
