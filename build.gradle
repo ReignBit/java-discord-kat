@@ -1,7 +1,7 @@
 apply plugin:'application'
 
 group 'com.reign'
-version '0.8.5-SNAPSHOT-20230315a'
+version '0.8.5-SNAPSHOT-202303b'
 
 repositories {
     mavenCentral()
