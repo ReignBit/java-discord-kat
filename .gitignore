@@ -167,3 +167,4 @@ gradle-app.setting
 
 ## config.properties
 config.properties
+voice-models/**
