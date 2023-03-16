@@ -44,6 +44,9 @@ public abstract class Command {
         this.aliases.addAll(Arrays.asList(aliases));
         this.primaryAlias = primaryAlias;
         this.description = description;
+
+        if (description.length() == 0) { log.warn("Command {} is missing a description.", getClass().getCanonicalName()); }
+
     }
 
     public void addConverter(Converter<?> converter)
@@ -160,8 +163,8 @@ public abstract class Command {
             }
         }
 
-
-        c.channel.sendTyping().queue();
+        if (showTyping)
+            c.channel.sendTyping().queue();
         execute(c, args);
 
     }
