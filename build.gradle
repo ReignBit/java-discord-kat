@@ -1,56 +1,61 @@
-apply plugin:'application'
+plugins {
+    id 'application'
+}
 
 group 'com.reign'
 version '0.8.5-SNAPSHOT-202303b'
 
 repositories {
     mavenCentral()
-    maven {
-        url('https://m2.dv8tion.net/releases')
-        }
-    maven { url('https://jitpack.io') }
+    maven {url('https://m2.dv8tion.net/releases')}
+    maven {url('https://jitpack.io')}
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.9.2')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.9.2')
+    testImplementation("junit:junit:4.13.2")
 
+    // JDA
     implementation("net.dv8tion:JDA:5.0.0-alpha.13")
 
+    // Lavaplayer
     implementation('com.github.walkyst:lavaplayer-fork:1.3.99.1')
     implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
-    implementation group: 'net.java.dev.jna', name: 'jna', version: '5.7.0'
-    implementation group: 'com.alphacephei', name: 'vosk', version: '0.3.38'
 
+    // VOSK
+    implementation('net.java.dev.jna:jna:5.12.1')
+    implementation('com.alphacephei:vosk:0.3.45')
+
+    // slf4j logging
     implementation('org.slf4j:slf4j-api:2.0.5')
     implementation('ch.qos.logback:logback-classic:1.4.5')
 
+    // Jackson
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2')
     implementation('com.fasterxml.jackson.core:jackson-databind:2.14.2')
 
+    // AsciiTable
     implementation('de.vandermeer:asciitable:0.3.2')
 
+    // Jsoup
     implementation('org.jsoup:jsoup:1.15.4')
 }
 
-test {
-    useJUnitPlatform()
+task generateVersion {
+    def outputFile = new File(projectDir, "src/main/resources/version.properties")
+    def date = new Date().format("yyyy-MM-dd_hh-mm-ss")
+    def commit = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+    outputs.file outputFile
+    doLast {
+        outputFile.text = """
+version=$project.version
+timestamp=$date
+commit=$commit
+"""
+    }
 }
 
-jar {
-    manifest {
-        attributes "Main-Class": "com.reign.kat.Main"
-        archiveBaseName.set("kat")
-    }
+build.dependsOn(generateVersion)
 
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-task(runMain, dependsOn: 'jar', type: JavaExec) {
-    main = 'com.reign.kat.Main'
-    classpath = sourceSets.main.runtimeClasspath
+application {
+    mainClass = "com.reign.kat.Main"
 }
