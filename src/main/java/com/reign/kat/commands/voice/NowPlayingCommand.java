@@ -15,12 +15,12 @@ public class NowPlayingCommand extends Command
     private static final Logger log = LoggerFactory.getLogger(NowPlayingCommand.class);
 
     // Character to print for the current time on the playing progress bar
-    String currentTimeSymbol = ":white_circle:";
+    String CURRENT_TIME_SYMBOL = ":white_circle:";
     // Character to print for the rest of the playing progress bar
-    String trackSymbol = "\u2550";
+    String PROGRESS_BAR_SYMBOL = "\u2550";
 
     // Total size of the playing progress bar
-    int totalBarSize = 22;
+    int TOTAL_BAR_SIZE = 22;
 
     public NowPlayingCommand()
     {
@@ -45,7 +45,13 @@ public class NowPlayingCommand extends Command
 
     String buildProgressBar(RequestedTrack track)
     {
-        int before = (int) (totalBarSize * track.getPercentComplete());
-        return trackSymbol.repeat(before) + currentTimeSymbol + trackSymbol.repeat(totalBarSize - before);
+        int before = (int) (TOTAL_BAR_SIZE * track.getPercentComplete());
+
+        return String.format("%s%s%s\n[%s/%s]",
+                PROGRESS_BAR_SYMBOL.repeat(before),
+                CURRENT_TIME_SYMBOL,
+                PROGRESS_BAR_SYMBOL.repeat(TOTAL_BAR_SIZE - before),
+                track.getPositionAsTimestamp(),
+                track.getDurationAsTimestamp());
     }
 }

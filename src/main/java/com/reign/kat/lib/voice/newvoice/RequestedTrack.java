@@ -38,7 +38,7 @@ public class RequestedTrack
      */
     public float getPercentComplete()
     {
-        return (float)(track.getPosition() / track.getDuration());
+        return (float)track.getPosition() / (float)track.getDuration();
     }
 
     public String getPositionAsTimestamp()
