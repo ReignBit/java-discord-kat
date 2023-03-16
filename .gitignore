@@ -168,3 +168,4 @@ gradle-app.setting
 ## config.properties
 config.properties
 voice-models/**
+src/main/resources/version.properties
