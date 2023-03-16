@@ -12,7 +12,6 @@ public class BotRunner {
     }
 
     public void run(){
-        log.info("Starting Kat v{}", Bot.getVersion());
         try {
             Bot bot = new Bot();
         } catch (Exception e) {

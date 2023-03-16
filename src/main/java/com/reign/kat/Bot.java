@@ -37,18 +37,12 @@ import java.util.concurrent.TimeUnit;
 
 public class Bot extends ListenerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
-    private static final String version = getVersion();
 
     public static final CommandHandler commandHandler = new CommandHandler();
 
     public static JDA jda;
     public static TenorApi tenorApi;
     public static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-
-    public static String getVersion()
-    {
-        return Utilities.readVersion();
-    }
 
     public Bot() throws Exception
     {
@@ -64,20 +58,18 @@ public class Bot extends ListenerAdapter{
     public void initialize() throws Exception{
        log.info("Loading Config...");
 
+       BotVersion.load();
        if (!Config.load())
        {
            log.error("Failed to load config. Bot is in an undefined state!");
        }
-
-       String token = Config.BOT_TOKEN;
-
        tenorApi = new TenorApi(Config.TENOR_API_KEY, "kat-java-bot");
        KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
        KatApi.setProvider(new ApiHttpProvider());
 
        try
        {
-           jda = JDABuilder.createDefault(token)
+           jda = JDABuilder.createDefault(Config.BOT_TOKEN)
                    .addEventListeners(this)
                    .addEventListeners(commandHandler)
                    .setEnabledIntents(
@@ -96,6 +88,10 @@ public class Bot extends ListenerAdapter{
            throw e;
 
        }
+
+       // Hide token
+       Config.BOT_TOKEN = Config.BOT_TOKEN.split("\\.")[0] + "************";
+
        addCategories();
        postInit();
     }
@@ -138,7 +134,7 @@ public class Bot extends ListenerAdapter{
     public void onReady(@NotNull ReadyEvent event)
     {
         log.info("==============================");
-        log.info("Started Kat v" + version);
+        log.info("Started Kat v" + BotVersion.version());
         if (Config.DEBUG_MODE) { log.warn("! Debug Mode Enabled !"); }
         log.info("Logged in as {}", event.getJDA().getSelfUser().getName());
         log.info("I can see {} Users", event.getJDA().getUsers().size());
@@ -146,7 +142,7 @@ public class Bot extends ListenerAdapter{
         log.info("Invite me to your server: {}", event.getJDA().getInviteUrl(Permission.ADMINISTRATOR));
         log.info("==============================");
 
-        jda.getPresence().setActivity(Activity.playing(Bot.version));
+        jda.getPresence().setActivity(Activity.playing(BotVersion.version()));
     }
 
     @Override

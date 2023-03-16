@@ -3,27 +3,10 @@ package com.reign.kat.lib.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.util.*;
 
 public class Utilities {
     private static final Logger log = LoggerFactory.getLogger(Utilities.class);
-    public static String readVersion()
-    {
-
-        try
-        {
-            InputStream stream = Utilities.class.getResourceAsStream("/version");
-            assert stream != null;
-            Scanner scan = new Scanner(stream);
-            return scan.nextLine();
-        }
-        catch (Exception e)
-        {
-            log.error(e.toString());
-            return "unknown";
-        }
-    }
 
     public static String timeConversion(Long millie) {
         if (millie != null) {
