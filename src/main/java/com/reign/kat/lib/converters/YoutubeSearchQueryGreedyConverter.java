@@ -14,11 +14,16 @@ public class YoutubeSearchQueryGreedyConverter extends Converter<String> {
 
     @Override
     public Converter<String> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException {
-        if (!toConvert.startsWith("ytsearch:") || !toConvert.startsWith("https://") || !toConvert.startsWith("http://"))
+
+        if (toConvert.startsWith("http://") || toConvert.startsWith("https://"))
+        {
+            set(toConvert);
+        }
+        else
         {
             toConvert = "ytsearch:" + toConvert;
+            set(toConvert);
         }
-        set(toConvert);
         return this;
     }
 }
