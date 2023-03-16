@@ -56,6 +56,13 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         }
     }
 
+    public void onNoMatches(String searchQuery)
+    {
+        sendEmbed(new ExceptionEmbed()
+                .setTitle("No matches found")
+                .setDescription("Couldn't find a video with the title `"+ searchQuery +"`").build());
+    }
+
     public void onRequestedTracks(List<RequestedTrack> tracks, PlaylistPlayer player)
     {
         if (tracks.size() == 1 && player.nowPlaying == null) { return; } // We don't want to send if we are only playing the track just requested.
