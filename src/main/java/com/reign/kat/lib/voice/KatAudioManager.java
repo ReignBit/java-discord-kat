@@ -29,6 +29,7 @@ import java.util.Set;
  *
  *
  */
+@Deprecated
 public class KatAudioManager {
     private static final Logger log = LoggerFactory.getLogger(KatAudioManager.class);
     public static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
@@ -61,11 +62,12 @@ public class KatAudioManager {
 
     public GuildAudio createGuildManager(Guild guild)
     {
-        GuildAudio guildManager = new GuildAudio(guild, playerManager);
-        guild.getAudioManager().setSendingHandler(guildManager.getSendHandler());
-        // guild.getAudioManager().setReceivingHandler(guildManager.getRecvHandler());
-        guild.getAudioManager().setConnectionListener(guildManager.voiceRecognition);
-        return guildManager;
+//        GuildAudio guildManager = new GuildAudio(guild, playerManager);
+//        guild.getAudioManager().setSendingHandler(guildManager.getSendHandler());
+//        // guild.getAudioManager().setReceivingHandler(guildManager.getRecvHandler());
+//        guild.getAudioManager().setConnectionListener(guildManager.voiceRecognition);
+//        return guildManager;
+        return null;
     }
 
     public Set<Map.Entry<String, GuildAudio>> all()

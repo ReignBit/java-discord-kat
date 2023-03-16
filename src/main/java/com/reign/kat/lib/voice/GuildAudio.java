@@ -3,7 +3,7 @@ package com.reign.kat.lib.voice;
 import com.reign.kat.lib.embeds.ExceptionEmbedBuilder;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.utils.Utilities;
-import com.reign.kat.lib.voice.receive.AudioPlayerReceiveHandler;
+import com.reign.kat.lib.voice.receive.AudioRecvHandler;
 import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 /**
  * Audio for a single guild
  */
+@Deprecated
 public class GuildAudio
 {
     private static Logger log;
@@ -277,10 +278,5 @@ public class GuildAudio
         return new AudioPlayerSendHandler(player);
     }
 
-    public AudioPlayerReceiveHandler getRecvHandler()
-    {
-
-        return new AudioPlayerReceiveHandler(this);
-    }
 
 }
