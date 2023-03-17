@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.reign'
-version '0.8.5-SNAPSHOT-202303b'
+version '0.7.0'
 
 repositories {
     mavenCentral()
