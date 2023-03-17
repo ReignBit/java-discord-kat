@@ -26,17 +26,22 @@ public class VoiceCategory extends Category {
 
         registerCommand(new PlayCommand());
         registerCommand(new PlayNextCommand());
+
         registerCommand(new SkipCommand());
+        registerCommand(new SeekCommand());
+
         registerCommand(new QueueCommand());
         registerCommand(new NowPlayingCommand());
-        registerCommand(new SeekCommand());
         registerCommand(new ShuffleCommand());
         registerCommand(new MoveCommand());
         registerCommand(new RemoveCommand());
+        registerCommand(new ClearPlaylistCommand());
+
         registerCommand(new LeaveCommand());
         registerCommand(new JoinCommand());
 
         registerCommand(new LyricsCommand());
+        registerCommand(new LoopCommand());
 
         registerCommand(new VoiceRecogDebugCommand());
     }

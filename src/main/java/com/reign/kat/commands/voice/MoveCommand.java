@@ -44,8 +44,8 @@ public class MoveCommand extends Command {
             throw new IllegalArgumentException("Positions entered must be bigger than 0");
         }
 
-        RequestedTrack pulledFromQueue = playlist.getQueue().remove(from);
-        playlist.getQueue().add(to, pulledFromQueue);
+        RequestedTrack pulledFromQueue = playlist.getQueue().getQueue().remove(from);
+        playlist.getQueue().getQueue().add(to, pulledFromQueue);
 
         EmbedBuilder eb = new VoiceEmbed()
                 .setTitle("Moved tracks!")
