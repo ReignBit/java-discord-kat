@@ -6,9 +6,7 @@ import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 
-import com.reign.kat.lib.voice.newvoice.RequestedTrack;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+import com.reign.kat.lib.voice.newvoice.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 
@@ -34,26 +32,28 @@ public class QueueCommand extends Command {
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
         int offset = args.get("offset");
 
-        List<RequestedTrack> tracks = playlist.getQueue();
-
-        sendQueueEmbed(ctx, generateQueueString(playlist.nowPlaying(), tracks, offset));
+        sendQueueEmbed(ctx, generateQueueString(playlist.nowPlaying(), playlist.getQueue(), offset));
 
     }
 
-    private String generateQueueString(RequestedTrack nowPlaying, List<RequestedTrack> tracks, int offset)
+    private String generateQueueString(RequestedTrack nowPlaying, PlaylistQueue tracks, int offset)
     {
+        if (offset > tracks.size()) { offset = 0; }
+        if (offset < 0){ offset = 0; }
+
         int indexOffset = offset - 1;       // offset is user provided, meaning it's 1-indexed, we need it to be 0-indexed.
         StringBuilder sb = new StringBuilder();
 
         if (nowPlaying != null)
         {
-            sb.append("**:musical_note: Now playing**\n");
+            sb.append("**:musical_note: Now playing**  ").append(tracks.loopMode.emoji).append("\n");
+
             sb.append(buildTrackStringLine(-1, nowPlaying));
             sb.append("\n");
         }
 
         for (int i = indexOffset; i < Math.min(indexOffset + TRACK_DISPLAY_LIMIT, tracks.size()); i++) {
-            sb.append(buildTrackStringLine(i+1, tracks.get(i)));
+            sb.append(buildTrackStringLine(i+1, tracks.getQueue().get(i)));
         }
         if (sb.length() == 0)
         {

@@ -24,7 +24,7 @@ public class ShuffleCommand extends Command {
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
 
 
-        Collections.shuffle(playlist.getQueue());
+        playlist.getQueue().shuffle();
         sendShuffleEmbed(ctx);
 
     }

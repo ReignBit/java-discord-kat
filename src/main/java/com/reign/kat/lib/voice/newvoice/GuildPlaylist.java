@@ -48,7 +48,7 @@ public class GuildPlaylist extends AudioEventAdapter
 
         player.lavaPlayer.addListener(responseHandler); // Does message to Discord
         player.lavaPlayer.addListener(this);    // We only need this for onTrackEnd in here.
-        queue = new PlaylistQueue();
+        queue = new PlaylistQueue(player);
 
 
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
@@ -96,7 +96,7 @@ public class GuildPlaylist extends AudioEventAdapter
 
     public boolean isPlaying() { return player.nowPlaying != null; }
     public RequestedTrack nowPlaying() { return player.nowPlaying; }
-    public List<RequestedTrack> getQueue() { return queue.getQueue(); }
+    public PlaylistQueue getQueue() { return queue; }
     public void move(AudioChannel channel) { jdaVoiceState.openAudioConnection(channel); }
     public void skip() { shouldPlayNextSong = true; player.stop(); }
     public void pause() { player.pause(); }
@@ -184,20 +184,19 @@ public class GuildPlaylist extends AudioEventAdapter
     {
         super.onTrackEnd(_player, _track, endReason);
 
-        if (queue.size() > 0 && shouldPlayNextSong)
+        if (shouldPlayNextSong)
         {
             RequestedTrack nextTrack = queue.dequeue();
+
             player.nowPlaying = nextTrack;
-            player.play(nextTrack);
-            log.debug("GuildPlaylist.onTrackEnd#trueif np == null: " + (nowPlaying() == null));
+            if (nextTrack != null)
+            {
+                player.play(nextTrack);
+            }
         }
         else
         {
             player.nowPlaying = null;
-            log.debug("GuildPlaylist.onTrackEnd#falseif np == null: " + (nowPlaying() == null));
-
         }
-
-        log.debug("Track ended, now playing: " + player.nowPlaying);
     }
 }

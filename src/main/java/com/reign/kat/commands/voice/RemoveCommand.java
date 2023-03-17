@@ -32,7 +32,7 @@ public class RemoveCommand extends Command {
             throw new IllegalArgumentException("You have entered an invalid position in the current queue!");
         }
 
-        RequestedTrack pulledFromQueue = playlist.getQueue().remove(from-1);
+        RequestedTrack pulledFromQueue = playlist.getQueue().getQueue().remove(from-1);
 
         EmbedBuilder eb = new VoiceEmbed()
                 .setTitle("Removed track!")
