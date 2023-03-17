@@ -3,7 +3,7 @@ package com.reign.kat.commands.debug;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.exceptions.CommandException;
+import com.reign.kat.lib.command.MessageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

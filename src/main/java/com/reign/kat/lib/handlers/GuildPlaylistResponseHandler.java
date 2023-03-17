@@ -13,11 +13,13 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ResponseHandler
@@ -31,6 +33,8 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     private final long guildID;
     private long textChannelID = 0L;
 
+    private InteractionHook hook;
+
     public GuildPlaylistResponseHandler(long guildID, PlaylistPlayer playlistPlayer)
     {
         this.guildID = guildID;
@@ -42,6 +46,11 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         this.textChannelID = textChannelID;
     }
 
+    public void setHook(InteractionHook hook)
+    {
+        this.hook = hook;
+    }
+
     private void sendEmbed(MessageEmbed... embeds)
     {
 
@@ -51,9 +60,17 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
             for (MessageEmbed embed :
                     embeds)
             {
-                channel.sendMessageEmbeds(embed).queue();
+                if (hook != null)
+                {
+                    hook.sendMessageEmbeds(embed).queue();
+                }else
+                {
+                    channel.sendMessageEmbeds(embed).queue();
+                }
             }
         }
+
+        hook = null;
     }
 
     public void onNoMatches(String searchQuery)

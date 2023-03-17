@@ -3,6 +3,7 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 
@@ -100,6 +101,6 @@ public class QueueCommand extends Command {
                 .setTitle(String.format("%s's Queue", ctx.guild.getName()))
                 .setDescription(str);
 
-        ctx.message.replyEmbeds(eb.build()).queue();
+        ctx.send(eb.build());
     }
 }

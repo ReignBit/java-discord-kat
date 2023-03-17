@@ -1,15 +1,14 @@
 package com.reign.kat.commands.debug;
 
-import com.reign.api.kat.models.ApiGuild;
 import com.reign.api.kat.models.ApiGuildData;
-import com.reign.kat.Bot;
 
+import com.reign.kat.lib.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
-import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 
 
 public class TestCommand extends Command {

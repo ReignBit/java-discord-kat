@@ -1,8 +1,12 @@
 package com.reign.kat.lib.command;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+
+/* TODO: Why is this separate to Command? If we combine this with Command, we could then have sub-subcommands
+    and not be limited to only have commands and sub-commands...
+* */
 
 /**
  * ParentCommand
@@ -46,8 +50,8 @@ public abstract class ParentCommand extends Command {
          * @param ctx Context of the command
          * @param args string args to convert into Converters
          */
-    public void executeCommands(Context ctx, ContextEventAdapter event, ArrayList<String> args) throws Exception {
-        if (!isPrivileged(Objects.requireNonNull(event.getMember()), event.getTextChannel()))
+    public void executeCommands(Context ctx, List<String> args) throws Exception {
+        if (!isPrivileged(Objects.requireNonNull(ctx.author), ctx.channel))
         {
             throw new IllegalStateException("You are not permitted to use this command!");
         }
@@ -58,7 +62,7 @@ public abstract class ParentCommand extends Command {
         {
             subAlias = args.remove(0);
         }
-        CommandParameters cmdParams = new CommandParameters(event, String.join("", args));
+        CommandParameters cmdParams = new CommandParameters(ctx, String.join("", args));
 
         invokeCommand(ctx, cmdParams);
 

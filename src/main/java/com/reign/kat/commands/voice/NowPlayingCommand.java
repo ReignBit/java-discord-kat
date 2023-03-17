@@ -3,6 +3,7 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.voice.newvoice.RequestedTrack;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
@@ -36,7 +37,7 @@ public class NowPlayingCommand extends Command
         RequestedTrack track = playlist.nowPlaying();
         if (track != null)
         {
-            ctx.sendEmbeds(new VoiceEmbed().setTitle("Now Playing").setDescription(track + "\n" + buildProgressBar(track)).build());
+            ctx.send(new VoiceEmbed().setTitle("Now Playing").setDescription(track + "\n" + buildProgressBar(track)).build());
         }
 
 

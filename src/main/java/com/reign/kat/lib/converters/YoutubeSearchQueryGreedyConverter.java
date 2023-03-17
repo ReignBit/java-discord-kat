@@ -1,5 +1,6 @@
 package com.reign.kat.lib.converters;
 
+import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ContextEventAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ public class YoutubeSearchQueryGreedyConverter extends Converter<String> {
     }
 
     @Override
-    public Converter<String> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException {
+    public Converter<String> convert(String toConvert, Context ctx) throws IllegalArgumentException {
 
         if (toConvert.startsWith("http://") || toConvert.startsWith("https://"))
         {

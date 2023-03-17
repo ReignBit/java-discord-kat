@@ -6,7 +6,6 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.converters.MemberConverter;
 
-import com.reign.kat.lib.exceptions.CommandException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -22,6 +21,7 @@ public class SlapCommand extends Command {
                 null,
                 true
         ));
+        setShowTyping(true);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class SlapCommand extends Command {
 
         if (user != null)
         {
-            ctx.channel.sendMessageEmbeds(slap(ctx.author.getEffectiveName(), user.getEffectiveName()).build()).queue();
+            ctx.send(slap(ctx.author.getEffectiveName(), user.getEffectiveName()).build());
         }
         else
         {
-            ctx.channel.sendMessageEmbeds(slap(ctx.author.getEffectiveName(), "everyone").build()).queue();
+            ctx.send(slap(ctx.author.getEffectiveName(), "everyone").build());
         }
     }
 

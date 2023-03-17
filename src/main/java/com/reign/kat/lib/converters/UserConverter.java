@@ -1,6 +1,7 @@
 package com.reign.kat.lib.converters;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ public class UserConverter extends Converter<User> {
     }
 
     @Override
-    public Converter<User> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException{
+    public Converter<User> convert(String toConvert, Context ctx) throws IllegalArgumentException{
         if (toConvert == null) { set(null); return this; }
         if (toConvert.length() == 18)
         {

@@ -12,7 +12,6 @@ import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
-import com.reign.kat.lib.utils.Utilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -104,6 +103,12 @@ public class Bot extends ListenerAdapter{
                 60,
                 TimeUnit.MINUTES
         );
+
+        if (BotRunner.BotProperties.exitAfterLaunch)
+            Bot.jda.shutdown();
+
+        if (BotRunner.BotProperties.updateSlashCommands)
+            commandHandler.updateSlashCommands();
     }
 
     public void addCategories(){
@@ -120,15 +125,16 @@ public class Bot extends ListenerAdapter{
     {
         commandHandler.addCategory(cat);
         jda.addEventListener(cat);
-        log.info("Registered category {} ({} commands)", cat.name, cat.getCommandsDistinct().size());
+        log.info("Registered category {} ({} commands)", cat.internalName, cat.getCommandsDistinct().size());
     }
 
     public void removeCategory(String name)
     {
         Category cat = commandHandler.removeCategory(name);
         jda.removeEventListener(cat);
-        log.info("Unregistered category {}", cat.name);
+        log.info("Unregistered category {}", cat.internalName);
     }
+
 
     @Override
     public void onReady(@NotNull ReadyEvent event)

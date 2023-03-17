@@ -1,7 +1,7 @@
 package com.reign.kat.commands.debug;
 
-import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.ParentCommand;
 
 public class DebugParentCommand extends ParentCommand {

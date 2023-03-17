@@ -3,6 +3,7 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.voice.newvoice.RequestedTrack;
@@ -52,6 +53,6 @@ public class MoveCommand extends Command {
                         String.format("Moved %s to position %d", pulledFromQueue.title, to + 1)
                 );
 
-        ctx.message.replyEmbeds(eb.build()).queue();
+        ctx.send(eb.build());
     }
 }

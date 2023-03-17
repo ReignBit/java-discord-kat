@@ -2,10 +2,9 @@ package com.reign.kat.lib.command.category;
 
 
 import com.reign.kat.lib.PermissionHandler;
-import com.reign.kat.lib.command.ParentCommand;
+import com.reign.kat.lib.command.*;
 import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
-import com.reign.kat.lib.utils.ExceptionMessageSender;
 import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.PreCommandResult;
 import com.reign.kat.lib.utils.stats.BotStats;
@@ -16,10 +15,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.reign.kat.lib.command.Command;
-import com.reign.kat.lib.command.CommandParameters;
-import com.reign.kat.lib.command.Context;
-
 import java.time.Instant;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -27,44 +22,48 @@ import java.util.stream.Collectors;
 
 
 public abstract class Category extends ListenerAdapter {
-
     private static final Logger log = LoggerFactory.getLogger(Category.class);
 
-    public final String name = this.getClass().getCanonicalName();
-    public final String shortName = this.getClass().getSimpleName();
-    public String emoji = ":bricks:";
+    /** Internal name of the Category */
+    public final String internalName = this.getClass().getCanonicalName();
 
+    /** Name of the Category */
+    public final String name = this.getClass().getSimpleName();
+
+    /** Emoji shown in the help menus */
+    public String helpMenuEmoji = ":bricks:";
+
+    /** Required permission to execute the category's commands */
     private PermissionGroupType requiredPermission = PermissionGroupType.EVERYONE;
+
+    /** Required permission in Discord to execute commands */
     private int requiredDiscordPermission = 0;
 
+    /** Map of Commands to their aliases */
     private final HashMap<String, Command> commands = new HashMap<>();
+
+    /** List of Pre commands to execute before any Commands */
     private final LinkedList<BiFunction<Context, CommandParameters, PreCommandResult>> precommands = new LinkedList<>();
 
     /**
      * Get a Collection of all commands in the category.
      * @return Collection<Command>
      */
-    public Command getCommand(String search)
-    {
-        if (commands.containsKey(search))
-        {
-            return commands.get(search);
-        }
-        return null;
-    }
-
     public Collection<Command> getCommands()
     {
         return commands.values();
     }
+
+    /** Get a list of unique commands */
     public Collection<Command> getCommandsDistinct()
     {
         return commands.values().stream().distinct().collect(Collectors.toList());
     }
 
-    public void setEmoji(String emoji)
+    /** Set the emoji to be shown in help menus */
+    public void setHelpMenuEmoji(String helpMenuEmoji)
     {
-        this.emoji = emoji;
+        this.helpMenuEmoji = helpMenuEmoji;
     }
 
 
@@ -110,22 +109,6 @@ public abstract class Category extends ListenerAdapter {
         }
     }
 
-    /**
-     * Unregister a command.
-     * <br>Removes all aliases of the command from the register.
-     * <br><br><i>Not sure why we'd want to do this, but is included for completeness.</i>
-     * @param command Command to unregister.
-     */
-    public void unregisterCommand(Command command)
-    {
-        log.info("Attempting to unregister a command.");
-        for (String alias: command.getAliases())
-        {
-            commands.remove(alias);
-            log.info("Unregistered command {}", command.name);
-        }
-    }
-
     public Command findCommand(String alias)
     {
         if(commands.containsKey(alias))
@@ -140,7 +123,7 @@ public abstract class Category extends ListenerAdapter {
         log.trace("COMMAND {} started execution.", ctx.command.getPrimaryAlias());
         long then = Instant.now().toEpochMilli();
 
-        CommandParameters params = new CommandParameters(ctx.event, String.join(" ", ctx.args).strip());
+        CommandParameters params = new CommandParameters(ctx, String.join(" ", ctx.args).strip());
         /*
             In order to accommodate ParentCommands, we need to check if the 1st arg matches
             any subcommand alias in ParentCommand
@@ -150,22 +133,19 @@ public abstract class Category extends ListenerAdapter {
          */
         try
         {
-            if (!isPrivileged(Objects.requireNonNull(ctx.event.getMember()), ctx.event.getTextChannel()))
+            if (!isPrivileged(Objects.requireNonNull(ctx.author), ctx.channel))
             {
                 throw new InsufficientPermissionsCommandException("You are not permitted to use this command!");
             }
 
             if (ctx.command instanceof ParentCommand parent)
             {
-                parent.executeCommands(ctx, ctx.event, ctx.args);
+                parent.executeCommands(ctx, ctx.args);
             }
             else
             {
                 params.parse(ctx.command);
                 ctx.command.invokeCommand(ctx, params);
-
-
-
             }
 
             long l = Instant.now().toEpochMilli() - then;
@@ -173,11 +153,12 @@ public abstract class Category extends ListenerAdapter {
 
         } catch (CommandException e)
         {
-            ExceptionMessageSender.sendMessage(ctx, e);
+            ctx.sendError(e.getMessage());
         } catch (Exception e) {
             log.error(String.valueOf(e));
-            Arrays.stream(e.getStackTrace()).forEach(s -> log.error(String.valueOf(s)));
-            ExceptionMessageSender.sendMessage(ctx, e);
+            log.error(Arrays.toString(e.getStackTrace()));
+
+            ctx.sendError(e.getMessage());
         }
     }
 
