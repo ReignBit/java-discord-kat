@@ -1,10 +1,10 @@
 package com.reign.kat.commands.helpful;
 
 import com.reign.api.kat.models.ApiGuild;
-import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.StringConverter;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.DiscordColor;

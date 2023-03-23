@@ -50,6 +50,6 @@ public class LoopCommand extends Command
 
 
 
-        ctx.sendEmbeds(new VoiceEmbed().setTitle(playlist.getQueue().loopMode.emoji + title).build());
+        ctx.send(new VoiceEmbed().setTitle(playlist.getQueue().loopMode.emoji + title).build());
     }
 }

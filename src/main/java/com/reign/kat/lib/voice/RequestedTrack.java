@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Member;
 
 import java.util.Objects;
 
+@Deprecated
 public class RequestedTrack {
     public final String guildId;
     public final String userId;

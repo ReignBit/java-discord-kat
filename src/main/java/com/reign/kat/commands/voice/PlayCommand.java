@@ -3,7 +3,9 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 
+import com.reign.kat.lib.command.slash.SlashCommandContext;
 import com.reign.kat.lib.converters.YoutubeSearchQueryGreedyConverter;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
@@ -11,6 +13,7 @@ import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
 
 
 public class PlayCommand extends Command {
@@ -29,8 +32,14 @@ public class PlayCommand extends Command {
     public void execute(Context ctx, CommandParameters args) throws Exception {
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
 
-        playlist.getResponseHandler().setTextChannelID(ctx.channel.getIdLong());
+        playlist.getResponseHandler().setTextChannelID(ctx.channel().getIdLong());
+
+
+        if (ctx.canProvideInteractionHook())
+            playlist.getResponseHandler().setHook(ctx.hook());
+
         playlist.request(ctx.author, args.get("search"));
+
 
     }
 }

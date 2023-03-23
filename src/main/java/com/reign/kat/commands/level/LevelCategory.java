@@ -3,15 +3,12 @@ package com.reign.kat.commands.level;
 
 import com.reign.api.kat.models.ApiGuildData;
 import com.reign.api.kat.models.ApiMemberData;
-import com.reign.kat.Bot;
 import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.KatColor;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +20,7 @@ public class LevelCategory extends Category {
 
     public LevelCategory()
     {
-        setEmoji(":sparkle:");
+        setHelpMenuEmoji(":sparkle:");
         registerCommand(new LevelCommand());
     }
 

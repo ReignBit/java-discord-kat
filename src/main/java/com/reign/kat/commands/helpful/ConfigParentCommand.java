@@ -1,8 +1,8 @@
 package com.reign.kat.commands.helpful;
 
 
-import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.ParentCommand;
 import com.reign.kat.lib.utils.PermissionGroupType;
 

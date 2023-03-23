@@ -1,21 +1,12 @@
 package com.reign.kat.commands.debug;
 
-import com.reign.api.kat.models.ApiGuildData;
-import com.reign.kat.commands.voice.VoiceCategory;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.GuildConverter;
-import com.reign.kat.lib.embeds.GenericEmbedBuilder;
-import com.reign.kat.lib.voice.GuildAudio;
-import com.reign.kat.lib.voice.KatAudioManager;
-import com.reign.kat.lib.voice.RequestedTrack;
-import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Objects;
 
 
 public class VoiceStateCommand extends Command {

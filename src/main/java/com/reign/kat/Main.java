@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args)
     {
         log.info("Creating runner environment");
-        BotRunner br = new BotRunner();
+        BotRunner br = new BotRunner(args);
         log.info("Running");
         br.run();
     }

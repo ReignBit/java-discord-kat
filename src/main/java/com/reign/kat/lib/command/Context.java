@@ -1,107 +1,122 @@
 package com.reign.kat.lib.command;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.embeds.ExceptionEmbed;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-public class Context {
-    public ContextEventAdapter event;
-    public JDA jda;
+public abstract class Context
+{
+    public final JDA jda = Bot.jda;
 
-    public Message message;
-    public Member author;
-    public User authorAsUser;
-    public List<MessageEmbed> embeds;
-    public MessageEmbed embed;
+    /** List of command arguments */
+    public final List<String> args;
 
-    public TextChannel channel;
-    public VoiceChannel voiceChannel;
-    public Guild guild;
-    public PrivateChannel privateChannel;
+    /** Invoked command */
+    public final Command command;
 
-    public String prefixGuild;
-    public String prefixUsed;
-    public Command command;
+    /** Member who invoked the command */
+    public final Member author;
 
-    public ArrayList<String> args;
+    /** Guild TextChannel the command was sent in. null if not in a guild */
+    public final TextChannel channel;
 
-    /**
-     * Returns if the Context is within a guild or not.
-     * @return boolean if context came from a guild.
-     */
-    public boolean isGuild()
-    {
-        return guild != null;
-    }
+    /** PrivateChannel the command was sent in. null if not in a DM */
+    public final PrivateChannel dmChannel;
 
-    /**
-     * Shows whether the Context is within a private channel
-     * @return If context comes from a private channel.
-     */
-    public boolean isPrivateChannel()
-    {
-        return privateChannel != null;
-    }
-    public boolean isSlashInteraction() { return event.slashCommandInteractionEvent != null; }
+    /** The VoiceChannel the author is in. null if not in a voiceChannel / is a DM */
+    public final AudioChannel voiceChannel;
+
+    /** Guild the command was sent in. null if not in a guild */
+    public final Guild guild;
+
+
+    public abstract Event event();
+    public abstract String prefix();
+    public abstract void send(String... msgs);
+    public abstract void send(MessageEmbed... embeds);
+
+    public boolean canProvideInteractionHook() { return false; }
+    public InteractionHook hook() { return null; }
 
     /**
-     * Send a message to the TextChannel within the Context.
-     * @param msg String message to send.
+     * Alias to send(String... msgs)
+     * @param msgs String messages to send
      */
-    public void sendMessage(String msg)
-    {
-        if (isSlashInteraction())
-        {
-            event.slashCommandInteractionEvent.reply(msg).queue();
-        }
-        else
-        {
-            channel.sendMessage(msg).queue();
-        }
-    }
-
+    public void reply(String... msgs) { send(msgs); }
     /**
-     * Send embeds to the channel.
+     * Alias to send(MessageEmbed... embeds)
+     * @param embeds MessageEmbed embeds to send
      */
-    public void sendEmbeds(MessageEmbed... embeds)
+    public void reply(MessageEmbed... embeds) { send(embeds); }
+
+
+    /** Reply to the user with a generic error embed */
+    public void sendError(String... msgs)
     {
-        if (isSlashInteraction())
-        {
-            event.slashCommandInteractionEvent.replyEmbeds(Arrays.asList(embeds)).queue();
-        }
-        else
-        {
-            channel.sendMessageEmbeds(Arrays.asList(embeds)).queue();
-        }
+        send(new ExceptionEmbed()
+                .setTitle("An error occurred")
+                .setDescription(String.join(" ",msgs))
+                .build()
+        );
     }
 
-    public Context(ContextEventAdapter event, ArrayList<String> args, String prefixGuild, String prefixUsed, Command command)
+    /** Reply to the user with error an embed(s) */
+    public void sendError(MessageEmbed... embeds)
     {
-        guild = event.getGuild();
-        message = event.getMessage();
-        author = event.getMember();
-        authorAsUser = event.getAuthor();
-        channel = event.getTextChannel();
-        if (Objects.requireNonNull(event.getMember()).getVoiceState() != null)
-        {
-            voiceChannel = (VoiceChannel) event.getMember().getVoiceState().getChannel();
-        } else {
-          voiceChannel = null;
-        }
+        send(embeds);
+    }
 
-        embeds = event.getEmbeds();
-        this.args = args;
-        this.event = event;
-        this.jda = Bot.jda;
 
-        this.prefixUsed = prefixUsed;
-        this.prefixGuild = prefixGuild;
+    public MessageChannel channel() { return channel != null ? channel : dmChannel; }
+    public boolean isGuild() { return guild != null; }
+    public boolean isDM() { return dmChannel != null; }
+
+
+
+    public Context(SlashCommandInteractionEvent event, Command command, List<String> args)
+    {
         this.command = command;
+        this.args = args;
+
+        this.author = event.getMember();
+        this.channel = event.getTextChannel();
+        this.dmChannel = !event.isFromGuild() ? event.getPrivateChannel() : null;
+        assert author != null;
+        this.voiceChannel = getVoiceChannelFromMember(author);
+        this.guild = event.isFromGuild() ? event.getGuild() : null;
+
+
     }
+
+    public Context(MessageReceivedEvent event, Command command, List<String> args)
+    {
+        this.command = command;
+        this.args = args;
+        this.author = event.getMember();
+        this.channel = event.getTextChannel();
+        this.dmChannel = !event.isFromGuild() ? event.getPrivateChannel() : null;
+
+        assert author != null;
+        this.voiceChannel = getVoiceChannelFromMember(author);
+        this.guild = event.isFromGuild() ? event.getGuild() : null;
+
+    }
+
+    private VoiceChannel getVoiceChannelFromMember(Member member)
+    {
+        if (member.getVoiceState() != null)
+        {
+            return (VoiceChannel) member.getVoiceState().getChannel();
+        }
+        return null;
+    }
+
 }

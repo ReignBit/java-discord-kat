@@ -5,8 +5,8 @@ import com.reign.api.genius.GeniusSong;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.StringConverter;
-import com.reign.kat.lib.embeds.JoinedChannelEmbed;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.exceptions.PreconditionFailedCommandException;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
@@ -72,11 +72,11 @@ public class LyricsCommand extends Command
                 first = false;
             }
 
-            ctx.sendEmbeds(embeds.toArray(MessageEmbed[]::new));
+            ctx.send(embeds.toArray(MessageEmbed[]::new));
             return;
         }
 
-        ctx.sendEmbeds(new VoiceEmbed()
+        ctx.send(new VoiceEmbed()
                 .setTitle("No lyrics found :(")
                 .setDescription(String.format("Could not find any lyrics for `%s`", songName))
                 .setFooter("Lyrics provided by Genius.com and may not be accurate").build());

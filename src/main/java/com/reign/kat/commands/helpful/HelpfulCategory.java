@@ -5,7 +5,7 @@ import com.reign.kat.lib.command.category.Category;
 public class HelpfulCategory extends Category {
     public HelpfulCategory()
     {
-        setEmoji(":information_source:");
+        setHelpMenuEmoji(":information_source:");
         registerCommand(new HelpCommand());
         registerCommand(new ConfigParentCommand());
     }
