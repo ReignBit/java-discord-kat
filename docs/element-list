@@ -15,6 +15,7 @@ com.reign.kat.commands.voice
 com.reign.kat.lib
 com.reign.kat.lib.command
 com.reign.kat.lib.command.category
+com.reign.kat.lib.command.slash
 com.reign.kat.lib.converters
 com.reign.kat.lib.embeds
 com.reign.kat.lib.exceptions
