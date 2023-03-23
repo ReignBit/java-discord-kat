@@ -1,10 +1,7 @@
 package com.reign.kat.commands.helpful;
 
 import com.reign.kat.Bot;
-import com.reign.kat.lib.command.Command;
-import com.reign.kat.lib.command.CommandParameters;
-import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.ParentCommand;
+import com.reign.kat.lib.command.*;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.converters.StringConverter;
@@ -75,15 +72,15 @@ public class HelpCommand extends Command {
     {
         if (searchTerm == null || searchTerm.trim().isEmpty())
         {
-            ctx.sendEmbeds(generateGenericHelp(ctx, categories).build());
+            ctx.send(generateGenericHelp(ctx, categories).build());
         }
         else if (command != null)
         {
-            ctx.sendEmbeds(generateSpecificHelp(ctx, command).build());
+            ctx.send(generateSpecificHelp(ctx, command).build());
         }
         else
         {
-            ctx.sendEmbeds(generateNoHelp(ctx, searchTerm).build());
+            ctx.send(generateNoHelp(ctx, searchTerm).build());
         }
     }
 
@@ -150,7 +147,7 @@ public class HelpCommand extends Command {
         EmbedBuilder embedBuilder = new GenericEmbedBuilder()
                 .setTitle("Kat Commands")
                 .setDescription(
-                        String.format("You can get more information about a command by doing `%shelp [command]`", ctx.prefixGuild)
+                        String.format("You can get more information about a command by doing `%shelp [command]`", ctx.prefix())
                 )
                 .setColor(DiscordColor.BACKGROUND_GREY);
 
@@ -168,7 +165,7 @@ public class HelpCommand extends Command {
                 }
 
                 embedBuilder.addField(
-                        String.format("%s %s",cat.emoji, cat.shortName.replaceFirst("Category", "")),
+                        String.format("%s %s",cat.helpMenuEmoji, cat.name.replaceFirst("Category", "")),
                         sb.substring(0, sb.length()-2),
                         false
                 );

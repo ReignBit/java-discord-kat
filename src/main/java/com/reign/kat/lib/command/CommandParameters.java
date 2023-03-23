@@ -1,6 +1,5 @@
 package com.reign.kat.lib.command;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +14,13 @@ import java.util.HashMap;
 public class CommandParameters {
     private static final Logger log = LoggerFactory.getLogger(CommandParameters.class);
 
-    private final ContextEventAdapter event;
+    private final Context ctx;
     private final SmartStringSplitter scanner;
 
     public HashMap<String, Converter<?>> params = new HashMap<>();
 
-    public CommandParameters(ContextEventAdapter event, String commandline) {
-        this.event = event;
+    public CommandParameters(Context ctx, String commandline) {
+        this.ctx = ctx;
         this.scanner = new SmartStringSplitter(commandline);
 
 
@@ -43,7 +42,7 @@ public class CommandParameters {
             log.trace("CommandParameters.isGreedy: " + command.converters.get(i).isGreedy);
             String s = command.converters.get(i).isGreedy ? scanner.all() : scanner.next();
 
-            Converter<?> converter = command.converters.get(i).convert(s, event);
+            Converter<?> converter = command.converters.get(i).convert(s, ctx);
 
             if (converter.optional && converter.get() == null)
             {

@@ -21,6 +21,6 @@ public class ClearPlaylistCommand extends Command
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
 
         playlist.getQueue().clear();
-        ctx.sendEmbeds(new VoiceEmbed().setTitle("Cleared the playlist").build());
+        ctx.send(new VoiceEmbed().setTitle("Cleared the playlist").build());
     }
 }

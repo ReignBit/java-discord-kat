@@ -1,5 +1,6 @@
 package com.reign.kat.lib.converters;
 
+import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.Member;
 import org.slf4j.Logger;
@@ -20,13 +21,12 @@ public class MemberConverter extends Converter<Member> {
     }
 
     @Override
-    public Converter<Member> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException{
-        if (toConvert == null) { set(null); return this; }
+    public Converter<Member> convert(String toConvert, Context ctx) throws IllegalArgumentException{
+        if (toConvert == null) { set(ctx.author); return this; }
         if (toConvert.length() == 18)
         {
             log.info(toConvert);
-            Member m = event.getGuild().getMemberById(toConvert);
-            log.info("Member = {}", m);
+            Member m = ctx.guild.getMemberById(toConvert);
             if (m != null) {
                 set(m);
                 return this;
@@ -35,7 +35,7 @@ public class MemberConverter extends Converter<Member> {
         else if (toConvert.startsWith("<@"))
         {
             // mention (<@123123123123123>)
-            Member m = event.getGuild().getMemberById(toConvert.substring(2, toConvert.length()-1));
+            Member m = ctx.guild.getMemberById(toConvert.substring(2, toConvert.length()-1));
             if (m != null) {
                 set(m);
                 return this;

@@ -3,8 +3,8 @@ package com.reign.kat.commands.debug;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.BooleanConverter;
-import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.utils.DiscordColor;
 import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class TimingCommand extends Command {
     private static final Logger log = LoggerFactory.getLogger(TimingCommand.class);

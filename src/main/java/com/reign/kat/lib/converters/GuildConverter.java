@@ -1,6 +1,7 @@
 package com.reign.kat.lib.converters;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -16,11 +17,11 @@ public class GuildConverter extends Converter<Guild> {
     }
 
     @Override
-    public Converter<Guild> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException{
-        if (toConvert == null) { set(null); return this; }
+    public Converter<Guild> convert(String toConvert, Context ctx) throws IllegalArgumentException{
+        if (toConvert == null) { set(ctx.guild); return this; }
         if (toConvert.length() == 18)
         {
-            Guild guild = Bot.jda.getGuildById(toConvert);
+            Guild guild = ctx.jda.getGuildById(toConvert);
             if (guild != null) {
                 set(guild);
                 return this;
@@ -30,6 +31,6 @@ public class GuildConverter extends Converter<Guild> {
         {
             throw new IllegalArgumentException(String.format("Tried to convert %s into Guild and failed!",toConvert));
         }
-        return null;
+        return this;
     }
 }

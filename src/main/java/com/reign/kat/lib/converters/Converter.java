@@ -1,6 +1,6 @@
 package com.reign.kat.lib.converters;
 
-import com.reign.kat.lib.command.ContextEventAdapter;
+import com.reign.kat.lib.command.Context;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public abstract class Converter<T> {
         this.type = type;
     }
 
-    public abstract Converter<T> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException;
+    public abstract Converter<T> convert(String toConvert, Context event) throws IllegalArgumentException;
 
     public OptionData getSlashOptionData()
     {
@@ -61,7 +61,7 @@ public abstract class Converter<T> {
         return type.getSimpleName();
     }
 
-    public <T> T get() { return (T)item; }
+    public <U> U get() { return (U)item; }
     public void set(T obj) { item = obj; }
 
     public void setDefault() {

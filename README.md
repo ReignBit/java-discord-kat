@@ -35,7 +35,7 @@ Documentation for the latest stable releases of Kat are included in the repo und
  - [x] Command framework
     - [x] Categories
     - [x] Subcommands
-    - [ ] Slash Commands
+    - [x] Slash Commands
     - [x] Argument conversions
  - [ ] Metrics
  - [x] Backend API

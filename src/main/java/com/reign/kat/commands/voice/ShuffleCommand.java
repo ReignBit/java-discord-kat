@@ -3,12 +3,11 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.embeds.VoiceEmbed;
-import com.reign.kat.lib.voice.GuildAudio;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.Collections;
 
@@ -36,6 +35,6 @@ public class ShuffleCommand extends Command {
                 .setTitle(String.format("%s's Queue", ctx.guild.getName()))
                 .setDescription(":game_die: Shuffled the queue!");
 
-        ctx.message.replyEmbeds(eb.build()).queue();
+        ctx.send(eb.build());
     }
 }

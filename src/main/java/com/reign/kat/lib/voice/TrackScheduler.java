@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import static com.reign.kat.lib.utils.Utilities.timeConversion;
 
 
+@Deprecated
 public class TrackScheduler extends AudioEventAdapter  {
     private static final Logger log = LoggerFactory.getLogger(TrackScheduler.class);
     private final AudioPlayer player;

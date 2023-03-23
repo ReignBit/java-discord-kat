@@ -4,13 +4,12 @@ import com.reign.api.kat.models.ApiGuild;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 
-import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.ContextEventAdapter;
+import com.reign.kat.lib.command.MessageContext;
+import com.reign.kat.lib.command.slash.SlashCommandContext;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ public class CommandHandler extends ListenerAdapter {
         }
         categories.add(cat);
 
-//        CommandListUpdateAction commands = Bot.jda.updateCommands();
+
 
 
         // Populate the Command Category map for ease of finding commands.
@@ -46,17 +45,16 @@ public class CommandHandler extends ListenerAdapter {
             for (String a: aliases) {
                 cmdCatMap.put(a, cat);
             }
-//            commands.addCommands(cmd.updateSlashData());
         }
 
-//        commands.queue();
+//
     }
 
     public Category removeCategory(String name)
     {
         for (Category cat: categories)
         {
-            if (cat.name.equalsIgnoreCase(name))
+            if (cat.internalName.equalsIgnoreCase(name))
             {
                 categories.remove(cat);
                 for (Command cmd: cat.getCommands()) {
@@ -85,9 +83,24 @@ public class CommandHandler extends ListenerAdapter {
     {
         if (cmdCatMap.containsKey(alias))
         {
-            return cmdCatMap.get(alias).getCommand(alias);
+            return cmdCatMap.get(alias).findCommand(alias);
         }
         return null;
+    }
+
+    public void updateSlashCommands()
+    {
+        CommandListUpdateAction commands = Bot.jda.updateCommands();
+        for(Category cat: categories)
+        {
+            for (Command cmd: cat.getCommandsDistinct())
+            {
+                commands.addCommands(cmd.updateSlashData());
+            }
+        }
+
+        commands.queue();
+        log.info("Updated Slash Command entries!");
     }
 
     @Override
@@ -118,7 +131,7 @@ public class CommandHandler extends ListenerAdapter {
                 ArrayList<String> cmdArgs = new ArrayList<>();
                 event.getOptions().forEach(option -> cmdArgs.add(option.getAsString()));
 
-                Context ctx = new Context(new ContextEventAdapter(event), cmdArgs, "/", "/", command);
+                SlashCommandContext ctx = new SlashCommandContext(event, command, cmdArgs);
                 category.executeCommand(ctx);
             }
         }
@@ -153,7 +166,7 @@ public class CommandHandler extends ListenerAdapter {
 
                 Command command = category.findCommand(cmd);
                 if (command != null) {
-                    Context ctx = new Context(new ContextEventAdapter(event), cmdArgs, prefixGuild, usedPrefix, command);
+                    MessageContext ctx = new MessageContext(event, command, cmdArgs, prefixGuild, usedPrefix);
                     category.executeCommand(ctx);
                 }
             }

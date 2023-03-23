@@ -4,6 +4,7 @@ import com.reign.api.kat.models.ApiMemberData;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
+import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.UserOrAuthorConverter;
 import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import com.reign.kat.lib.utils.KatColor;
@@ -27,7 +28,7 @@ public class LevelCommand extends Command {
         ApiMemberData data = ApiMemberData.get(ctx.guild.getId(), target.getId());
 
 
-        ctx.message.replyEmbeds(generateLevelEmbed(ctx, data)).queue();
+        ctx.send(generateLevelEmbed(ctx, data));
 
     }
 

@@ -1,6 +1,7 @@
 package com.reign.kat.lib.converters;
 
 import com.reign.kat.Bot;
+import com.reign.kat.lib.command.Context;
 import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
@@ -16,8 +17,9 @@ public class UserOrAuthorConverter extends Converter<User> {
     }
 
     @Override
-    public Converter<User> convert(String toConvert, ContextEventAdapter event) throws IllegalArgumentException{
-        if (toConvert == null) { set(event.getAuthor()); return this; }
+    public Converter<User> convert(String toConvert, Context ctx) throws IllegalArgumentException{
+        if (toConvert == null) { set(ctx.author.getUser()); return this; }
+
         if (toConvert.length() == 18)
         {
             log.debug(toConvert);
@@ -28,6 +30,7 @@ public class UserOrAuthorConverter extends Converter<User> {
                 return this;
             }
         }
+
         else if (toConvert.startsWith("<@"))
         {
             // mention (<@123123123123123>)
@@ -36,11 +39,6 @@ public class UserOrAuthorConverter extends Converter<User> {
                 set(user);
                 return this;
             }
-        }
-        else
-        {
-            set(event.getAuthor());
-            return this;
         }
         throw new IllegalArgumentException(String.format("Tried to convert %s into User and failed!",toConvert));
     }
