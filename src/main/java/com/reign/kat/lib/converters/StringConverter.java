@@ -1,7 +1,6 @@
 package com.reign.kat.lib.converters;
 
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.ContextEventAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,9 +17,10 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.ReadyEvent;
+
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -28,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.security.auth.login.LoginException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -66,29 +66,23 @@ public class Bot extends ListenerAdapter{
        KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
        KatApi.setProvider(new ApiHttpProvider());
 
-       try
-       {
-           jda = JDABuilder.createDefault(Config.BOT_TOKEN)
-                   .addEventListeners(this)
-                   .addEventListeners(commandHandler)
-                   .setEnabledIntents(
-                           GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                           GatewayIntent.GUILD_MESSAGES,
-                           GatewayIntent.GUILD_MEMBERS,
-                           GatewayIntent.GUILD_VOICE_STATES,
-                           GatewayIntent.GUILD_EMOJIS_AND_STICKERS
-                   )
-                   .setChunkingFilter(ChunkingFilter.ALL)
-                   .setMemberCachePolicy(MemberCachePolicy.ALL)
-                   .build();
-       } catch (LoginException e)
-       {
-           log.error("Failed to login to the Discord API. Check if your Bot token is valid in your config file!");
-           throw e;
+        jda = JDABuilder.createDefault(Config.BOT_TOKEN)
+                .addEventListeners(this)
+                .addEventListeners(commandHandler)
+                .setEnabledIntents(
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_VOICE_STATES,
+                        GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+                        GatewayIntent.SCHEDULED_EVENTS,
+                        GatewayIntent.MESSAGE_CONTENT
+                )
+                .setChunkingFilter(ChunkingFilter.ALL)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .build();
 
-       }
-
-       // Hide token
+        // Hide token
        Config.BOT_TOKEN = Config.BOT_TOKEN.split("\\.")[0] + "************";
 
        addCategories();

@@ -4,6 +4,11 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.embeds.ExceptionEmbed;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,7 +31,7 @@ public abstract class Context
     public final Member author;
 
     /** Guild TextChannel the command was sent in. null if not in a guild */
-    public final TextChannel channel;
+    public final GuildChannel channel;
 
     /** PrivateChannel the command was sent in. null if not in a DM */
     public final PrivateChannel dmChannel;
@@ -75,7 +80,7 @@ public abstract class Context
     }
 
 
-    public MessageChannel channel() { return channel != null ? channel : dmChannel; }
+    public MessageChannel channel() { return channel != null ? (MessageChannel) channel : dmChannel; }
     public boolean isGuild() { return guild != null; }
     public boolean isDM() { return dmChannel != null; }
 
@@ -87,8 +92,8 @@ public abstract class Context
         this.args = args;
 
         this.author = event.getMember();
-        this.channel = event.getTextChannel();
-        this.dmChannel = !event.isFromGuild() ? event.getPrivateChannel() : null;
+        this.channel =  event.getChannel().asGuildMessageChannel();
+        this.dmChannel = !event.isFromGuild() ? event.getChannel().asPrivateChannel() : null;
         assert author != null;
         this.voiceChannel = getVoiceChannelFromMember(author);
         this.guild = event.isFromGuild() ? event.getGuild() : null;
@@ -101,8 +106,8 @@ public abstract class Context
         this.command = command;
         this.args = args;
         this.author = event.getMember();
-        this.channel = event.getTextChannel();
-        this.dmChannel = !event.isFromGuild() ? event.getPrivateChannel() : null;
+        this.channel = event.getChannel().asGuildMessageChannel();
+        this.dmChannel = !event.isFromGuild() ? event.getChannel().asPrivateChannel() : null;
 
         assert author != null;
         this.voiceChannel = getVoiceChannelFromMember(author);

@@ -8,8 +8,8 @@ import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.embeds.ExceptionEmbed;
 import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.PreCommandResult;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -145,7 +145,7 @@ public abstract class Command {
         requiredDiscordPermission = permBitfield;
     }
 
-    public boolean isPrivileged(Member member, GuildChannel channel)
+    public boolean isPrivileged(Member member, TextChannel channel)
     {
         return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
     }
@@ -174,7 +174,7 @@ public abstract class Command {
         }
 
         if (showTyping)
-            c.channel.sendTyping().queue();
+            c.channel().sendTyping().queue();
         execute(c, args);
 
     }

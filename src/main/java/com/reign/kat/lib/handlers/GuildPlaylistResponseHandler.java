@@ -4,7 +4,6 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.embeds.ExceptionEmbed;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 import com.reign.kat.lib.voice.newvoice.PlaylistPlayer;
-import com.reign.kat.lib.voice.newvoice.PlaylistQueue;
 import com.reign.kat.lib.voice.newvoice.RequestedTrack;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -12,14 +11,14 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * ResponseHandler
@@ -159,6 +158,6 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     @Override
     public void onTrackStuck(AudioPlayer player, AudioTrack track, long thresholdMs, StackTraceElement[] stackTrace)
     {
-
+        log.error("Track stuck! {}", (Object) stackTrace);
     }
 }

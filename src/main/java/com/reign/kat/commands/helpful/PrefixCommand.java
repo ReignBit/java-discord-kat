@@ -38,7 +38,7 @@ public class PrefixCommand extends Command {
                     .setTitle("Changed Prefix")
                     .setDescription(String.format("Changed prefix from `%s` to `%s`", oldPrefix, guild.getPrefix()))
                     .setColor(DiscordColor.BACKGROUND_GREY);
-            ctx.channel.sendMessageEmbeds(eb.build()).queue();
+            ctx.channel().sendMessageEmbeds(eb.build()).queue();
         }
 
     }

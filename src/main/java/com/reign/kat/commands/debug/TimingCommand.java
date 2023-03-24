@@ -46,7 +46,7 @@ public class TimingCommand extends Command {
 
 
 
-        ctx.channel.sendMessageEmbeds(eb.build()).queue();
+        ctx.channel().sendMessageEmbeds(eb.build()).queue();
 
         if (args.get("outputToConsole"))
         {

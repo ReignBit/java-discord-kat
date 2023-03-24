@@ -1,10 +1,7 @@
 package com.reign.kat.lib.converters;
 
-import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.ContextEventAdapter;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

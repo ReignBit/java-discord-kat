@@ -11,11 +11,11 @@ public class ExceptionMessageSender {
     private static final Logger log = LoggerFactory.getLogger("a");
 
     public static void sendMessage(MessageContext ctx, CommandException ce) {
-        ctx.channel.sendMessageEmbeds(new ExceptionEmbedBuilder(ce.emoji, ce.title, ce.err).build()).queue();
+        ctx.channel().sendMessageEmbeds(new ExceptionEmbedBuilder(ce.emoji, ce.title, ce.err).build()).queue();
     }
 
     public static void sendMessage(MessageContext ctx, Exception e) {
-        ctx.channel.sendMessageEmbeds(new ExceptionEmbedBuilder(":x:", "An error has occurred", e.getMessage()).build()).queue();
+        ctx.channel().sendMessageEmbeds(new ExceptionEmbedBuilder(":x:", "An error has occurred", e.getMessage()).build()).queue();
     }
 }
 

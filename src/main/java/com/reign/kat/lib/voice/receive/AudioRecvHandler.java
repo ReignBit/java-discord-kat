@@ -35,7 +35,7 @@ public class AudioRecvHandler implements AudioReceiveHandler
     private static final Logger log = LoggerFactory.getLogger(AudioRecvHandler.class);
 
 
-    public boolean isListening = true;
+    public boolean isListening = false;
 
     public Map<Long, AudioInfo> users = new HashMap<>();
 

@@ -3,10 +3,9 @@ package com.reign.kat.lib.voice.receive;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceDeafenEvent;
+
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildDeafenEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -95,31 +94,34 @@ public class AudioRecvManager extends ListenerAdapter
         listeners.forEach((l) -> l.onUserFinishedSpeaking(member, info.buffer.toByteArray()));
     }
 
-
-    @Override
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event)
-    {
-        super.onGuildVoiceJoin(event);
-        if (event.getChannelJoined().getMembers().size() > USERS_IN_VOICE_THRESHOLD)
-        {
-            log.warn("AudioRecvPool for guild {} reached max user threashold. Disabling audio recv features.", guildID);
-            handler.stopListening();
-        }
-    }
-
-    @Override
-    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event)
-    {
-        super.onGuildVoiceLeave(event);
-
-        if (event.getChannelLeft().getMembers().size() <= USERS_IN_VOICE_THRESHOLD)
-        {
-            log.warn("AudioRecvPool for guild {} less than max users. Re-enabling audio recv.", guildID);
-            handler.startListening();
-        }
-
-        handler.users.remove(event.getMember().getIdLong());
-    }
+// TODO: This
+//    @Override
+//    public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event)
+//    {
+//        super.onGuildVoiceUpdate(event);
+//        if (event.getChannelJoined().asVoiceChannel() == )
+//        {
+//            if (getMembers().size() > USERS_IN_VOICE_THRESHOLD)
+//            {
+//                log.warn("AudioRecvPool for guild {} reached max user threashold. Disabling audio recv features.", guildID);
+//                handler.stopListening();
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event)
+//    {
+//        super.onGuildVoiceLeave(event);
+//
+//        if (event.getChannelLeft().getMembers().size() <= USERS_IN_VOICE_THRESHOLD)
+//        {
+//            log.warn("AudioRecvPool for guild {} less than max users. Re-enabling audio recv.", guildID);
+//            handler.startListening();
+//        }
+//
+//        handler.users.remove(event.getMember().getIdLong());
+//    }
 
     @Override
     public void onGuildVoiceGuildDeafen(@NotNull GuildVoiceGuildDeafenEvent event)

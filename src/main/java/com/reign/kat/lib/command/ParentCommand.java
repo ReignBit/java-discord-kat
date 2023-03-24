@@ -1,5 +1,7 @@
 package com.reign.kat.lib.command;
 
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +53,7 @@ public abstract class ParentCommand extends Command {
          * @param args string args to convert into Converters
          */
     public void executeCommands(Context ctx, List<String> args) throws Exception {
-        if (!isPrivileged(Objects.requireNonNull(ctx.author), ctx.channel))
+        if (!isPrivileged(Objects.requireNonNull(ctx.author), (TextChannel) ctx.channel))
         {
             throw new IllegalStateException("You are not permitted to use this command!");
         }

@@ -8,8 +8,8 @@ import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
 import com.reign.kat.lib.utils.PermissionGroupType;
 import com.reign.kat.lib.utils.PreCommandResult;
 import com.reign.kat.lib.utils.stats.BotStats;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import org.slf4j.Logger;
@@ -133,7 +133,7 @@ public abstract class Category extends ListenerAdapter {
          */
         try
         {
-            if (!isPrivileged(Objects.requireNonNull(ctx.author), ctx.channel))
+            if (!isPrivileged(Objects.requireNonNull(ctx.author), (TextChannel) ctx.channel))
             {
                 throw new InsufficientPermissionsCommandException("You are not permitted to use this command!");
             }
@@ -172,7 +172,7 @@ public abstract class Category extends ListenerAdapter {
         requiredDiscordPermission = permBitfield;
     }
 
-    public boolean isPrivileged(Member member, GuildChannel channel)
+    public boolean isPrivileged(Member member, TextChannel channel)
     {
         log.trace("isPrivileged {}", Category.class.getCanonicalName());
         return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);

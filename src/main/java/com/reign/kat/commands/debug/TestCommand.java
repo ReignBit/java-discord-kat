@@ -24,13 +24,13 @@ public class TestCommand extends Command {
         ApiGuildData guild = ApiGuildData.get(ctx.guild.getId());
 
 
-        ctx.channel.sendMessage(String.format("**%s** Before changes\n```\n%s\n```", ctx.guild.getId(), guild.toString())).queue();
+        ctx.channel().sendMessage(String.format("**%s** Before changes\n```\n%s\n```", ctx.guild.getId(), guild.toString())).queue();
         guild.level.enabled = !guild.level.enabled;
 
-        ctx.channel.sendMessage(String.format("**%s** Before commit\n```\n%s\n```", ctx.guild.getId(), guild)).queue();
+        ctx.channel().sendMessage(String.format("**%s** Before commit\n```\n%s\n```", ctx.guild.getId(), guild)).queue();
         guild.save();
 
-        ctx.channel.sendMessage(String.format("**%s** after changes\n```\n%s\n```", ctx.guild.getId(), guild)).queue();
+        ctx.channel().sendMessage(String.format("**%s** after changes\n```\n%s\n```", ctx.guild.getId(), guild)).queue();
     }
 
 }
