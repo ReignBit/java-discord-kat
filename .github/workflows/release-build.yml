@@ -26,7 +26,7 @@ jobs:
         distribution: 'termurin'
     
     - name: Build
-      uses: gradle/gradle-build-action@latest
+      uses: gradle/gradle-build-action@v2
       with:
         arguments: build
         
