@@ -1,0 +1,46 @@
+name: Release Build
+
+on:
+  push:
+    paths-ignore: 
+      - '.github/**'
+    branches: [ "master" ]
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+  
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout master repo
+      uses: actions/checkout@v3
+    
+    - name: Setup java 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'termurin'
+    
+    - name: Build
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: build
+        
+    - name: version
+      run: echo "::set-output name=version::${java -jar latest.jar --version}
+      id: version
+    
+    - name: Create release
+      uses: actions/create-release@v1
+      with:
+        draft: false
+        prerelease: false
+        release_name: ${{ steps.version.outputs.version }}
+        tag_name: ${{ github.ref }}
+        body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
