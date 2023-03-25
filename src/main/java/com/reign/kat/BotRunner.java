@@ -3,7 +3,6 @@ package com.reign.kat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 
 public class BotRunner {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -17,7 +16,11 @@ public class BotRunner {
     }
 
     public BotRunner(String[] args) {
+        processCmdArgs(args);
+    }
 
+    private void processCmdArgs(String[] args)
+    {
         for (String arg :
                 args)
         {

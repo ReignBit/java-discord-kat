@@ -54,10 +54,11 @@ public class Bot extends ListenerAdapter{
         }
     }
 
-    public void initialize() throws Exception{
+    public void initialize()
+    {
        log.info("Loading Config...");
 
-       BotVersion.load();
+
        if (!Config.load())
        {
            log.error("Failed to load config. Bot is in an undefined state!");
