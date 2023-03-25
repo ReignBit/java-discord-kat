@@ -23,18 +23,21 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'termurin'
     
     - name: Build
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
+      
+    - name: Rename artifact
+      run: mv ./build/libs/*.jar ./build/libs/latest.jar
         
     - name: version
       run: echo "::set-output name=version::${java -jar latest.jar --version}
       id: version
     
     - name: Create release
+      id: create_release
       uses: actions/create-release@v1
       with:
         draft: false
@@ -42,5 +45,15 @@ jobs:
         release_name: ${{ steps.version.outputs.version }}
         tag_name: ${{ github.ref }}
         body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    
+    - name: upload artifact
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/libs/latest.jar
+        asset_name: java-discord-kat-latest.jar
+        asset_content_type: application/jar-archive
       env:
         GITHUB_TOKEN: ${{ github.token }}
