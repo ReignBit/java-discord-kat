@@ -34,7 +34,7 @@ jobs:
       run: mv ./build/libs/*.jar ./build/libs/latest.jar
         
     - name: version
-      run: echo "::set-output name=version::${java -jar latest.jar --version}
+      run: echo "::set-output name=version::${java -jar latest.jar --version}"
       id: version
     
     - name: Create release
