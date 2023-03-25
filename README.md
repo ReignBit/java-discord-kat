@@ -1,8 +1,7 @@
-<a href="https://github.com/ReignBit/java-discord-kat/issues">
-   <img src="https://img.shields.io/github/issues/reignbit/java-discord-kat?style=flat-square">
-</a>
 [![Release Build](https://github.com/ReignBit/java-discord-kat/actions/workflows/release-build.yml/badge.svg)](https://github.com/ReignBit/java-discord-kat/actions/workflows/release-build.yml)
-
+<a href="https://github.com/ReignBit/java-discord-kat/issues">
+<img src="https://img.shields.io/github/issues/reignbit/java-discord-kat?style=flat-square">
+</a>
 # Kat - made in java
 [My discord bot](https://github.com/Reignbit/discord-kat) rewritten in Java 17 from the ground up using JDA.
 
