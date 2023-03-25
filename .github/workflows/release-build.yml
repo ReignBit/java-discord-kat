@@ -23,7 +23,6 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'termurin'
     
     - name: Build
       uses: gradle/gradle-build-action@v2
