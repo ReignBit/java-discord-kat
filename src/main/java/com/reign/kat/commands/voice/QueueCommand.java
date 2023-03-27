@@ -66,7 +66,7 @@ public class QueueCommand extends Command {
             sb.append(
                     String.format(
                             "\n\n\nTotal playtime: **%s**\nTotal tracks: **%d**. Showing tracks **%d**-**%d**.\nUse `%s` to see more tracks!",
-                            getTotalPlaytime(tracks),
+                            getTotalPlaytime(nowPlaying, tracks),
                             tracks.size(),
                             offset,
                             indexOffset + Math.min(TRACK_DISPLAY_LIMIT, tracks.size()),
@@ -97,9 +97,11 @@ public class QueueCommand extends Command {
         );
     }
 
-    String getTotalPlaytime(PlaylistQueue tracks)
+    String getTotalPlaytime(RequestedTrack nowPlaying, PlaylistQueue tracks)
     {
         AtomicLong total = new AtomicLong();
+        if (nowPlaying != null)
+            total.addAndGet(nowPlaying.track.getDuration() - nowPlaying.track.getPosition());
         tracks.getQueue().forEach(requestedTrack -> total.addAndGet(requestedTrack.duration));
         return Utilities.timeConversion(total.get());
     }
