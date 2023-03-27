@@ -3,15 +3,16 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.converters.IntConverter;
 import com.reign.kat.lib.embeds.VoiceEmbed;
 
+import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.voice.newvoice.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class QueueCommand extends Command {
@@ -64,7 +65,8 @@ public class QueueCommand extends Command {
         {
             sb.append(
                     String.format(
-                            "\n\n\nTotal tracks: **%d**. Showing tracks **%d**-**%d**.\nUse `%s` to see more tracks!",
+                            "\n\n\nTotal playtime: **%s**\nTotal tracks: **%d**. Showing tracks **%d**-**%d**.\nUse `%s` to see more tracks!",
+                            getTotalPlaytime(tracks),
                             tracks.size(),
                             offset,
                             indexOffset + Math.min(TRACK_DISPLAY_LIMIT, tracks.size()),
@@ -93,6 +95,13 @@ public class QueueCommand extends Command {
                 track.getDurationAsTimestamp(),
                 track.requester.get().getAsMention()
         );
+    }
+
+    String getTotalPlaytime(PlaylistQueue tracks)
+    {
+        AtomicLong total = new AtomicLong();
+        tracks.getQueue().forEach(requestedTrack -> total.addAndGet(requestedTrack.duration));
+        return Utilities.timeConversion(total.get());
     }
 
     private void sendQueueEmbed(Context ctx, String str)
