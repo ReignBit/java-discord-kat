@@ -42,7 +42,7 @@ public class QueueCommand extends Command {
         if (offset > tracks.size()) { offset = 0; }
         if (offset < 0){ offset = 0; }
 
-        int indexOffset = offset - 1;       // offset is user provided, meaning it's 1-indexed, we need it to be 0-indexed.
+        int indexOffset = offset == 0 ? 0 : offset - 1;       // offset is user provided, meaning it's 1-indexed, we need it to be 0-indexed.
         StringBuilder sb = new StringBuilder();
 
         if (nowPlaying != null)
