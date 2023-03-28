@@ -6,5 +6,5 @@ import java.util.Queue;
 
 public interface IAudioRecvListener
 {
-    void onUserFinishedSpeaking(Member member, byte[] data);
+    void onUserFinishedSpeaking(Member member, AudioUser data);
 }

@@ -57,7 +57,7 @@ public class GuildPlaylist extends AudioEventAdapter
         audioRecvManager = new AudioRecvManager(this);
         audioRecvManager.addListener(VoiceRecognition.instance());
 
-        jdaVoiceState.setReceivingHandler(audioRecvManager.handler);
+        jdaVoiceState.setReceivingHandler(audioRecvManager);
     }
 
 
@@ -178,6 +178,10 @@ public class GuildPlaylist extends AudioEventAdapter
 
         // Destroy our Lavaplayer instance
         player.lavaPlayer.destroy();
+
+        // Stop voice listeners
+        audioRecvManager.stopListening();
+
     }
 
     @Override

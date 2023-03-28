@@ -92,6 +92,7 @@ public class CommandHandler extends ListenerAdapter {
         return null;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void updateSlashCommands()
     {
         CommandListUpdateAction commands = Bot.jda.updateCommands();
@@ -150,18 +151,16 @@ public class CommandHandler extends ListenerAdapter {
     {
         String prefixGuild = ApiGuild.get(event.guild.getId()).getPrefix();
 
-        event.parsedSpeech = event.parsedSpeech.split(event.wakeWord + " ")[1];
-
         ArrayList<String> cmdArgs = new ArrayList<>(List.of(event.parsedSpeech.split(" ")));
         String cmd = cmdArgs.get(0);
+        cmdArgs.remove(0); // Remove the command from the args list
 
         log.debug(cmd);
         log.debug(String.valueOf(cmdArgs));
-
-        cmdArgs.remove(0); // Remove the command from the args list
         // cmd = test
         for (Category category : categories) {
             Command command = category.findCommand(cmd);
+            log.debug(String.valueOf(command));
             if (command != null) {
                 VoiceContext ctx = new VoiceContext(event, command, cmdArgs, prefixGuild, event.channel);
                 category.executeCommand(ctx);

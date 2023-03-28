@@ -140,6 +140,7 @@ public class Config {
 
     public static String SPEECH_RECOGNITION_MODEL_NAME = "";
     public static String[] SPEECH_RECOGNITION_WAKE_WORDS = new String[]{};
+    public static String SPEECH_RECOGNITION_WAKE_WORD = "";
 
     public static boolean load()
     {
@@ -171,6 +172,7 @@ public class Config {
 
                 SPEECH_RECOGNITION_MODEL_NAME = config.getProperty("speech-recognition-model-name");
                 SPEECH_RECOGNITION_WAKE_WORDS = config.getProperty("speech-recognition-wake-words").split(", ");
+                SPEECH_RECOGNITION_WAKE_WORD = SPEECH_RECOGNITION_WAKE_WORDS[0];
                 return true;
             } catch (Exception e)
             {
