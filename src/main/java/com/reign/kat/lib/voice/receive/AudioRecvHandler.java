@@ -76,7 +76,6 @@ public class AudioRecvHandler implements AudioReceiveHandler
     public void handleUserAudio(@NotNull UserAudio userAudio)
     {
         if (!isListening || userAudio.getUser().isBot()) { return; }
-
         long curTime = System.currentTimeMillis();
         long userID = userAudio.getUser().getIdLong();
 

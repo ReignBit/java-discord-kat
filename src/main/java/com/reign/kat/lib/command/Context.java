@@ -115,6 +115,20 @@ public abstract class Context
 
     }
 
+    public Context(VoiceCommandEvent event, Command command, List<String> args)
+    {
+        this.command = command;
+        this.args = args;
+        this.author = event.author;
+        this.channel = event.channel;
+        this.dmChannel = null;
+
+        assert author != null;
+        this.voiceChannel = getVoiceChannelFromMember(author);
+        this.guild = event.guild;
+
+    }
+
     private VoiceChannel getVoiceChannelFromMember(Member member)
     {
         if (member.getVoiceState() != null)

@@ -5,8 +5,12 @@ import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 
 import com.reign.kat.lib.command.MessageContext;
+import com.reign.kat.lib.command.VoiceCommandEvent;
+import com.reign.kat.lib.command.VoiceContext;
 import com.reign.kat.lib.command.slash.SlashCommandContext;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -103,6 +107,11 @@ public class CommandHandler extends ListenerAdapter {
         log.info("Updated Slash Command entries!");
     }
 
+    public void onVoiceCommandParsed(VoiceCommandEvent event)
+    {
+        handleVoiceCommandParsing(event);
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
@@ -135,6 +144,30 @@ public class CommandHandler extends ListenerAdapter {
                 category.executeCommand(ctx);
             }
         }
+    }
+
+    private void handleVoiceCommandParsing(VoiceCommandEvent event)
+    {
+        String prefixGuild = ApiGuild.get(event.guild.getId()).getPrefix();
+
+        event.parsedSpeech = event.parsedSpeech.split(event.wakeWord + " ")[1];
+
+        ArrayList<String> cmdArgs = new ArrayList<>(List.of(event.parsedSpeech.split(" ")));
+        String cmd = cmdArgs.get(0);
+
+        log.debug(cmd);
+        log.debug(String.valueOf(cmdArgs));
+
+        cmdArgs.remove(0); // Remove the command from the args list
+        // cmd = test
+        for (Category category : categories) {
+            Command command = category.findCommand(cmd);
+            if (command != null) {
+                VoiceContext ctx = new VoiceContext(event, command, cmdArgs, prefixGuild, event.channel);
+                category.executeCommand(ctx);
+            }
+        }
+
     }
 
     private void handleMessageCommandParsing(MessageReceivedEvent event) {

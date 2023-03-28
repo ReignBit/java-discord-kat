@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +103,7 @@ public class GuildPlaylist extends AudioEventAdapter
     public void resume() { player.resume(); }
     public void stop() { shouldPlayNextSong = false; player.stop(); player.nowPlaying = null; }
     public void seek(long position) { player.seek(position); }
+    public MessageChannel getLastTextChannel() { return Bot.jda.getTextChannelById(responseHandler.getTextChannelID()); }
 
 
 

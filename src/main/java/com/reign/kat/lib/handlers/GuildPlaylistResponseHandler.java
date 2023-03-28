@@ -44,6 +44,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     {
         this.textChannelID = textChannelID;
     }
+    public long getTextChannelID() { return textChannelID; }
 
     public void setHook(InteractionHook hook)
     {

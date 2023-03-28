@@ -2,8 +2,10 @@ package com.reign.kat.lib.voice.receive;
 
 import com.reign.kat.Bot;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import net.dv8tion.jda.api.entities.Member;
 
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildDeafenEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -19,7 +21,7 @@ public class AudioRecvManager extends ListenerAdapter
 {
     private static final Logger log = LoggerFactory.getLogger(AudioRecvManager.class);
 
-    private static final int USERS_IN_VOICE_THRESHOLD = 0;
+    private static final int USERS_IN_VOICE_THRESHOLD = 3;
     private static final int VOICE_TIMEOUT_SECONDS = 1;
 
 
@@ -38,6 +40,7 @@ public class AudioRecvManager extends ListenerAdapter
 
         scheduledFuture = Bot.executorService.scheduleAtFixedRate(loop(), 0, VOICE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         log.info("Created AudioRecvManager for guild {}", guildID);
+        handler.startListening();
     }
 
     public boolean isEnabled() { return handler.isListening; }
@@ -94,48 +97,57 @@ public class AudioRecvManager extends ListenerAdapter
         listeners.forEach((l) -> l.onUserFinishedSpeaking(member, info.buffer.toByteArray()));
     }
 
-// TODO: This
-//    @Override
-//    public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event)
-//    {
-//        super.onGuildVoiceUpdate(event);
-//        if (event.getChannelJoined().asVoiceChannel() == )
-//        {
-//            if (getMembers().size() > USERS_IN_VOICE_THRESHOLD)
-//            {
-//                log.warn("AudioRecvPool for guild {} reached max user threashold. Disabling audio recv features.", guildID);
-//                handler.stopListening();
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event)
-//    {
-//        super.onGuildVoiceLeave(event);
-//
-//        if (event.getChannelLeft().getMembers().size() <= USERS_IN_VOICE_THRESHOLD)
-//        {
-//            log.warn("AudioRecvPool for guild {} less than max users. Re-enabling audio recv.", guildID);
-//            handler.startListening();
-//        }
-//
-//        handler.users.remove(event.getMember().getIdLong());
-//    }
+    void userChannelUpdate(AudioChannel channel)
+    {
+        if (channel.getMembers().size() > USERS_IN_VOICE_THRESHOLD || channel.getMembers().size() == 0)
+        {
+            handler.stopListening();
+            log.info("Guild {} speech recog. disabled after reaching user threshold", channel.getGuild().getIdLong());
+        }
+        else if (!handler.isListening)
+        {
+            handler.startListening();
+            log.info("Guild {} speech recog. started listening again.", channel.getGuild().getIdLong());
+        }
+    }
+    @Override
+    public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event)
+    {
+        super.onGuildVoiceUpdate(event);
+        if (!event.getVoiceState().inAudioChannel())
+        {
+            return;
+        }
+        assert event.getVoiceState().getChannel() != null;
+
+        AudioChannel channel = event.getVoiceState().getChannel();
+
+        if (
+                (event.getChannelJoined() != null && event.getChannelJoined().getIdLong() == channel.getIdLong()) ||
+                (event.getChannelLeft() != null && event.getChannelLeft().getIdLong() == channel.getIdLong())
+        )
+        {
+            // Joined our channel
+            userChannelUpdate(event.getVoiceState().getChannel());
+        }
+    }
 
     @Override
     public void onGuildVoiceGuildDeafen(@NotNull GuildVoiceGuildDeafenEvent event)
     {
         super.onGuildVoiceGuildDeafen(event);
-        log.debug(event.getMember().getId());
+        log.info(event.getGuild().getId());
+
         if(event.getMember().getIdLong() == Bot.jda.getSelfUser().getIdLong())
         {
             if (event.isGuildDeafened())
             {
+                log.info("Guild {} was deafened!", event.getGuild().getIdLong());
                 handler.stopListening();
             }
             else
             {
+                log.info("Guild {} was un-deafened!", event.getGuild().getIdLong());
                 handler.startListening();
             }
         }

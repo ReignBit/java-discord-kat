@@ -1,11 +1,16 @@
 package com.reign.kat.lib.voice.receive;
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.Config;
+import com.reign.kat.lib.command.VoiceCommandEvent;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import net.dv8tion.jda.api.audio.SpeakingMode;
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,10 +58,13 @@ public class VoiceRecognition implements IAudioRecvListener
         LibVosk.setLogLevel(LogLevel.WARNINGS);
         try
         {
+            long then = System.currentTimeMillis();
             log.info("Loading voice model. This may take a while...");
             Model model = new Model("voice-models/" + Config.SPEECH_RECOGNITION_MODEL_NAME);
             recognizer = new Recognizer(model, 16000);
             isLoaded.set(true);
+
+            log.info("Voice model loaded in {}ms", System.currentTimeMillis() - then);
         } catch (IOException e)
         {
             log.error("Failed to initialize Recognizer.", e);
@@ -75,25 +83,34 @@ public class VoiceRecognition implements IAudioRecvListener
         {
             log.debug("{} might have said: {}", member.getEffectiveName(), speech);
 
-            if (wakeWordUttered(speech))
+            String wakeWord = wakeWordUttered(speech);
+            if (wakeWord != null)
             {
                 //TODO: Fake a Command execution here.
+                log.info("Wake word uttered for guild {}", member.getGuild().getIdLong());
+
+
+                GuildPlaylist playlist = GuildPlaylistPool.get(member.getGuild().getIdLong());
+                GuildChannel channel = Bot.jda.getTextChannelById(playlist.responseHandler.getTextChannelID());
+                assert channel != null;
+                log.info("last channel = {}", channel.getId());
+                Bot.commandHandler.onVoiceCommandParsed(new VoiceCommandEvent(member.getGuild(), member, channel, speech, wakeWord));
             }
         }
     }
 
 
-    private boolean wakeWordUttered(String speech)
+    private String wakeWordUttered(String speech)
     {
         for (String wakeWord :
                 Config.SPEECH_RECOGNITION_WAKE_WORDS)
         {
             if (speech.startsWith(wakeWord))
             {
-                return true;
+                return wakeWord;
             }
         }
-        return false;
+        return null;
     }
 
     public static String recognize(byte[] stream)
