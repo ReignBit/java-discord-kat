@@ -5,6 +5,11 @@ import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.VoiceCommandEvent;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+import com.reign.kat.lib.voice.speech.Tokenizer;
+import com.reign.kat.lib.voice.speech.tokens.Token;
+import com.reign.kat.lib.voice.speech.tokens.TokenPattern;
+import com.reign.kat.lib.voice.speech.tokens.TokenResult;
+import com.reign.kat.lib.voice.speech.tokens.TokenType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import org.slf4j.Logger;
@@ -18,7 +23,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.reign.kat.lib.voice.speech.Tokenizer.tokenize;
 
 /*
     TODO:
@@ -49,6 +57,7 @@ public class VoiceRecognition implements IAudioRecvListener
     public static void init()
     {
         new VoiceRecognition();
+
         LibVosk.setLogLevel(LogLevel.WARNINGS);
         try
         {
@@ -77,14 +86,19 @@ public class VoiceRecognition implements IAudioRecvListener
         {
             log.debug("{} might have said: {}", member.getEffectiveName(), speech);
 
-            log.info("Wake word uttered for guild {}", member.getGuild().getIdLong());
+            TokenResult result = Tokenizer.tokenize(speech.split(" "));
+            log.debug(String.valueOf(result.tokens));
+
+
 
 
             GuildPlaylist playlist = GuildPlaylistPool.get(member.getGuild().getIdLong());
             GuildChannel channel = Bot.jda.getTextChannelById(playlist.responseHandler.getTextChannelID());
             assert channel != null;
             log.info("last channel = {}", channel.getId());
-            Bot.commandHandler.onVoiceCommandParsed(new VoiceCommandEvent(member.getGuild(), member, channel, speech, Config.SPEECH_RECOGNITION_WAKE_WORD));
+
+
+            Bot.commandHandler.onVoiceCommandParsed(new VoiceCommandEvent(member.getGuild(), member, channel, result, Config.SPEECH_RECOGNITION_WAKE_WORD));
         }
     }
 

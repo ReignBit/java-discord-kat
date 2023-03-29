@@ -5,6 +5,7 @@ import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import com.reign.kat.lib.voice.receive.VoiceRecognition;
+import com.reign.kat.lib.voice.speech.Tokenizer;
 
 
 public class VoiceCategory extends Category {
@@ -15,6 +16,7 @@ public class VoiceCategory extends Category {
         Thread t = new Thread(VoiceRecognition::init);
         t.start();
 
+        Tokenizer.init(1, "tokentable.json");
 
         setHelpMenuEmoji(":microphone:");
         addPrecommand(GuildPlaylist::ensureVoiceStatePreCommand);

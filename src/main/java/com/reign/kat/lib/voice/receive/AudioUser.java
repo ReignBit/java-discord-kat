@@ -66,7 +66,7 @@ public class AudioUser implements Runnable
 
             byte[] transcoded = VoiceRecognition.transcode(buffer.toByteArray());
             buffer.reset();
-            log.debug("awake: {}, parsed: {}, debugWWPS: {}", awake, parsedSpeech, debugWakeWordParsedSpeech);
+
             if (!awake)
             {
                 processWakeWord(transcoded);
@@ -74,6 +74,7 @@ public class AudioUser implements Runnable
             else
             {
                 processAwake(transcoded);
+                log.debug("awake: {}, parsed: {}, debugWWPS: {}", awake, parsedSpeech, debugWakeWordParsedSpeech);
             }
 
             try
