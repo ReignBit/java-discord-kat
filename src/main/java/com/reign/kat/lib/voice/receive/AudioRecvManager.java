@@ -26,7 +26,7 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
 {
     private static final Logger log = LoggerFactory.getLogger(AudioRecvManager.class);
 
-    private static final int USERS_IN_VOICE_THRESHOLD = 3;
+    private static final int USERS_IN_VOICE_THRESHOLD = 5;
     private static final int VOICE_TIMEOUT_SECONDS = 1;
 
     private final long guildID;
