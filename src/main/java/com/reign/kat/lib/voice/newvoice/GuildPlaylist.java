@@ -56,6 +56,7 @@ public class GuildPlaylist extends AudioEventAdapter
 
         audioRecvManager = new AudioRecvManager(this);
         audioRecvManager.addListener(VoiceRecognition.instance());
+        Bot.jda.addEventListener(audioRecvManager);
 
         jdaVoiceState.setReceivingHandler(audioRecvManager);
     }

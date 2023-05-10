@@ -151,7 +151,8 @@ public class CommandHandler extends ListenerAdapter {
     {
         String prefixGuild = ApiGuild.get(event.guild.getId()).getPrefix();
 
-        ArrayList<String> cmdArgs = new ArrayList<>(List.of(event.parsedSpeech.split(" ")));
+        ArrayList<String> cmdArgs = new ArrayList<>(List.of(event.parsedSpeech.text.split(" ")));
+//        ArrayList<String> cmdArgs = new ArrayList<>(List.of(event.parsedSpeech.split(" ")));
         String cmd = cmdArgs.get(0);
         cmdArgs.remove(0); // Remove the command from the args list
 
@@ -160,7 +161,6 @@ public class CommandHandler extends ListenerAdapter {
         // cmd = test
         for (Category category : categories) {
             Command command = category.findCommand(cmd);
-            log.debug(String.valueOf(command));
             if (command != null) {
                 VoiceContext ctx = new VoiceContext(event, command, cmdArgs, prefixGuild, event.channel);
                 category.executeCommand(ctx);
