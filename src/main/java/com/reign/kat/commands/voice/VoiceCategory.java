@@ -13,10 +13,10 @@ public class VoiceCategory extends Category {
     {
         GuildPlaylistPool.init();
 
-        Thread t = new Thread(VoiceRecognition::init);
-        t.start();
-
-        Tokenizer.init(1, "tokentable.json");
+        // TODO: Fix memory leak in speech recog. Disabled for now due to this!
+        //Thread t = new Thread(VoiceRecognition::init);
+        //t.start();
+        //Tokenizer.init(1, "tokentable.json");
 
         setHelpMenuEmoji(":microphone:");
         addPrecommand(GuildPlaylist::ensureVoiceStatePreCommand);
@@ -46,6 +46,6 @@ public class VoiceCategory extends Category {
         registerCommand(new LyricsCommand());
         registerCommand(new LoopCommand());
 
-        registerCommand(new VoiceRecogDebugCommand());
+        //registerCommand(new VoiceRecogDebugCommand());
     }
 }
