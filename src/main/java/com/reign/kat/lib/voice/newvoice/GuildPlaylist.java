@@ -30,7 +30,7 @@ public class GuildPlaylist extends AudioEventAdapter
     public final long guildID;
 
     public final GuildPlaylistResponseHandler responseHandler;
-    public final AudioRecvManager audioRecvManager;
+    public AudioRecvManager audioRecvManager;
 
 
     private final AudioManager jdaVoiceState;   // JDA Voice state (state in discord VC)
@@ -54,11 +54,12 @@ public class GuildPlaylist extends AudioEventAdapter
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
         jdaVoiceState.setSendingHandler(player.getSendHandler());
 
-        audioRecvManager = new AudioRecvManager(this);
-        audioRecvManager.addListener(VoiceRecognition.instance());
-        Bot.jda.addEventListener(audioRecvManager);
-
-        jdaVoiceState.setReceivingHandler(audioRecvManager);
+// TODO: Disabled due to speech recog weirdness.
+//
+//        audioRecvManager = new AudioRecvManager(this);
+//        audioRecvManager.addListener(VoiceRecognition.instance());
+//        Bot.jda.addEventListener(audioRecvManager);
+//        jdaVoiceState.setReceivingHandler(audioRecvManager);
     }
 
 
