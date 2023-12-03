@@ -14,9 +14,12 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,6 +76,23 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         hook = null;
     }
 
+    private void sendEmbedWithActionRow(ItemComponent[] components, MessageEmbed... embeds)
+    {
+        TextChannel channel = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getTextChannelById(textChannelID);
+        if (channel != null)
+        {
+            if (hook != null)
+            {
+                hook.sendMessageEmbeds(Arrays.asList(embeds)).addActionRow(components).queue();
+            }else
+            {
+                channel.sendMessageEmbeds(Arrays.asList(embeds)).addActionRow(components).queue();
+            }
+        }
+
+        hook = null;
+    }
+
     public void onNoMatches(String searchQuery)
     {
         sendEmbed(new ExceptionEmbed()
@@ -87,7 +107,9 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         if (tracks.size() == 1)
         {
             RequestedTrack track = tracks.get(0);
-            sendEmbed(
+
+            sendEmbedWithActionRow(
+                    new ItemComponent[]{Button.primary("play-again", "Queue Again")},
                     new VoiceEmbed()
                             .setTitle("Added a track to the queue")
                             .setDescription(track.toString())
@@ -130,7 +152,8 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     public void onTrackStart(AudioPlayer _player, AudioTrack _track)
     {
         RequestedTrack track = player.nowPlaying;
-        sendEmbed(
+        sendEmbedWithActionRow(
+                new ItemComponent[]{Button.primary("play-again", "Queue Again")},
                 new VoiceEmbed()
                         .setTitle("Now playing")
                         .setDescription(track.toString())

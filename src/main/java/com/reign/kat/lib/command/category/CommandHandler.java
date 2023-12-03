@@ -92,7 +92,6 @@ public class CommandHandler extends ListenerAdapter {
         return null;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void updateSlashCommands()
     {
         CommandListUpdateAction commands = Bot.jda.updateCommands();
@@ -100,7 +99,7 @@ public class CommandHandler extends ListenerAdapter {
         {
             for (Command cmd: cat.getCommandsDistinct())
             {
-                commands.addCommands(cmd.updateSlashData());
+                commands = commands.addCommands(cmd.updateSlashData());
             }
         }
 
