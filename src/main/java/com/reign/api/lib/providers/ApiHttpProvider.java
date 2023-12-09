@@ -93,6 +93,7 @@ public class ApiHttpProvider implements IApiProvider
                         URI.create(String.format("%s/%s", API_HOST, endpoint))
                 )
                 .setHeader("Authorization", API_AUTH)
+                .setHeader("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
@@ -111,6 +112,7 @@ public class ApiHttpProvider implements IApiProvider
                 log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", API_HOST, endpoint));
                 log.error(body.toString());
             }
+
             return resp.body().get();
         } catch (ExecutionException | InterruptedException e)
         {
