@@ -121,6 +121,7 @@ import com.reign.kat.lib.exceptions.PropertiesException;
 
 
 public class Config {
+    public static final String API_PROVIDER = "http";
     private static final Logger log = LoggerFactory.getLogger(Config.class);
 
     public static String BOT_TOKEN = "<BOT TOKEN HERE>";
