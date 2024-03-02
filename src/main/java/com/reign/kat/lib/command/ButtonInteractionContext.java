@@ -1,17 +1,17 @@
 package com.reign.kat.lib.command;
 
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class MessageContext extends Context
+public class ButtonInteractionContext extends Context
 {
 
-    private final MessageReceivedEvent event;
+    private final ButtonInteractionEvent event;
 
     /** A list of embeds attached to the message */
     public final List<MessageEmbed> embeds;
@@ -30,7 +30,7 @@ public class MessageContext extends Context
 
 
 
-    public MessageContext(MessageReceivedEvent event, Command command, List<String> args, String prefixGuild, String prefixUsed )
+    public ButtonInteractionContext(ButtonInteractionEvent event, Command command, List<String> args, String prefixGuild, String prefixUsed )
     {
         super(event, command, args);
         this.event = event;
@@ -47,7 +47,7 @@ public class MessageContext extends Context
 
 
     @Override
-    public MessageReceivedEvent event()
+    public ButtonInteractionEvent event()
     {
         return event;
     }

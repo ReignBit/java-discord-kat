@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class GuildPlaylist extends AudioEventAdapter
     public final long guildID;
 
     public final GuildPlaylistResponseHandler responseHandler;
-    public final AudioRecvManager audioRecvManager;
+    public AudioRecvManager audioRecvManager;
 
 
     private final AudioManager jdaVoiceState;   // JDA Voice state (state in discord VC)
@@ -53,10 +54,12 @@ public class GuildPlaylist extends AudioEventAdapter
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
         jdaVoiceState.setSendingHandler(player.getSendHandler());
 
+// TODO: Disabled due to speech recog weirdness.
+//
         audioRecvManager = new AudioRecvManager(this);
         audioRecvManager.addListener(VoiceRecognition.instance());
-
-        jdaVoiceState.setReceivingHandler(audioRecvManager.handler);
+        Bot.jda.addEventListener(audioRecvManager);
+        jdaVoiceState.setReceivingHandler(audioRecvManager);
     }
 
 
@@ -102,6 +105,7 @@ public class GuildPlaylist extends AudioEventAdapter
     public void resume() { player.resume(); }
     public void stop() { shouldPlayNextSong = false; player.stop(); player.nowPlaying = null; }
     public void seek(long position) { player.seek(position); }
+    public MessageChannel getLastTextChannel() { return Bot.jda.getTextChannelById(responseHandler.getTextChannelID()); }
 
 
 
@@ -176,6 +180,10 @@ public class GuildPlaylist extends AudioEventAdapter
 
         // Destroy our Lavaplayer instance
         player.lavaPlayer.destroy();
+
+        // Stop voice listeners
+        audioRecvManager.stopListening();
+
     }
 
     @Override
