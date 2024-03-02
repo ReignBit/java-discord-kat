@@ -19,7 +19,7 @@ dependencies {
 
     // Lavaplayer
     //implementation('com.github.walkyst:lavaplayer-fork:1.4.2')
-    implementation 'dev.arbjerg:lavaplayer:2.0.0'
+    implementation 'dev.arbjerg:lavaplayer:2.1.0'
     implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
 
     // VOSK
@@ -41,13 +41,14 @@ dependencies {
     implementation('org.jsoup:jsoup:1.15.4')
 
     //MongoDB
-    implementation('org.mongodb:mongodb-driver-sync:4.11.1');
+    implementation('org.mongodb:mongodb-driver-sync:4.11.1')
 }
 
 task generateVersion {
     def outputFile = new File(projectDir, "src/main/resources/version.properties")
     def date = new Date().format("yyyy-MM-dd_hh-mm-ss")
     def commit = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+
     outputs.file outputFile
     doLast {
         outputFile.text = """
@@ -57,7 +58,7 @@ commit=$commit
 """
     }
 }
-
+processResources.dependsOn(generateVersion)
 build.dependsOn(generateVersion)
 
 test {
