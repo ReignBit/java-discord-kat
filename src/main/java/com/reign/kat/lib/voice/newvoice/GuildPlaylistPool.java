@@ -42,11 +42,6 @@ public class GuildPlaylistPool
         return guildPlayers.get(guildId);
     }
 
-    public static boolean contains(long guildId)
-    {
-        return guildPlayers.containsKey(guildId);
-    }
-
     /**
      * Remove a Guild's GuildPlaylist instance.
      * This also calls `GuildPlaylist.destroy()` on the instance

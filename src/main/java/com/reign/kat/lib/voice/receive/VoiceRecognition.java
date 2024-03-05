@@ -80,8 +80,8 @@ public class VoiceRecognition implements IAudioRecvListener
     @Override
     public void onUserFinishedSpeaking(Member member, AudioUser data)
     {
-        String speech = data.parsedSpeech;
-
+        //String speech = data.parsedSpeech;
+        String speech = "";
         if (speech.length() > 0)
         {
             log.debug("{} might have said: {}", member.getEffectiveName(), speech);

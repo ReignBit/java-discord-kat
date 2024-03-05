@@ -78,21 +78,6 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
     public void stopListening()
     {
         isListening = false;
-        for (AudioUser user :
-                users.values())
-        {
-            try
-            {
-                user.thread.join();
-
-            } catch (InterruptedException e)
-            {
-                log.error("Thread '{}' took too long to terminate!", user.thread.getName());
-                throw new RuntimeException(e);
-            }
-        }
-        users.clear();
-
         log.info("Stopped listening");
     }
 
@@ -123,6 +108,8 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
 
         AudioChannel channel = event.getVoiceState().getChannel();
 
+        // onGuildVoiceUpdate fires for both joining and leaving any channel in the guild.
+        // This awful if clause is here to make sure it's our channel and the user has joined instead of left.
         if (
                 (event.getChannelJoined() != null && event.getChannelJoined().getIdLong() == channel.getIdLong()) ||
                 (event.getChannelLeft() != null && event.getChannelLeft().getIdLong() == channel.getIdLong())
@@ -139,6 +126,8 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
         super.onGuildVoiceGuildDeafen(event);
         log.info(event.getGuild().getId());
 
+        // Respect user's privacy and don't listen if we're deafened.
+        // because for some reason bots can still receive audio data when deafened...
         if(event.getMember().getIdLong() == Bot.jda.getSelfUser().getIdLong())
         {
             if (event.isGuildDeafened())
@@ -187,17 +176,11 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
         }
         else
         {
-            info = new AudioUser(guildID, userAudio.getUser(), this);
+            info = new AudioUser(guildID, userID);
             users.put(userID, info);
         }
 
-        try
-        {
-            info.write(userAudio.getAudioData(1.0));
-        } catch (IOException e)
-        {
-            log.warn("Failed to write audio data into buffer stream");
-        }
+        info.write(userAudio.getAudioData(1.0));
         users.putIfAbsent(userID, info);
 
     }

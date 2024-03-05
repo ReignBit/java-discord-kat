@@ -54,8 +54,7 @@ public class GuildPlaylist extends AudioEventAdapter
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
         jdaVoiceState.setSendingHandler(player.getSendHandler());
 
-// TODO: Disabled due to speech recog weirdness.
-//
+
         audioRecvManager = new AudioRecvManager(this);
         audioRecvManager.addListener(VoiceRecognition.instance());
         Bot.jda.addEventListener(audioRecvManager);
