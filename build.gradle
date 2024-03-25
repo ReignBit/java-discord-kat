@@ -44,6 +44,14 @@ dependencies {
     implementation('org.mongodb:mongodb-driver-sync:4.11.1')
 }
 
+tasks.withType(Tar.class).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(Zip.class).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 task generateVersion {
     def outputFile = new File(projectDir, "src/main/resources/version.properties")
     def date = new Date().format("yyyy-MM-dd_hh-mm-ss")
