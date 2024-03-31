@@ -19,7 +19,8 @@ dependencies {
 
     // Lavaplayer
     //implementation('com.github.walkyst:lavaplayer-fork:1.4.2')
-    implementation("io.github.lavalink-devs:lavaplayer:727959e9f6")
+    //implementation("io.github.lavalink-devs:lavaplayer:2.1.1")
+    implementation("com.github.kamilake:lavaplayer:main-SNAPSHOT") // temp fix for Video returned is not what was requested error.
     implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
 
     // VOSK
