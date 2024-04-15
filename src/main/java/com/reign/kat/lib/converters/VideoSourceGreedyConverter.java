@@ -25,14 +25,16 @@ public class VideoSourceGreedyConverter extends Converter<String> {
     public Converter<String> convert(String toConvert, Context ctx) throws IllegalArgumentException {
 
         // We should default to searching via youtube (ytsearch:) unless the arg is a link, or user wants
-        // to override it with !src, for example: !srcspotify: - In this case we should omit the !src.
-        if (!toConvert.startsWith("http://") && !toConvert.startsWith("https://"))
+        // to override it with !src, example of provider: !srcscsearch - soundcloud search
+        if (toConvert.startsWith(SEARCH_OVERRIDE_STR))
         {
-            toConvert = "ytsearch:" + toConvert;
-        }
-        else if (toConvert.startsWith(SEARCH_OVERRIDE_STR))
-        {
+            log.debug("other !src");
             toConvert = toConvert.replace(SEARCH_OVERRIDE_STR, "");
+        }
+        else if (!toConvert.startsWith("http://") && !toConvert.startsWith("https://"))
+        {
+            log.debug("ytsearch");
+            toConvert = "ytsearch:" + toConvert;
         }
 
         set(toConvert);
