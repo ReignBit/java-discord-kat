@@ -3,8 +3,6 @@ package com.reign.kat.lib.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.reign.kat.lib.converters.YoutubeSearchQueryGreedyConverter.log;
-
 public class PaginatedList<T>
 {
     private final List<T> entries;
@@ -39,7 +37,6 @@ public class PaginatedList<T>
     private List<T> getPage()
     {
         ArrayList<T> page = new ArrayList<>();
-        log.debug(String.format("curPage: %d, maxPerPage: %d, start: %d, end: %d", curPage, maxPerPage, curPage - 1, curPage * maxPerPage));
         for(int i = 0; i < (curPage + 1) * maxPerPage; i++)
         {
             if (entries.size() < i)
