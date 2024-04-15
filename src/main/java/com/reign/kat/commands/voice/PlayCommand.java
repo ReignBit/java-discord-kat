@@ -3,17 +3,13 @@ package com.reign.kat.commands.voice;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.MessageContext;
 
-import com.reign.kat.lib.command.slash.SlashCommandContext;
-import com.reign.kat.lib.converters.YoutubeSearchQueryGreedyConverter;
+import com.reign.kat.lib.converters.VideoSourceGreedyConverter;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 
 public class PlayCommand extends Command {
@@ -21,10 +17,10 @@ public class PlayCommand extends Command {
     public PlayCommand()
     {
         super(new String[]{"play","p"},"play" ,"Add song to queue");
-        addConverter(new YoutubeSearchQueryGreedyConverter(
+        addConverter(new VideoSourceGreedyConverter(
                 "search",
                 "Name of a song or URL",
-                null
+                ""
         ));
         setShowTyping(true);
     }
@@ -38,7 +34,14 @@ public class PlayCommand extends Command {
         if (ctx.canProvideInteractionHook())
             playlist.getResponseHandler().setHook(ctx.hook());
 
-        playlist.request(ctx.author, args.get("search"));
+        if (args.get("search").equals(""))
+        {
+            playlist.resume();
+        }
+        else
+        {
+            playlist.request(ctx.author, args.get("search"));
+        }
 
 
     }
