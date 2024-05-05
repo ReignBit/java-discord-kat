@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.reign'
-version '1.2.7-errortest'
+version '1.2.7'
 
 repositories {
     mavenCentral()
