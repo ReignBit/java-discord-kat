@@ -36,6 +36,8 @@ public class PlaylistQueue
         queue.add(track);
     }
 
+    public void enqueueFront(RequestedTrack track) { queue.add(0, track);}
+
     public List<RequestedTrack> search(Member m, String q)
     {
         List<RequestedTrack> addedTracks = new ArrayList<>();

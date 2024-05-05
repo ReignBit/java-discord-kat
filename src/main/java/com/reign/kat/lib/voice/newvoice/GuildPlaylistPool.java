@@ -3,6 +3,10 @@ package com.reign.kat.lib.voice.newvoice;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.clients.Android;
+import dev.lavalink.youtube.clients.Music;
+import dev.lavalink.youtube.clients.Web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +27,7 @@ public class GuildPlaylistPool
     {
         // All source managers get initialized here.
         playerManager.registerSourceManager(SpotifyRemoteSource.build(playerManager));
+        playerManager.registerSourceManager(new YoutubeAudioSourceManager(true, new Web(), new Music(), new Android()));
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
 

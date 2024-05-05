@@ -13,6 +13,8 @@ public class PlaylistPlayer extends AudioEventAdapter
 {
     private static final Logger log = LoggerFactory.getLogger(PlaylistPlayer.class);
 
+    public static final int ERROR_LIMIT = 3;
+
     /** LavaPlayer AudioPlayer instance. This class DOES NOT manage JDAs audio player. */
     public final AudioPlayer lavaPlayer;
 
