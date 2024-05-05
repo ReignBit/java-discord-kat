@@ -3,10 +3,14 @@ package com.reign.kat.lib.utils.stats;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import de.vandermeer.asciitable.AsciiTable;
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Bot Statistics Monitor
@@ -17,10 +21,15 @@ public class BotStats {
 
     public static final int HISTORY_SIZE = 10;
     private static final HashMap<Command, ArrayList<CommandExecution>> lastCommandExecutions = new HashMap<>();
-
+    private static final HashMap<String, Supplier<Float>> reportables = new HashMap<>();
     public BotStats(Command... commands)
     {
         addCommands(commands);
+    }
+
+    public static void addToReport(String key, Supplier<Float> func)
+    {
+        reportables.put(key, func);
     }
 
     /**
@@ -129,9 +138,11 @@ public class BotStats {
     public static Iterator<String> buildReport()
     {
         AsciiTable table = new AsciiTable();
-        table.getContext().setWidth(60);
+        table.getContext().setWidth(55);
         table.addRule();
         table.addRow("Command", "Time (ms)", "Severity");
+
+        int nanCount = 0;
         for (Map.Entry<Command, Float> entry: getAvgExecutionTime().entrySet())
         {
             Command c = entry.getKey();
@@ -140,6 +151,7 @@ public class BotStats {
             if (f.isNaN())
             {
                 f = 0f;
+                nanCount++;
             }
 
             String severity;
@@ -149,11 +161,28 @@ public class BotStats {
             else { severity = "SEVERE"; }
 
 
-            table.addRule();
-            table.addRow(c.getClass().getSimpleName(), f, severity);
+            if (f > 0f)
+            {
+                table.addRule();
+                table.addRow(c.getClass().getSimpleName(), f, severity);
+            }
 
         }
+        if (nanCount>0)
+        {
+            table.addRule();
+            table.addRow(null, null, String.format("... %d omitted", nanCount))
+                    .setTextAlignment(TextAlignment.CENTER);
+        }
+
         table.addRule();
+        table.addRow(null,null,"Reports").setTextAlignment(TextAlignment.CENTER);
+        table.addRule();
+        reportables.forEach((key, func) -> {
+            table.addRow(null, key, func.get());
+            table.addRule();
+        });
+
         return table.renderAsIterator();
     }
 

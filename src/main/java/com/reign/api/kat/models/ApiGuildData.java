@@ -3,6 +3,7 @@ package com.reign.api.kat.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.reign.api.kat.ApiCache;
 import com.reign.api.kat.Endpoints;
 import com.reign.api.kat.responses.GuildDataResponse;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ public class ApiGuildData extends ApiModel {
     public @JsonProperty("snowflake") String snowflake;
     public @JsonProperty("level") LevelData level;
 
+    protected static ApiCache<ApiGuildData> cache = new ApiCache<>(ApiGuildData.class);
     public ApiGuildData(String snowflake)
     {
         this.snowflake = snowflake;
@@ -36,21 +38,33 @@ public class ApiGuildData extends ApiModel {
 
     public static ApiGuildData get(String snowflake)
     {
-        GuildDataResponse g = fetch(Endpoints.buildEndpoint(Endpoints.GuildData, snowflake), GuildDataResponse.class);
-        log.info(String.valueOf(g.data));
-        if (!g.data.isEmpty())
-        {
-            return g.get();
-        }
+        ApiGuildData hit = cache.get(snowflake);
 
-        // Guild doesn't exist in api, lets create it.
-        ApiGuildData newGuild = new ApiGuildData(snowflake);
-        newGuild.save();
-        return newGuild;
+        if (hit == null)
+        {
+            GuildDataResponse g = fetch(Endpoints.buildEndpoint(Endpoints.GuildData, snowflake), GuildDataResponse.class);
+            log.info(String.valueOf(g.data));
+            if (!g.data.isEmpty())
+            {
+                return cache.upsert(snowflake, g.get());
+            }
+
+            // Guild doesn't exist in api, lets create it.
+            ApiGuildData newGuild = new ApiGuildData(snowflake);
+            newGuild.save();
+            return cache.upsert(snowflake, newGuild);
+
+        }
+        return hit;
     }
 
     @Override
     public boolean save() {
-        return commit(Endpoints.buildEndpoint(Endpoints.GuildData, snowflake), this, GuildDataResponse.class);
+        boolean result = commit(Endpoints.buildEndpoint(Endpoints.GuildData, snowflake), this, GuildDataResponse.class);
+        if (result)
+        {
+            cache.upsert(snowflake, this);
+        }
+        return result;
     }
 }
