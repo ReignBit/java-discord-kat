@@ -1,7 +1,7 @@
 package com.reign.kat.lib.voice.receive;
 
 import com.reign.kat.Bot;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+
 
 import net.dv8tion.jda.api.audio.AudioReceiveHandler;
 import net.dv8tion.jda.api.audio.UserAudio;
@@ -29,7 +29,7 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
     private static final int USERS_IN_VOICE_THRESHOLD = 5;
     private static final int VOICE_TIMEOUT_SECONDS = 1;
 
-    private final long guildID;
+    private final long guildID = 0;
 
     private final Set<IAudioRecvListener> listeners = new HashSet<>();
 
@@ -39,13 +39,13 @@ public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHan
 
 
 
-    public AudioRecvManager(GuildPlaylist parent)
-    {
-        this.guildID = parent.guildID;
-
-        log.info("Created AudioRecvManager for guild {}", guildID);
-        startListening();
-    }
+//    public AudioRecvManager(GuildPlaylist parent)
+//    {
+//        this.guildID = parent.guildID;
+//
+//        log.info("Created AudioRecvManager for guild {}", guildID);
+//        startListening();
+//    }
 
 
     /**

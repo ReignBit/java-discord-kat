@@ -9,19 +9,20 @@ repositories {
     mavenCentral()
     maven {url('https://m2.dv8tion.net/releases')}
     maven {url('https://jitpack.io')}
+    maven {url("https://maven.lavalink.dev/releases")}
 }
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
 
+    // Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     // JDA
     implementation("net.dv8tion:JDA:5.0.0-beta.6")
 
-    // Lavaplayer
-    //implementation('com.github.walkyst:lavaplayer-fork:1.4.2')
-    //implementation("io.github.lavalink-devs:lavaplayer:2.1.1")
-    implementation("com.github.kamilake:lavaplayer:main-SNAPSHOT") // temp fix for Video returned is not what was requested error.
-    implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
+    // Lavalink-client
+    implementation("dev.arbjerg:lavalink-client:3.0.0")
 
     // VOSK
     implementation('net.java.dev.jna:jna:5.12.1')

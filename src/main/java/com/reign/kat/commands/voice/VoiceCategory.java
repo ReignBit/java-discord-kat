@@ -1,12 +1,12 @@
 package com.reign.kat.commands.voice;
 
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.command.ButtonInteractionContext;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.MessageContext;
 import com.reign.kat.lib.command.category.Category;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+import com.reign.kat.lib.utils.PreCommandResult;
+import com.reign.kat.lib.voice.music.MusicManager;
 import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.reign.kat.lib.voice.speech.Tokenizer;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -25,7 +25,7 @@ public class VoiceCategory extends Category {
     private static final Logger log = LoggerFactory.getLogger(VoiceCategory.class);
     public VoiceCategory()
     {
-        GuildPlaylistPool.init();
+//        GuildPlaylistPool.init();
 
         // TODO: Fix memory leak in speech recog. Disabled for now due to this!
         Thread t = new Thread(VoiceRecognition::init);
@@ -33,36 +33,36 @@ public class VoiceCategory extends Category {
         Tokenizer.init(1, "tokentable.json");
 
         setHelpMenuEmoji(":microphone:");
-        addPrecommand(GuildPlaylist::ensureVoiceStatePreCommand);
-        addPrecommand((c, args) ->
-            {
-                GuildPlaylistPool.get(c.guild.getIdLong()).getResponseHandler().setTextChannelID(c.channel.getIdLong());
-                return null;
-            }
-        );
 
+        addPrecommand((c, args) -> new PreCommandResult(
+                MusicManager.joinHelper(Bot.lavalink, c.author),
+                "You must be in a voice channel, or the same channel as me!"
+        ));
 
-
-        registerCommand(new PlayCommand());
-        registerCommand(new PlayNextCommand());
-
-        registerCommand(new SkipCommand());
-        registerCommand(new SeekCommand());
-
-        registerCommand(new QueueCommand());
-        registerCommand(new NowPlayingCommand());
-        registerCommand(new ShuffleCommand());
-        registerCommand(new MoveCommand());
-        registerCommand(new RemoveCommand());
-        registerCommand(new ClearPlaylistCommand());
-
-        registerCommand(new LeaveCommand());
         registerCommand(new JoinCommand());
+        registerCommand(new PlayCommand());
+        registerCommand(new VoiceDebugCommand());
 
-        registerCommand(new LyricsCommand());
-        registerCommand(new LoopCommand());
 
-        registerCommand(new VoiceRecogDebugCommand());
+//        registerCommand(new PlayCommand());
+//        registerCommand(new PlayNextCommand());
+//
+//        registerCommand(new SkipCommand());
+//        registerCommand(new SeekCommand());
+//
+//        registerCommand(new QueueCommand());
+//        registerCommand(new NowPlayingCommand());
+//        registerCommand(new ShuffleCommand());
+//        registerCommand(new MoveCommand());
+//        registerCommand(new RemoveCommand());
+//        registerCommand(new ClearPlaylistCommand());
+//
+//        registerCommand(new LeaveCommand());
+//        registerCommand(new JoinCommand());
+//
+//        registerCommand(new LyricsCommand());
+//        registerCommand(new LoopCommand());
+
     }
 
     @Override

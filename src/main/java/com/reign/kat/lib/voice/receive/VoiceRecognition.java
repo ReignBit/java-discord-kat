@@ -3,8 +3,7 @@ package com.reign.kat.lib.voice.receive;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.VoiceCommandEvent;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+
 import com.reign.kat.lib.voice.speech.Tokenizer;
 import com.reign.kat.lib.voice.speech.tokens.Token;
 import com.reign.kat.lib.voice.speech.tokens.TokenPattern;
@@ -92,13 +91,13 @@ public class VoiceRecognition implements IAudioRecvListener
 
 
 
-            GuildPlaylist playlist = GuildPlaylistPool.get(member.getGuild().getIdLong());
-            GuildChannel channel = Bot.jda.getTextChannelById(playlist.responseHandler.getTextChannelID());
-            assert channel != null;
-            log.info("last channel = {}", channel.getId());
+//            GuildPlaylist playlist = GuildPlaylistPool.get(member.getGuild().getIdLong());
+//            GuildChannel channel = Bot.jda.getTextChannelById(playlist.responseHandler.getTextChannelID());
+//            assert channel != null;
+//            log.info("last channel = {}", channel.getId());
 
 
-            Bot.commandHandler.onVoiceCommandParsed(new VoiceCommandEvent(member.getGuild(), member, channel, result, Config.SPEECH_RECOGNITION_WAKE_WORD));
+//            Bot.commandHandler.onVoiceCommandParsed(new VoiceCommandEvent(member.getGuild(), member, channel, result, Config.SPEECH_RECOGNITION_WAKE_WORD));
         }
     }
 

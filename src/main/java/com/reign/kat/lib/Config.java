@@ -132,9 +132,13 @@ public class Config {
     public static String TENOR_API_KEY = "<TENOR API KEY>";
 
     public static int VOICE_AUTODISCONNECT_MINUTES = 5;
-    public static String VOICE_SPOTIFY_CLIENT_ID = "";
-    public static String VOICE_SPOTIFY_CLIENT_SECRET = "";
-    public static String VOICE_SPOTIFY_COUNTRY_CODE = "GB";
+//    public static String VOICE_SPOTIFY_CLIENT_ID = "";
+//    public static String VOICE_SPOTIFY_CLIENT_SECRET = "";
+//    public static String VOICE_SPOTIFY_COUNTRY_CODE = "GB";
+
+    public static String VOICE_LAVALINK_NAME = "nodename";
+    public static String VOICE_LAVALINK_URI = "ws://localhost:2333";
+    public static String VOICE_LAVALINK_PASSWD = "password";
 
     public static boolean DEBUG_MODE;
     public static boolean DEBUG_IGNORE_PERMISSION_SYS;
@@ -162,11 +166,13 @@ public class Config {
                 VOICE_AUTODISCONNECT_MINUTES = Integer.parseInt(
                         config.getProperty("voice-autodisconnect-minutes")
                 );
-                VOICE_SPOTIFY_CLIENT_ID = config.getProperty("voice-spotify-client-id");
-                VOICE_SPOTIFY_CLIENT_SECRET = config.getProperty("voice-spotify-client-secret");
-                VOICE_SPOTIFY_COUNTRY_CODE = config.getProperty("voice-spotify-country-code");
+//                VOICE_SPOTIFY_CLIENT_ID = config.getProperty("voice-spotify-client-id");
+//                VOICE_SPOTIFY_CLIENT_SECRET = config.getProperty("voice-spotify-client-secret");
+//                VOICE_SPOTIFY_COUNTRY_CODE = config.getProperty("voice-spotify-country-code");
 
-
+                VOICE_LAVALINK_NAME = config.getProperty("voice-lavalink-name");
+                VOICE_LAVALINK_URI = config.getProperty("voice-lavalink-uri");
+                VOICE_LAVALINK_PASSWD = config.getProperty("voice-lavalink-passwd");
 
                 DEBUG_MODE = Boolean.parseBoolean(config.getProperty("debug-mode"));
                 DEBUG_IGNORE_PERMISSION_SYS = Boolean.parseBoolean(config.getProperty("debug-ignore-permission-sys"));
@@ -204,9 +210,14 @@ public class Config {
 
             // Voice specific
             fw.write("voice-autodisconnect-minutes=" + VOICE_AUTODISCONNECT_MINUTES + "\n");
-            fw.write("voice-spotify-client-id=" + VOICE_SPOTIFY_CLIENT_ID + "\n");
-            fw.write("voice-spotify-client-secret=" + VOICE_SPOTIFY_CLIENT_SECRET + "\n");
-            fw.write("voice-spotify-country-code=" + VOICE_SPOTIFY_COUNTRY_CODE + "\n");
+            fw.write("voice-lavalink-name=" + VOICE_LAVALINK_NAME + "\n");
+            fw.write("voice-lavalink-uri=" + VOICE_LAVALINK_URI + "\n");
+            fw.write("voice-lavalink-passwd=" + VOICE_LAVALINK_PASSWD + "\n");
+//            fw.write("voice-spotify-client-id=" + VOICE_SPOTIFY_CLIENT_ID + "\n");
+//            fw.write("voice-spotify-client-secret=" + VOICE_SPOTIFY_CLIENT_SECRET + "\n");
+//            fw.write("voice-spotify-country-code=" + VOICE_SPOTIFY_COUNTRY_CODE + "\n");
+
+
 
             // Debug
             fw.write("debug-mode=" + DEBUG_MODE + "\n");

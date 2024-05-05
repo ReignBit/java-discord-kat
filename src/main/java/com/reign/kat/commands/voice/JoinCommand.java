@@ -1,26 +1,31 @@
 package com.reign.kat.commands.voice;
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-import com.reign.kat.lib.command.MessageContext;
-import com.reign.kat.lib.embeds.JoinedChannelEmbed;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+import com.reign.kat.lib.messages.VoiceMessages;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 public class JoinCommand extends Command
 {
     public JoinCommand()
     {
-        super(new String[]{"join", "connect"}, "join", "Joins the voice channel");
+        super(new String[]{"join", "j"}, "join", "Joins your voice channel");
     }
 
     @Override
     public void execute(Context ctx, CommandParameters args) throws Exception
     {
-        GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
+        final GuildVoiceState gvc = ctx.author.getVoiceState();
 
-        playlist.move(ctx.voiceChannel);
-        ctx.send(new JoinedChannelEmbed().build());
+        if (gvc != null && gvc.inAudioChannel())
+        {
+            Bot.jda.getDirectAudioController().connect(gvc.getChannel());
+            ctx.reply(VoiceMessages.joinChannel(gvc.getChannel()));
+            return;
+        }
+
+        ctx.reply(VoiceMessages.userNotInChannel());
     }
 }

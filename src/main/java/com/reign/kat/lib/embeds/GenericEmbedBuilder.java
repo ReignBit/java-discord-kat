@@ -11,6 +11,6 @@ public class GenericEmbedBuilder extends EmbedBuilder{
      */
     public GenericEmbedBuilder()
     {
-        setFooter("kat.reign-network.co.uk \u2022 v" + BotVersion.version() );
+        //setFooter("kat.reign-network.co.uk \u2022 v" + BotVersion.version() );
     }
 }

@@ -12,6 +12,10 @@ import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
+import com.reign.kat.lib.voice.music.MusicManager;
+import dev.arbjerg.lavalink.client.Helpers;
+import dev.arbjerg.lavalink.client.LavalinkClient;
+import dev.arbjerg.lavalink.libraries.jda.JDAVoiceUpdateListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -41,6 +45,7 @@ public class Bot extends ListenerAdapter{
 
     public static JDA jda;
     public static TenorApi tenorApi;
+    public static LavalinkClient lavalink;
     public static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     public Bot() throws Exception
@@ -65,6 +70,12 @@ public class Bot extends ListenerAdapter{
        }
         init_apis();
 
+        lavalink = new LavalinkClient(
+                Helpers.getUserIdFromToken(Config.BOT_TOKEN)
+        );
+        MusicManager.registerListeners(lavalink);
+        MusicManager.registerNodes(lavalink);
+
         jda = JDABuilder.createDefault(Config.BOT_TOKEN)
                 .addEventListeners(this)
                 .addEventListeners(commandHandler)
@@ -77,6 +88,7 @@ public class Bot extends ListenerAdapter{
                         GatewayIntent.SCHEDULED_EVENTS,
                         GatewayIntent.MESSAGE_CONTENT
                 )
+                .setVoiceDispatchInterceptor(new JDAVoiceUpdateListener(lavalink))
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build();

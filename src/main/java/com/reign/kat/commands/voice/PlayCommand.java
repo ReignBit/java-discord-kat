@@ -1,48 +1,37 @@
 package com.reign.kat.commands.voice;
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.command.Command;
 import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.command.Context;
-
 import com.reign.kat.lib.converters.VideoSourceGreedyConverter;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
-import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+import com.reign.kat.lib.voice.music.TrackResultHandler;
+import dev.arbjerg.lavalink.client.Link;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
-public class PlayCommand extends Command {
-    private static final Logger log = LoggerFactory.getLogger(PlayCommand.class);
+public class PlayCommand extends Command
+{
     public PlayCommand()
     {
-        super(new String[]{"play","p"},"play" ,"Add song to queue");
+        super(new String[]{"play", "p"}, "play", "Play/search for a song");
         addConverter(new VideoSourceGreedyConverter(
-                "search",
-                "Name of a song or URL",
-                ""
+                "searchQuery",
+                "Track name to play",
+                null
         ));
-        setShowTyping(true);
     }
+
     @Override
-    public void execute(Context ctx, CommandParameters args) throws Exception {
-        GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
-
-        playlist.getResponseHandler().setTextChannelID(ctx.channel().getIdLong());
-
-
-        if (ctx.canProvideInteractionHook())
-            playlist.getResponseHandler().setHook(ctx.hook());
-
-        if (args.get("search").equals(""))
-        {
-            playlist.resume();
-        }
-        else
-        {
-            playlist.request(ctx.author, args.get("search"));
-        }
-
-
+    public void execute(Context ctx, CommandParameters args) throws Exception
+    {
+        final long guildId = ctx.guild.getIdLong();
+        final Link link = Bot.lavalink.getOrCreateLink(guildId);
+        final long channelId = ctx.channel.getIdLong();
+        link.loadItem(args.get("searchQuery"))
+                .subscribe(new TrackResultHandler(
+                        channelId,
+                        ctx.author,
+                        args.get("searchQuery"),
+                        link
+                ));
     }
 }
