@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.HashMap;
 
+// TODO: Add deferred saving with optional max defer time.
 public class ApiCache<T>
 {
     private static final Logger log = LoggerFactory.getLogger(ApiCache.class);
