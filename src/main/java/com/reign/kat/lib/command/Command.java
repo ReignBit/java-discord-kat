@@ -32,6 +32,9 @@ public abstract class Command {
     /** A description as to what the command does */
     private final String description;
 
+    /** Mapping of subcommands belonging to this command */
+    private final HashMap<String, Command> children = new HashMap<>();
+
     /** Should we show deferred/"Bot is typing..." when executing the command */
     private boolean showTyping = false;
 
@@ -89,6 +92,26 @@ public abstract class Command {
         return slashCmd;
     }
 
+    public void registerSubcommand(Command command)
+    {
+        for(String alias: command.getAliases())
+        {
+            // Inherit parent permissions.
+            command.requiredDiscordPermission = requiredDiscordPermission;
+            command.requiredPermission = requiredPermission;
+            children.put(alias, command);
+        }
+    }
+
+    public Command getSubcommand(String alias)
+    {
+        if (children.containsKey(alias))
+        {
+            return children.get(alias);
+        }
+        return null;
+    }
+
     public HashSet<String> getAliases() { return aliases; }
     public String getPrimaryAlias() { return primaryAlias; }
     public String getName(){return getPrimaryAlias();}
@@ -108,6 +131,17 @@ public abstract class Command {
      */
     public String getSignature()
     {
+        if (!children.isEmpty())
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getPrimaryAlias()).append(" \n");
+            for(Command cmd: children.values())
+            {
+                sb.append(getPrimaryAlias()).append(" ").append(cmd.getSignature()).append("\n");
+            }
+            return sb.delete(sb.length()-2, sb.length()).toString();
+        }
+
         StringBuilder sb = new StringBuilder().append(getPrimaryAlias()).append(" ");
 
         for (Converter<?> arg: converters)
@@ -152,6 +186,35 @@ public abstract class Command {
 
     public abstract void execute(Context ctx, CommandParameters args) throws Exception;
 
+    /**
+     * Calls the parent command before calling a subcommand
+     * @param ctx Context of the command
+     * @param args string args to convert into Converters
+     */
+    public void executeCommands(Context ctx, List<String> args) throws Exception {
+        if (!isPrivileged(Objects.requireNonNull(ctx.author), (TextChannel) ctx.channel))
+        {
+            throw new IllegalStateException("You are not permitted to use this command!");
+        }
+
+
+        String subAlias = null;
+        if (args.size() > 0)
+        {
+            subAlias = args.remove(0);
+        }
+        CommandParameters cmdParams = new CommandParameters(ctx, String.join("", args));
+
+        invokeCommand(ctx, cmdParams);
+
+        Command subcommand = getSubcommand(subAlias);
+        if (subcommand != null)
+        {
+            // Subcommands do not need to check for permissions since they inherit the parent perms.
+            cmdParams.parse(subcommand);
+            subcommand.invokeCommand(ctx, cmdParams);
+        }
+    }
 
     public void invokeCommand(Context c, CommandParameters args) throws Exception
     {
@@ -179,4 +242,8 @@ public abstract class Command {
 
     }
 
+    public boolean hasChildren()
+    {
+        return !children.isEmpty();
+    }
 }
