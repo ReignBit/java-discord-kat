@@ -39,6 +39,8 @@ public class GeniusApi
 
     private static final Map<String, String> cleanupTargets = Map.ofEntries(
             Map.entry("<br><br>", "\n"),
+            Map.entry("\n\n", "\n"),
+            Map.entry("\r\n", "\n"),
             Map.entry("<br>", ""),
             Map.entry("<i>", " *"),
             Map.entry("</i>", "* "),
@@ -82,11 +84,11 @@ public class GeniusApi
                 String lyricsFromPage = scrapePageForLyrics(songData.get("url").getAsString());
                 if (lyricsFromPage != null)
                 {
-                    lyricsFromPage = cleanupLyrics(lyricsFromPage);
+                    lyricsFromPage = cleanupLyrics(lyricsFromPage).replaceAll("\n\n", "\n");
                 }
 
                 return cache.upsert(songName, new GeniusSong(
-                        songData.get("path").getAsString(),
+                        "https://genius.com" + songData.get("path").getAsString(),
                         songData.get("title").getAsString(),
                         songData.get("artist_names").getAsString(),
                         lyricsFromPage

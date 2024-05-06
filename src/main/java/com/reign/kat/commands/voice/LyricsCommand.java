@@ -65,10 +65,12 @@ public class LyricsCommand extends Command
                     song.lyricSegments())
             {
 
+                log.debug(song.url());
                 embeds.add(new VoiceEmbed()
-                        .setTitle(first ? String.format("Lyrics for %s by %s", song.title(), song.artist()) : "")
+                        .setTitle(first ? String.format("Lyrics for %s by %s", song.title(), song.artist()) : "",  song.url())
                         .setDescription(segment)
-                        .setFooter("Lyrics provided by Genius.com and may not be accurate").build());
+                        .setFooter("Lyrics provided by Genius.com and may not be accurate")
+                        .build());
                 first = false;
             }
 
