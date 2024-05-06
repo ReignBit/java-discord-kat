@@ -26,3 +26,5 @@ com.reign.kat.lib.utils.stats
 com.reign.kat.lib.voice
 com.reign.kat.lib.voice.newvoice
 com.reign.kat.lib.voice.receive
+com.reign.kat.lib.voice.speech
+com.reign.kat.lib.voice.speech.tokens

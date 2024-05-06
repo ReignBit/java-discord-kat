@@ -2,6 +2,7 @@ package com.reign.api.kat.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reign.api.kat.ApiCache;
 import com.reign.api.kat.KatApi;
 import com.reign.api.kat.responses.ApiResponse;
 import com.reign.api.lib.JsonBodyHandler;
@@ -33,7 +34,6 @@ public abstract class ApiModel {
     protected static final Logger log = LoggerFactory.getLogger(ApiModel.class);
 
     public static IApiProvider provider;
-
 
     public String toString()
     {
@@ -74,6 +74,7 @@ public abstract class ApiModel {
 
     protected static <Y extends ApiResponse<?>> Y fetch(String endpoint, Class<Y> responseClass)
     {
+
         return provider.fetch(endpoint, responseClass);
     }
 

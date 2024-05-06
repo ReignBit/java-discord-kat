@@ -3,6 +3,7 @@ package com.reign.api.genius;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.reign.api.kat.ApiCache;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,8 +35,12 @@ public class GeniusApi
     private static final HttpClient http = HttpClient.newHttpClient();
     private static final String GENIUS_SEARCH_URL = "https://genius.com/api/search/multi?q=";
 
+    private static final ApiCache<GeniusSong> cache = new ApiCache<>(GeniusSong.class, Duration.ofDays(10));
+
     private static final Map<String, String> cleanupTargets = Map.ofEntries(
             Map.entry("<br><br>", "\n"),
+            Map.entry("\n\n", "\n"),
+            Map.entry("\r\n", "\n"),
             Map.entry("<br>", ""),
             Map.entry("<i>", " *"),
             Map.entry("</i>", "* "),
@@ -60,33 +66,38 @@ public class GeniusApi
      */
     public static GeniusSong lyrics(String songName)
     {
-        // response.sections[1].hits
-        JsonArray hitsArr = Objects.requireNonNull(search(songName)).getAsJsonObject("response")
-                .getAsJsonArray("sections")
-                .get(1).getAsJsonObject().getAsJsonArray("hits");
+        GeniusSong hit = cache.get(songName);
 
-        if (hitsArr.size() > 0)
+        if (hit == null)
         {
-            // We have found a song!
-            JsonObject songData = hitsArr.get(0).getAsJsonObject().getAsJsonObject("result");
+            // response.sections[1].hits
+            JsonArray hitsArr = Objects.requireNonNull(search(songName)).getAsJsonObject("response")
+                    .getAsJsonArray("sections")
+                    .get(1).getAsJsonObject().getAsJsonArray("hits");
 
-            // TODO: Please find a better way to do these replacements
-            String lyricsFromPage = scrapePageForLyrics(songData.get("url").getAsString());
-            if (lyricsFromPage != null)
+            if (hitsArr.size() > 0)
             {
-                lyricsFromPage = cleanupLyrics(lyricsFromPage);
+                // We have found a song!
+                JsonObject songData = hitsArr.get(0).getAsJsonObject().getAsJsonObject("result");
+
+                // TODO: Please find a better way to do these replacements
+                String lyricsFromPage = scrapePageForLyrics(songData.get("url").getAsString());
+                if (lyricsFromPage != null)
+                {
+                    lyricsFromPage = cleanupLyrics(lyricsFromPage).replaceAll("\n\n", "\n");
+                }
+
+                return cache.upsert(songName, new GeniusSong(
+                        "https://genius.com" + songData.get("path").getAsString(),
+                        songData.get("title").getAsString(),
+                        songData.get("artist_names").getAsString(),
+                        lyricsFromPage
+                ));
             }
-
-            return new GeniusSong(
-                    songData.get("path").getAsString(),
-                    songData.get("title").getAsString(),
-                    songData.get("artist_names").getAsString(),
-                    lyricsFromPage
-            );
+            // No hit :(
+            return null;
         }
-
-        // No hit :(
-        return null;
+        return hit;
     }
 
     /** Scrapes the given url for lyrics using elements from genius.com

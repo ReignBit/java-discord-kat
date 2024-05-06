@@ -27,7 +27,7 @@ Otherwise, follow these instructions to build it yourself:
    2. Or you can run using the jar archive built at `build/libs/kat-VERSION-NUMBER.jar`
 
 ## Documentation
-Documentation for the latest stable releases of Kat are included in the repo under `docs/`.
+Documentation for the latest stable releases of Kat are included in the repo under `docs/`. The latest docs are also available at https://reignbit.github.io/java-discord-kat/
 
 ## TODO
 

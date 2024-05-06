@@ -12,6 +12,7 @@ import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
+import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -63,9 +64,7 @@ public class Bot extends ListenerAdapter{
        {
            log.error("Failed to load config. Bot is in an undefined state!");
        }
-       tenorApi = new TenorApi(Config.TENOR_API_KEY, "kat-java-bot");
-       KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
-       KatApi.setProvider(new ApiHttpProvider());
+        init_apis();
 
         jda = JDABuilder.createDefault(Config.BOT_TOKEN)
                 .addEventListeners(this)
@@ -88,6 +87,31 @@ public class Bot extends ListenerAdapter{
 
        addCategories();
        postInit();
+    }
+
+    private void init_apis()
+    {
+        tenorApi = new TenorApi(Config.TENOR_API_KEY, "kat-java-bot");
+
+
+        switch (Config.API_PROVIDER)
+        {
+            case "mongodb" -> {
+//                KatApi.setHost(Config.API_MONGO_URI);
+//                KatApi.setProvider(new ApiMongoProvider(Config.API_MONGO_DB));
+                  log.error("UNSUPPORTED API PROVIDER");
+            }
+            case "http" -> {
+                KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
+                KatApi.setProvider(new ApiHttpProvider());
+            }
+            default ->
+            {
+                log.warn("Config does not have API_PROVIDER property, defaulting to http...");
+                KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
+                KatApi.setProvider(new ApiHttpProvider());
+            }
+        }
     }
 
     public void postInit()
@@ -158,14 +182,13 @@ public class Bot extends ListenerAdapter{
     public void onGuildLeave(@NotNull GuildLeaveEvent event)
     {
         Guild guild = event.getGuild();
-        log.info("Joined a new guild. {} | {}", guild.getId(), guild.getName());
+        log.info("left a guild. {} | {}", guild.getId(), guild.getName());
 
     }
 
     private void onHourEvent()
     {
-        log.info("Running hour event?");
-
+        BotStats.buildReport().forEachRemaining(log::info);
         commandHandler.getCategories().forEach(Category::onHourEvent);
     }
 

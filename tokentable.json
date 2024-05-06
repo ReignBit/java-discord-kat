@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "mappings": [
+    {
+      "token":  "QUESTION",
+      "text": ["what","whats","how", "is", "where", "why"]
+    },
+    {
+      "token":  "WEATHER",
+      "text": ["rain", "weather", "sun", "cloudy", ""]
+    },
+    {
+      "token": "NUMBER",
+      "text": ["one", "two", "three"],
+      "__comment__": "commands can also add to the table using addSpeechToken('phrase')"
+    }
+
+  ]
+}

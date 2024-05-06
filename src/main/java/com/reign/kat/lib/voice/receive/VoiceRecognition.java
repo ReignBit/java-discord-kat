@@ -1,12 +1,17 @@
 package com.reign.kat.lib.voice.receive;
 
+import com.reign.kat.Bot;
 import com.reign.kat.lib.Config;
-import net.dv8tion.jda.api.audio.SpeakingMode;
-import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
-import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
+import com.reign.kat.lib.command.VoiceCommandEvent;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylist;
+import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
+import com.reign.kat.lib.voice.speech.Tokenizer;
+import com.reign.kat.lib.voice.speech.tokens.Token;
+import com.reign.kat.lib.voice.speech.tokens.TokenPattern;
+import com.reign.kat.lib.voice.speech.tokens.TokenResult;
+import com.reign.kat.lib.voice.speech.tokens.TokenType;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vosk.LogLevel;
@@ -18,9 +23,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.reign.kat.lib.voice.speech.Tokenizer.tokenize;
 
 /*
     TODO:
@@ -32,6 +38,7 @@ public class VoiceRecognition implements IAudioRecvListener
     private static final Logger log = LoggerFactory.getLogger(VoiceRecognition.class);
     private static VoiceRecognition instance;
     private static Recognizer recognizer;
+    public static Model model;
 
     private static final AtomicBoolean isLoaded = new AtomicBoolean(false);
 
@@ -50,13 +57,17 @@ public class VoiceRecognition implements IAudioRecvListener
     public static void init()
     {
         new VoiceRecognition();
+
         LibVosk.setLogLevel(LogLevel.WARNINGS);
         try
         {
+            long then = System.currentTimeMillis();
             log.info("Loading voice model. This may take a while...");
-            Model model = new Model("voice-models/" + Config.SPEECH_RECOGNITION_MODEL_NAME);
-            recognizer = new Recognizer(model, 16000);
+            model = new Model("voice-models/" + Config.SPEECH_RECOGNITION_MODEL_NAME);
+
             isLoaded.set(true);
+
+            log.info("Voice model loaded in {}ms", System.currentTimeMillis() - then);
         } catch (IOException e)
         {
             log.error("Failed to initialize Recognizer.", e);
@@ -64,47 +75,45 @@ public class VoiceRecognition implements IAudioRecvListener
 
     }
 
-    public static boolean isRecognizerReady() { return isLoaded.get(); }
+    public static boolean isModelReady() { return isLoaded.get(); }
 
     @Override
-    public void onUserFinishedSpeaking(Member member, byte[] data)
+    public void onUserFinishedSpeaking(Member member, AudioUser data)
     {
-        String speech = recognize(data).split("\" : \"")[1].split("\"")[0];
-
+        //String speech = data.parsedSpeech;
+        String speech = "";
         if (speech.length() > 0)
         {
             log.debug("{} might have said: {}", member.getEffectiveName(), speech);
 
-            if (wakeWordUttered(speech))
-            {
-                //TODO: Fake a Command execution here.
-            }
+            TokenResult result = Tokenizer.tokenize(speech.split(" "));
+            log.debug(String.valueOf(result.tokens));
+
+
+
+
+            GuildPlaylist playlist = GuildPlaylistPool.get(member.getGuild().getIdLong());
+            GuildChannel channel = Bot.jda.getTextChannelById(playlist.responseHandler.getTextChannelID());
+            assert channel != null;
+            log.info("last channel = {}", channel.getId());
+
+
+            Bot.commandHandler.onVoiceCommandParsed(new VoiceCommandEvent(member.getGuild(), member, channel, result, Config.SPEECH_RECOGNITION_WAKE_WORD));
         }
     }
 
 
-    private boolean wakeWordUttered(String speech)
+    public static String wakeWordUttered(String speech)
     {
         for (String wakeWord :
                 Config.SPEECH_RECOGNITION_WAKE_WORDS)
         {
             if (speech.startsWith(wakeWord))
             {
-                return true;
+                return wakeWord;
             }
         }
-        return false;
-    }
-
-    public static String recognize(byte[] stream)
-    {
-        if (isRecognizerReady())
-        {
-            byte[] transcodedAudio = transcode(stream);
-            recognizer.acceptWaveForm(transcodedAudio, transcodedAudio.length);
-            return recognizer.getFinalResult();
-        }
-        return "";
+        return null;
     }
 
 
@@ -114,7 +123,7 @@ public class VoiceRecognition implements IAudioRecvListener
      * @param origData audio PCM data to convert
      * @return 16Khz mono audio
      */
-    private static byte[] transcode(byte[] origData)
+    public static byte[] transcode(byte[] origData)
     {
         AudioFormat original = new AudioFormat(48000.0f, 16, 2, true, true);
         AudioFormat target = new AudioFormat(16000.f, 16, 1, true,false);

@@ -2,6 +2,7 @@ package com.reign.api.kat.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.reign.api.kat.ApiCache;
 import com.reign.api.kat.Endpoints;
 import com.reign.api.kat.responses.GuildResponse;
 import com.reign.api.kat.responses.PermissionGroups;
@@ -12,7 +13,8 @@ import java.util.ArrayList;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiGuild extends ApiModel {
+public class ApiGuild extends ApiModel
+{
 
 
     public @JsonProperty("snowflake") String snowflake;
@@ -23,6 +25,8 @@ public class ApiGuild extends ApiModel {
     @Deprecated
     public @JsonProperty("owner_id") String ownerId;
     public @JsonProperty("permission_groups") PermissionGroups permissionGroups;
+
+    protected static ApiCache<ApiGuild> cache = new ApiCache<>(ApiGuild.class);
 
     public ApiGuild()
     {
@@ -35,7 +39,6 @@ public class ApiGuild extends ApiModel {
         this.discoveredAt = Instant.now().getEpochSecond();
         this.prefix = Config.PREFIX;
     }
-
 
     public PermissionGroups getPermissionGroups() {
         return permissionGroups;
@@ -64,22 +67,36 @@ public class ApiGuild extends ApiModel {
 
     @Override
     public boolean save() {
-        return commit(Endpoints.buildEndpoint(Endpoints.Guild, snowflake), this, GuildResponse.class);
+        boolean result = commit(Endpoints.buildEndpoint(Endpoints.Guild, snowflake), this, GuildResponse.class);
+        if (result)
+        {
+            cache.upsert(snowflake, this);
+        }
+        return result;
     }
 
     public static ApiGuild get(String snowflake) {
-        GuildResponse g = fetch(Endpoints.buildEndpoint(Endpoints.Guild, snowflake), GuildResponse.class);
-        if (g.status == 200 && !g.data.isEmpty())
-        {
-            log.info("Fetched guild id {}", snowflake);
-            return g.get();
-        }
+        ApiGuild hit = cache.get(snowflake);
 
-        log.info("Creating new guild");
-        // Guild doesn't exist in api, lets create it.
-        ApiGuild newGuild = new ApiGuild(snowflake);
-        newGuild.save();
-        log.info("New guild created {}", newGuild);
-        return newGuild;
+        if (hit == null)
+        {
+            GuildResponse g = fetch(Endpoints.buildEndpoint(Endpoints.Guild, snowflake), GuildResponse.class);
+            if (g.status == 200 && !g.data.isEmpty())
+            {
+                log.info("Fetched guild id {}", snowflake);
+                ApiGuild d = g.get();
+                cache.upsert(snowflake, d);
+                return d;
+            }
+
+            log.info("Creating new guild");
+            // Guild doesn't exist in api, lets create it.
+            ApiGuild newGuild = new ApiGuild(snowflake);
+            newGuild.save();
+            log.info("New guild created {}", newGuild);
+            cache.upsert(snowflake, newGuild);
+            return newGuild;
+        }
+        return hit;
     }
 }

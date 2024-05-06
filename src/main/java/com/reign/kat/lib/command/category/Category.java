@@ -138,9 +138,9 @@ public abstract class Category extends ListenerAdapter {
                 throw new InsufficientPermissionsCommandException("You are not permitted to use this command!");
             }
 
-            if (ctx.command instanceof ParentCommand parent)
+            if (ctx.command.hasChildren())
             {
-                parent.executeCommands(ctx, ctx.args);
+                ctx.command.executeCommands(ctx, ctx.args);
             }
             else
             {
@@ -185,4 +185,6 @@ public abstract class Category extends ListenerAdapter {
     {
         // Does nothing by default
     }
+
+
 }

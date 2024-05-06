@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
@@ -18,7 +19,7 @@ public class ApiHttpProvider implements IApiProvider
 {
     protected static final Logger log = LoggerFactory.getLogger(ApiModel.class);
 
-
+    private static final Duration HTTP_TIMEOUT_SECONDS = Duration.ofSeconds(5);
     private static final String API_HOST = KatApi.host;
     private static final String API_AUTH = KatApi.authStr;
     private static final HttpClient client = KatApi.getClient();
@@ -49,6 +50,7 @@ public class ApiHttpProvider implements IApiProvider
                         URI.create(String.format("%s/%s", API_HOST, endpoint))
                 )
                 .setHeader("Authorization", API_AUTH)
+                .timeout(HTTP_TIMEOUT_SECONDS)
                 .build();
 
         log.trace("GET Requesting {}", String.format("%s/%s", API_HOST, endpoint));
@@ -60,6 +62,7 @@ public class ApiHttpProvider implements IApiProvider
             // Ok status codes - Client Error status codes
             if (resp.statusCode() >= 200 && resp.statusCode() < 400) {
                 log.trace("Status code {}", resp.statusCode());
+                return resp.body().get();
             }
             else{
                 if (resp.statusCode() == 401)
@@ -68,8 +71,9 @@ public class ApiHttpProvider implements IApiProvider
                     log.error("Ensure you have set `backend_api_key` in config.properties");
                 }
                 log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", API_HOST, endpoint));
+                return resp.body().get();
             }
-            return resp.body().get();
+
 
         } catch (ExecutionException | InterruptedException e)
         {
@@ -93,6 +97,7 @@ public class ApiHttpProvider implements IApiProvider
                         URI.create(String.format("%s/%s", API_HOST, endpoint))
                 )
                 .setHeader("Authorization", API_AUTH)
+                .setHeader("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
@@ -111,6 +116,7 @@ public class ApiHttpProvider implements IApiProvider
                 log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", API_HOST, endpoint));
                 log.error(body.toString());
             }
+
             return resp.body().get();
         } catch (ExecutionException | InterruptedException e)
         {

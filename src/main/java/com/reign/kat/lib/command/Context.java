@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
@@ -112,6 +113,34 @@ public abstract class Context
         assert author != null;
         this.voiceChannel = getVoiceChannelFromMember(author);
         this.guild = event.isFromGuild() ? event.getGuild() : null;
+
+    }
+
+    public Context(ButtonInteractionEvent event, Command command, List<String> args)
+    {
+        this.command = command;
+        this.args = args;
+        this.author = event.getMember();
+        this.channel = event.getChannel().asGuildMessageChannel();
+        this.dmChannel = !event.isFromGuild() ? event.getChannel().asPrivateChannel() : null;
+
+        assert author != null;
+        this.voiceChannel = getVoiceChannelFromMember(author);
+        this.guild = event.isFromGuild() ? event.getGuild() : null;
+
+    }
+
+    public Context(VoiceCommandEvent event, Command command, List<String> args)
+    {
+        this.command = command;
+        this.args = args;
+        this.author = event.author;
+        this.channel = event.channel;
+        this.dmChannel = null;
+
+        assert author != null;
+        this.voiceChannel = getVoiceChannelFromMember(author);
+        this.guild = event.guild;
 
     }
 

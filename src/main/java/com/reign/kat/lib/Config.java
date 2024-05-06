@@ -121,6 +121,7 @@ import com.reign.kat.lib.exceptions.PropertiesException;
 
 
 public class Config {
+    public static final String API_PROVIDER = "http";
     private static final Logger log = LoggerFactory.getLogger(Config.class);
 
     public static String BOT_TOKEN = "<BOT TOKEN HERE>";
@@ -140,6 +141,7 @@ public class Config {
 
     public static String SPEECH_RECOGNITION_MODEL_NAME = "";
     public static String[] SPEECH_RECOGNITION_WAKE_WORDS = new String[]{};
+    public static String SPEECH_RECOGNITION_WAKE_WORD = "";
 
     public static boolean load()
     {
@@ -171,6 +173,7 @@ public class Config {
 
                 SPEECH_RECOGNITION_MODEL_NAME = config.getProperty("speech-recognition-model-name");
                 SPEECH_RECOGNITION_WAKE_WORDS = config.getProperty("speech-recognition-wake-words").split(", ");
+                SPEECH_RECOGNITION_WAKE_WORD = SPEECH_RECOGNITION_WAKE_WORDS[0];
                 return true;
             } catch (Exception e)
             {
