@@ -71,6 +71,7 @@ public class ApiHttpProvider implements IApiProvider
                     log.error("Ensure you have set `backend_api_key` in config.properties");
                 }
                 log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", API_HOST, endpoint));
+                return resp.body().get();
             }
 
 
