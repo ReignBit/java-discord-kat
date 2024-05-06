@@ -3,6 +3,7 @@ package com.reign.kat.lib.handlers;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.embeds.ExceptionEmbed;
 import com.reign.kat.lib.embeds.VoiceEmbed;
+import com.reign.kat.lib.utils.stats.BotStats;
 import com.reign.kat.lib.voice.newvoice.GuildPlaylistPool;
 import com.reign.kat.lib.voice.newvoice.PlaylistPlayer;
 import com.reign.kat.lib.voice.newvoice.RequestedTrack;
@@ -36,12 +37,17 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     private InteractionHook hook;
 
     private RequestedTrack errorTrack = null;
+    private static int totalErrorCount = 0; // Does not get reset by giving up.
     private int errorCount = 0;
+    private static int successCount = 0;
+
+    public static float getErrorRate() { return (float)totalErrorCount / ((float)totalErrorCount + (float)successCount); }
 
     public GuildPlaylistResponseHandler(long guildID, PlaylistPlayer playlistPlayer)
     {
         this.guildID = guildID;
         this.player = playlistPlayer;
+        BotStats.addToReport("Music Play Error Rate", GuildPlaylistResponseHandler::getErrorRate);
     }
 
     public long getTextChannelID()
@@ -127,6 +133,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
                         .setDescription(track.toString())
                         .build()
         );
+        successCount++;
     }
 
     @Override
@@ -149,6 +156,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         if (errorTrack == track)
         {
             errorCount++;
+            totalErrorCount++;
 
             if (errorCount >= PlaylistPlayer.ERROR_LIMIT)
             {

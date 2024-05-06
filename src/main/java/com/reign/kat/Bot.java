@@ -12,6 +12,7 @@ import com.reign.kat.lib.Config;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.category.CommandHandler;
 
+import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -187,8 +188,7 @@ public class Bot extends ListenerAdapter{
 
     private void onHourEvent()
     {
-        log.info("Running hour event?");
-
+        BotStats.buildReport().forEachRemaining(log::info);
         commandHandler.getCategories().forEach(Category::onHourEvent);
     }
 
