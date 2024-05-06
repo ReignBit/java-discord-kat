@@ -1,5 +1,6 @@
 package com.reign.kat.lib.command;
 
+import net.dv8tion.jda.annotations.ReplaceWith;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.HashMap;
@@ -18,6 +19,8 @@ import java.util.Objects;
  * Add a new child command with `registerSubcommand(command);`, this can then be called
  * in Discord with `!command subcommand`.
  */
+@Deprecated
+@ReplaceWith("com.reign.kat.lib.command.Command")
 public abstract class ParentCommand extends Command {
 
 
