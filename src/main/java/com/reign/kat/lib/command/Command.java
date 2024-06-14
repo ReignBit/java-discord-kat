@@ -201,13 +201,14 @@ public abstract class Command {
         String subAlias = null;
         if (args.size() > 0)
         {
-            subAlias = args.remove(0);
+            subAlias = args.get(0);
         }
-        CommandParameters cmdParams = new CommandParameters(ctx, String.join("", args));
+        Command subcommand = getSubcommand(subAlias);
+        if (subcommand != null) { args.remove(0); }
 
+        CommandParameters cmdParams = new CommandParameters(ctx, String.join(" ", args));
         invokeCommand(ctx, cmdParams);
 
-        Command subcommand = getSubcommand(subAlias);
         if (subcommand != null)
         {
             // Subcommands do not need to check for permissions since they inherit the parent perms.

@@ -1,5 +1,6 @@
 package com.reign.kat.lib.voice.newvoice;
 
+import com.github.topi314.lavasrc.flowerytts.FloweryTTSSourceManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -30,21 +31,22 @@ public class GuildPlaylistPool
         // All source managers get initialized here.
         playerManager.registerSourceManager(SpotifyRemoteSource.build(playerManager));
         playerManager.registerSourceManager(new YoutubeAudioSourceManager(true, new Web(), new Music(), new Android()));
+        playerManager.registerSourceManager(new FloweryTTSSourceManager("Bella"));
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
 
     /**
-     * Get a GuildPlaylist for requested guild ID
+     * Get a ApiPlaylist for requested guild ID
      * @param guildId long GuildID from discord
-     * @return a GuildPlaylist instance (one is created if the pool does not have an instance for the id)
+     * @return a ApiPlaylist instance (one is created if the pool does not have an instance for the id)
      */
     public static GuildPlaylist get(long guildId)
     {
         if (!guildPlayers.containsKey(guildId))
         {
-            // GuildPlaylist doesn't exist for this guild.
+            // ApiPlaylist doesn't exist for this guild.
             guildPlayers.put(guildId, new GuildPlaylist(guildId, playerManager));
-            log.debug("Created GuildPlaylist for {}", guildId);
+            log.debug("Created ApiPlaylist for {}", guildId);
         }
         return guildPlayers.get(guildId);
     }
@@ -55,8 +57,8 @@ public class GuildPlaylistPool
     }
 
     /**
-     * Remove a Guild's GuildPlaylist instance.
-     * This also calls `GuildPlaylist.destroy()` on the instance
+     * Remove a Guild's ApiPlaylist instance.
+     * This also calls `ApiPlaylist.destroy()` on the instance
      * @param guildId long GuildID from discord
      */
     public static void remove(long guildId)

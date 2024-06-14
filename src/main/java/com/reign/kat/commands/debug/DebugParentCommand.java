@@ -17,6 +17,7 @@ public class DebugParentCommand extends Command
         registerSubcommand(new KillCommand());
         registerSubcommand(new CommandExceptionTestCommand());
         registerSubcommand(new TestCommand());
+        registerSubcommand(new Test2Command());
         registerSubcommand(new VoiceStateCommand());
     }
 

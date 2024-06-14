@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created per guild along with GuildPlaylist.
+ * Created per guild along with ApiPlaylist.
  * Contains the recognizers and handlers for each member in voice chat.
  */
 public class AudioRecvManager extends ListenerAdapter implements AudioReceiveHandler

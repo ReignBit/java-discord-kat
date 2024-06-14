@@ -23,7 +23,6 @@ public class CommandParameters {
         this.ctx = ctx;
         this.scanner = new SmartStringSplitter(commandline);
 
-
     }
 
     /**

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Responsible for loading/searching for tracks and playlists for the GuildPlaylist
+ * Responsible for loading/searching for tracks and playlists for the ApiPlaylist
  */
 public class PlaylistTrackLoader
 {

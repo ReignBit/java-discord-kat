@@ -67,7 +67,7 @@ public abstract class ParentCommand extends Command {
         {
             subAlias = args.remove(0);
         }
-        CommandParameters cmdParams = new CommandParameters(ctx, String.join("", args));
+        CommandParameters cmdParams = new CommandParameters(ctx, String.join(" ", args));
 
         invokeCommand(ctx, cmdParams);
 

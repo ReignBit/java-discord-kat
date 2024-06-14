@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.reign.api.kat.ApiCache;
 import com.reign.api.kat.Endpoints;
+import com.reign.api.kat.responses.ApiPlaylist;
 import com.reign.api.kat.responses.GuildResponse;
 import com.reign.api.kat.responses.PermissionGroups;
 import com.reign.kat.lib.Config;
@@ -21,6 +22,7 @@ public class ApiGuild extends ApiModel
     public @JsonProperty("discovered_at") Long discoveredAt;
     public @JsonProperty("members") ArrayList<String> members;
     public @JsonProperty("prefix") String prefix;
+    public @JsonProperty("playlists") ArrayList<ApiPlaylist> playlists;
     //public @JsonProperty("dashboard_enabled") boolean dashboardEnabled;
     @Deprecated
     public @JsonProperty("owner_id") String ownerId;
@@ -58,6 +60,14 @@ public class ApiGuild extends ApiModel
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public ApiPlaylist getPlaylist(String name) {
+        return playlists.stream().filter(playlist -> playlist.name.equals(name)).findFirst().orElse(null);
+    }
+
+    public ArrayList<ApiPlaylist> getPlaylists() {
+        return playlists;
     }
 
     @Deprecated
