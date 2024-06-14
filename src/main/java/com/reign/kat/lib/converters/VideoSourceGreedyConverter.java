@@ -26,6 +26,10 @@ public class VideoSourceGreedyConverter extends Converter<String> {
 
         // We should default to searching via youtube (ytsearch:) unless the arg is a link, or user wants
         // to override it with !src, example of provider: !srcscsearch - soundcloud search
+        if (toConvert == null) {
+            setDefault();
+            return this;
+        }
         if (toConvert.startsWith(SEARCH_OVERRIDE_STR))
         {
             log.debug("other !src");

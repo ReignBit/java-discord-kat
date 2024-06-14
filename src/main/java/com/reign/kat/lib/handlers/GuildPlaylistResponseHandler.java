@@ -105,8 +105,8 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     {
         sendEmbed(
                 new VoiceEmbed()
-                        .setTitle("Paused!")
-                        .setDescription("Paused the current track. Use `resume` to resume the track!")
+                        .setTitle(":pause_button: Paused the music!")
+                        .setDescription("Use `play` to continue playing.")
                         .build()
         );
     }
