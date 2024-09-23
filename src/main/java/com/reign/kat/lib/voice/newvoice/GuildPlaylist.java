@@ -106,7 +106,23 @@ public class GuildPlaylist extends AudioEventAdapter
     public void seek(long position) { player.seek(position); }
     public MessageChannel getLastTextChannel() { return Bot.jda.getTextChannelById(responseHandler.getTextChannelID()); }
 
+    /***
+     * Export the current loaded playlist
+     * @return String, list of loaded tracks
+     */
+    public String export() {
+        StringBuilder s = new StringBuilder();
 
+        if (nowPlaying() != null) {
+            s.append(nowPlaying().url).append("\n");
+        }
+
+        queue.getQueue().forEach(track -> {
+            s.append(track.url).append("\n");
+        });
+
+        return s.toString();
+    }
 
     public GuildPlaylistResponseHandler getResponseHandler() { return responseHandler; }
 

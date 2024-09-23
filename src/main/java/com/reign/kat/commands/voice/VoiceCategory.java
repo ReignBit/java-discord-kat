@@ -58,6 +58,7 @@ public class VoiceCategory extends Category {
         registerCommand(new MoveCommand());
         registerCommand(new RemoveCommand());
         registerCommand(new ClearPlaylistCommand());
+        registerCommand(new ExportPlaylistCommand());
 
         registerCommand(new LeaveCommand());
         registerCommand(new JoinCommand());
@@ -95,6 +96,8 @@ public class VoiceCategory extends Category {
             );
 
             executeCommand(ctx);
+            if (!event.isAcknowledged())
+                event.reply("Queued").setEphemeral(true).queue();
 
         }
 
