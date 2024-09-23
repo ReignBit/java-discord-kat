@@ -28,6 +28,7 @@ public class PlayNextCommand extends Command {
 
 
         playlist.request(ctx.author, args.get("search"));
+        playlist.getQueue().move(playlist.getQueue().size()-1, 0);
 
     }
 }
