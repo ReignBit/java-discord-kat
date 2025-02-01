@@ -31,7 +31,7 @@ dependencies {
 
     // slf4j logging
     implementation('org.slf4j:slf4j-api:2.0.5')
-    implementation('ch.qos.logback:logback-classic:1.4.5')
+    implementation('ch.qos.logback:logback-classic:1.4.12')
 
     // Jackson
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2')
@@ -55,7 +55,7 @@ tasks.withType(Zip.class).configureEach {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task generateVersion {
+tasks.register('generateVersion') {
     def outputFile = new File(projectDir, "src/main/resources/version.properties")
     def date = new Date().format("yyyy-MM-dd_hh-mm-ss")
     def commit = 'git rev-parse --verify --short HEAD'.execute().text.trim()
@@ -87,6 +87,7 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task(runMain, dependsOn: 'jar', type: JavaExec) {
+tasks.register('runMain', JavaExec) {
+    dependsOn 'jar'
     classpath = sourceSets.main.runtimeClasspath
 }
