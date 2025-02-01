@@ -14,7 +14,7 @@ public class SkipCommand extends Command {
 
     public SkipCommand()
     {
-        super(new String[]{"skip","s"},"skip" ,"Skips the playing song");
+        super(new String[]{"skip"},"skip" ,"Skips the playing song");
         addPreCommand(GuildPlaylist::ensureTrackPlaying);
     }
     @Override
@@ -22,6 +22,6 @@ public class SkipCommand extends Command {
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
         playlist.skip();
 
-        log.debug("SKIP::::: " + playlist.nowPlaying());
+        log.debug("SKIP::::: {}", playlist.nowPlaying());
     }
 }
