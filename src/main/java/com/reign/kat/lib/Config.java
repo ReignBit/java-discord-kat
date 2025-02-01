@@ -143,6 +143,9 @@ public class Config {
     public static String[] SPEECH_RECOGNITION_WAKE_WORDS = new String[]{};
     public static String SPEECH_RECOGNITION_WAKE_WORD = "";
 
+    public static String YT_PO_TOKEN = "";
+    public static String YT_VISITOR_DATA = "";
+
     public static boolean load()
     {
         try
@@ -174,6 +177,10 @@ public class Config {
                 SPEECH_RECOGNITION_MODEL_NAME = config.getProperty("speech-recognition-model-name");
                 SPEECH_RECOGNITION_WAKE_WORDS = config.getProperty("speech-recognition-wake-words").split(", ");
                 SPEECH_RECOGNITION_WAKE_WORD = SPEECH_RECOGNITION_WAKE_WORDS[0];
+
+                YT_PO_TOKEN = config.getProperty("yt-po-token");
+                YT_VISITOR_DATA = config.getProperty("yt-visitor-data");
+
                 return true;
             } catch (Exception e)
             {

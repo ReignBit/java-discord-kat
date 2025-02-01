@@ -1,5 +1,6 @@
 package com.reign.kat.lib.voice.newvoice;
 
+import com.reign.kat.lib.Config;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -25,9 +26,16 @@ public class GuildPlaylistPool
      */
     public static void init()
     {
+        // Warn if we don't have good state for YT
+        if (Config.YT_PO_TOKEN.isEmpty() || Config.YT_VISITOR_DATA.isEmpty()) {
+            log.warn("Config `yt-po-token` or `yt-visitor-data` is missing! YT may not work properly!");
+        }
+
         // All source managers get initialized here.
         playerManager.registerSourceManager(SpotifyRemoteSource.build(playerManager));
-        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web(), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic(), new AndroidTestsuite());
+        Web.setPoTokenAndVisitorData(Config.YT_PO_TOKEN, Config.YT_VISITOR_DATA);
+        //YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web(), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic());
+        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web());
         playerManager.registerSourceManager(youtube);
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
