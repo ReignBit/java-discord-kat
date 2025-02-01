@@ -54,11 +54,11 @@ public class GuildPlaylist extends AudioEventAdapter
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
         jdaVoiceState.setSendingHandler(player.getSendHandler());
 
-
-        audioRecvManager = new AudioRecvManager(this);
-        audioRecvManager.addListener(VoiceRecognition.instance());
-        Bot.jda.addEventListener(audioRecvManager);
-        jdaVoiceState.setReceivingHandler(audioRecvManager);
+        // TODO: I think this is causing a leak... very slowly
+//        audioRecvManager = new AudioRecvManager(this);
+//        audioRecvManager.addListener(VoiceRecognition.instance());
+/*        Bot.jda.addEventListener(audioRecvManager);
+        jdaVoiceState.setReceivingHandler(audioRecvManager);*/
     }
 
 

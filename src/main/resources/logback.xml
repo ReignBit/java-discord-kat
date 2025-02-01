@@ -19,6 +19,7 @@
     </appender>
 
     <logger name="com.sedmelluq.discord.lavaplayer" level="WARN"/>
+    <logger name="dev.lavalink.youtube.http.YoutubeOauth2Handler" level="INFO"/>
     <logger name="net.dv8tion.jda.core" level="INFO"/>
     <logger name="com.reign.kat" level="DEBUG" />
     <logger name="com.reign.api" level="DEBUG" />
