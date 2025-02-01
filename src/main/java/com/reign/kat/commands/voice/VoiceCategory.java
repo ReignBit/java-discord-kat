@@ -28,9 +28,9 @@ public class VoiceCategory extends Category {
         GuildPlaylistPool.init();
 
         // TODO: Fix memory leak in speech recog. Disabled for now due to this!
-        Thread t = new Thread(VoiceRecognition::init);
+        /*Thread t = new Thread(VoiceRecognition::init);
         t.start();
-        Tokenizer.init(1, "tokentable.json");
+        Tokenizer.init(1, "tokentable.json");*/
 
         setHelpMenuEmoji(":microphone:");
         addPrecommand(GuildPlaylist::ensureVoiceStatePreCommand);
