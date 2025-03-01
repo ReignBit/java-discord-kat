@@ -6,7 +6,6 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.handlers.GuildPlaylistResponseHandler;
 import com.reign.kat.lib.utils.PreCommandResult;
 import com.reign.kat.lib.voice.receive.AudioRecvManager;
-import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -105,7 +104,7 @@ public class GuildPlaylist extends AudioEventAdapter
     public void stop() { shouldPlayNextSong = false; player.stop(); player.nowPlaying = null; }
     public void seek(long position) { player.seek(position); }
     public MessageChannel getLastTextChannel() { return Bot.jda.getTextChannelById(responseHandler.getTextChannelID()); }
-
+    public AudioChannel getVoiceChannel() { return jdaVoiceState.getConnectedChannel();}
     /***
      * Export the current loaded playlist
      * @return String, list of loaded tracks
@@ -117,9 +116,7 @@ public class GuildPlaylist extends AudioEventAdapter
             s.append(nowPlaying().url).append("\n");
         }
 
-        queue.getQueue().forEach(track -> {
-            s.append(track.url).append("\n");
-        });
+        queue.getQueue().forEach(track -> s.append(track.url).append("\n"));
 
         return s.toString();
     }
@@ -197,7 +194,7 @@ public class GuildPlaylist extends AudioEventAdapter
         player.lavaPlayer.destroy();
 
         // Stop voice listeners
-        audioRecvManager.stopListening();
+//        audioRecvManager.stopListening();
 
     }
 
@@ -210,10 +207,13 @@ public class GuildPlaylist extends AudioEventAdapter
         {
             RequestedTrack nextTrack = queue.dequeue();
 
-            player.nowPlaying = nextTrack;
-            if (nextTrack != null)
-            {
-                player.play(nextTrack);
+            if (nextTrack != null) {
+                if (nextTrack.track == null) {
+                    // no AudioTrack
+                    nextTrack = queue.search(nextTrack.requester.get(), nextTrack.url).get(0);
+                }
+                player.nowPlaying = nextTrack;
+                player.play(player.nowPlaying);
             }
         }
         else
