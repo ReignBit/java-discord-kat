@@ -121,13 +121,17 @@ import com.reign.kat.lib.exceptions.PropertiesException;
 
 
 public class Config {
-    public static final String API_PROVIDER = "http";
     private static final Logger log = LoggerFactory.getLogger(Config.class);
 
     public static String BOT_TOKEN = "<BOT TOKEN HERE>";
     public static String PREFIX = "!";
+
+    public static String API_PROVIDER = "http";
     public static String BACKEND_API_KEY = "<BACKEND API KEY>";
     public static String BACKEND_API_HOST = "http://localhost";
+
+    public static String MONGODB_URI = "<MONGODB CONNECT URI>";
+    public static String MONGODB_NAME = "<MONGO DB NAME>";
 
     public static String TENOR_API_KEY = "<TENOR API KEY>";
 
@@ -156,11 +160,21 @@ public class Config {
             try (fis)
             {
                 config.load(fis);
+                // Discord Bot stuff
                 BOT_TOKEN = config.getProperty("bot-token");
                 PREFIX = config.getProperty("prefix");
+
+                // APIs
+                API_PROVIDER = config.getProperty("api-provider");
                 TENOR_API_KEY = config.getProperty("tenor-api-key");
+
+                // API HTTP Provider
                 BACKEND_API_HOST = config.getProperty("backend-api-host");
                 BACKEND_API_KEY = config.getProperty("backend-api-key");
+
+                // API MongoDB Provider
+                MONGODB_URI = config.getProperty("mongodb-uri");
+                MONGODB_NAME = config.getProperty("mongodb-name");
 
                 VOICE_AUTODISCONNECT_MINUTES = Integer.parseInt(
                         config.getProperty("voice-autodisconnect-minutes")
@@ -186,9 +200,9 @@ public class Config {
             {
                 return false;
             }
-        } catch (FileNotFoundException e)
+        } catch (IOException e)
         {
-            log.error("config.properties file doesn't exist.");
+            log.error("Failed to read config from file. Make sure it exists and access is not denied.");
 
             createDefaultConfig();
             throw new RuntimeException(e);
@@ -221,6 +235,7 @@ public class Config {
             fw.close();
         } catch (IOException e)
         {
+            log.error("Failed to write default configuration to config.properties!");
             throw new RuntimeException(e);
         }
     }
