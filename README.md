@@ -37,13 +37,13 @@ Documentation for the latest stable releases of Kat are included in the repo und
     - [x] Subcommands
     - [x] Slash Commands
     - [x] Argument conversions
- - [ ] Metrics
+ - [x] Metrics
  - [x] Backend API
- - [ ] Timers/Events
- - [ ] Interactions
+ - [x] Timers/Events
+ - [ ] Interactions [Slash commands, Buttons implemented]
 
 ### Command Categories
- - [ ] Debug System commands
+ - [x] Debug System commands
  - [ ] Fun (Emote)
  - [x] Music Player
  - [ ] Automod
