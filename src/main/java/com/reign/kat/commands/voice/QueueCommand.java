@@ -10,8 +10,6 @@ import com.reign.kat.lib.utils.Utilities;
 import com.reign.kat.lib.voice.newvoice.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -34,7 +32,7 @@ public class QueueCommand extends Command {
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
         int offset = args.get("offset");
 
-        sendQueueEmbed(ctx, generateQueueString(playlist.nowPlaying(), playlist.getQueue(), offset));
+        sendQueueEmbed(ctx, generateQueueString(playlist.nowPlaying(), playlist.getQueue(), offset), playlist.isPaused());
 
     }
 
@@ -57,7 +55,7 @@ public class QueueCommand extends Command {
         for (int i = indexOffset; i < Math.min(indexOffset + TRACK_DISPLAY_LIMIT, tracks.size()); i++) {
             sb.append(buildTrackStringLine(i+1, tracks.getQueue().get(i)));
         }
-        if (sb.length() == 0)
+        if (sb.isEmpty())
         {
             sb.append("Nothing is queued!");
         }
@@ -106,9 +104,10 @@ public class QueueCommand extends Command {
         return Utilities.timeConversion(total.get());
     }
 
-    private void sendQueueEmbed(Context ctx, String str)
+    private void sendQueueEmbed(Context ctx, String str, boolean paused)
     {
         EmbedBuilder eb = new VoiceEmbed()
+                .setPausedNotification(paused)
                 .setTitle(String.format("%s's Queue", ctx.guild.getName()))
                 .setDescription(str);
 

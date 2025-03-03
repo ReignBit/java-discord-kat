@@ -6,7 +6,6 @@ import com.reign.kat.lib.command.CommandParameters;
 import com.reign.kat.lib.handlers.GuildPlaylistResponseHandler;
 import com.reign.kat.lib.utils.PreCommandResult;
 import com.reign.kat.lib.voice.receive.AudioRecvManager;
-import com.reign.kat.lib.voice.receive.VoiceRecognition;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -16,8 +15,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +22,6 @@ import java.util.Objects;
 
 public class GuildPlaylist extends AudioEventAdapter
 {
-    private static final Logger log = LoggerFactory.getLogger(GuildPlaylist.class);
-
     public final long guildID;
 
     public final GuildPlaylistResponseHandler responseHandler;
@@ -53,12 +48,6 @@ public class GuildPlaylist extends AudioEventAdapter
 
         jdaVoiceState = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getAudioManager();
         jdaVoiceState.setSendingHandler(player.getSendHandler());
-
-        // TODO: I think this is causing a leak... very slowly
-//        audioRecvManager = new AudioRecvManager(this);
-//        audioRecvManager.addListener(VoiceRecognition.instance());
-/*        Bot.jda.addEventListener(audioRecvManager);
-        jdaVoiceState.setReceivingHandler(audioRecvManager);*/
     }
 
 
@@ -96,6 +85,7 @@ public class GuildPlaylist extends AudioEventAdapter
     }
 
     public boolean isPlaying() { return player.nowPlaying != null; }
+    public boolean isPaused() { return player.lavaPlayer.isPaused(); }
     public RequestedTrack nowPlaying() { return player.nowPlaying; }
     public PlaylistQueue getQueue() { return queue; }
     public void move(AudioChannel channel) { jdaVoiceState.openAudioConnection(channel); }
@@ -117,9 +107,7 @@ public class GuildPlaylist extends AudioEventAdapter
             s.append(nowPlaying().url).append("\n");
         }
 
-        queue.getQueue().forEach(track -> {
-            s.append(track.url).append("\n");
-        });
+        queue.getQueue().forEach(track -> s.append(track.url).append("\n"));
 
         return s.toString();
     }
