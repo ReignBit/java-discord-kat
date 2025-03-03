@@ -86,6 +86,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
             sendEmbedWithActionRow(
                     new ItemComponent[]{Button.primary("play-again", "Queue Again")},
                     new VoiceEmbed()
+                            .setPausedNotification(player.lavaPlayer.isPaused())
                             .setTitle("Added a track to the queue")
                             .setDescription(track.toString())
                             .build()
@@ -94,6 +95,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         {
             sendEmbed(
                     new VoiceEmbed()
+                            .setPausedNotification(player.lavaPlayer.isPaused())
                             .setTitle(String.format("Added **%d** tracks to the queue", tracks.size()))
                             .build()
             );
