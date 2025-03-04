@@ -11,6 +11,8 @@ import org.bson.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -23,7 +25,7 @@ public class ApiGuild extends ApiModel
     public @JsonProperty("members") ArrayList<String> members;
     public @JsonProperty("prefix") String prefix;
     //public @JsonProperty("dashboard_enabled") boolean dashboardEnabled;
-    public @JsonProperty("command") Document commandData;
+    public @JsonProperty("command") Map<String, Object> commandData;
     public @JsonProperty("permission_groups") PermissionGroups permissionGroups;
 
     protected static ApiCache<ApiGuild> cache = new ApiCache<>(ApiGuild.class);
@@ -33,7 +35,7 @@ public class ApiGuild extends ApiModel
         super();
         this.discoveredAt = Instant.now().getEpochSecond();
         this.prefix = Config.PREFIX;
-        this.commandData = new Document();
+        this.commandData = new HashMap<>();
     }
     public ApiGuild(String snowflake)
     {

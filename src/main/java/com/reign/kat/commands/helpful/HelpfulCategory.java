@@ -8,5 +8,8 @@ public class HelpfulCategory extends Category {
         setHelpMenuEmoji(":information_source:");
         registerCommand(new HelpCommand());
         registerCommand(new ConfigParentCommand());
+
+        registerCommand(new TagCommand());
+        registerCommand(new TagUtilityCommand());
     }
 }
