@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 import com.reign.kat.lib.PermissionHandler;
+import com.reign.kat.lib.command.data.Datastore;
 import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.embeds.ExceptionEmbed;
 import com.reign.kat.lib.utils.PermissionGroupType;
@@ -46,6 +47,10 @@ public abstract class Command {
 
     /** List of argument Converters, parsed on command execution */
     public final ArrayList<Converter<?>> converters = new ArrayList<>();
+
+    /** Description of the data stored DB side */
+    public Datastore datastore;
+
 
     /** List of pre commands which are ran before command execution */
     public LinkedList<BiFunction<Context, CommandParameters, PreCommandResult>> precommands = new LinkedList<>();
@@ -117,7 +122,7 @@ public abstract class Command {
     public String getName(){return getPrimaryAlias();}
 
     public String getDescription() { return description; }
-
+    public List<Command> getChildren() { return children.values().stream().toList(); }
     public void setShowTyping(boolean status) {this.showTyping = status; }
     public boolean isShowTyping() { return showTyping; }
 
@@ -156,6 +161,16 @@ public abstract class Command {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * set the Datastore to be used for this command
+     * @return Datastore
+     */
+    public Datastore setDatastore()
+    {
+        datastore = new Datastore();
+        return datastore;
     }
 
     /**
