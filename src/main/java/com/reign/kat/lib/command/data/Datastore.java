@@ -1,7 +1,6 @@
 package com.reign.kat.lib.command.data;
 
 import com.reign.api.kat.models.ApiGuild;
-import com.reign.api.lib.Pair;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,8 +23,8 @@ public class Datastore {
         return (T) guild.commandData.getOrDefault(fieldName, null);
     }
 
-    public <T> boolean updateField(String fieldName, T value, ApiGuild guild) {
+    public <T> void updateField(String fieldName, T value, ApiGuild guild) {
         guild.commandData.put(fieldName, value);
-        return guild.save();
+        guild.save();
     }
 }
