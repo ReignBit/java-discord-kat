@@ -19,6 +19,7 @@ public class DebugParentCommand extends Command
         registerSubcommand(new CommandExceptionTestCommand());
         registerSubcommand(new TestCommand());
         registerSubcommand(new VoiceStateCommand());
+        registerSubcommand(new DatastoreTestCommand());
     }
 
     @Override
