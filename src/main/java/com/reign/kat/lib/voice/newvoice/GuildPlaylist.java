@@ -185,7 +185,10 @@ public class GuildPlaylist extends AudioEventAdapter
         player.lavaPlayer.destroy();
 
         // Stop voice listeners
-        audioRecvManager.stopListening();
+        if (audioRecvManager != null)
+        {
+            audioRecvManager.stopListening();
+        }
 
     }
 
