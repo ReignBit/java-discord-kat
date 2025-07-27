@@ -11,6 +11,10 @@ public class Pair<T,Y>
         this.value = value;
     }
 
+    public Pair() {
+
+    }
+
     public T getKey() { return key; }
     public Y getValue() { return value; }
 }

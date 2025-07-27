@@ -3,6 +3,7 @@ package com.reign.kat.lib.command.category;
 
 import com.reign.kat.lib.PermissionHandler;
 import com.reign.kat.lib.command.*;
+import com.reign.kat.lib.command.data.Datastore;
 import com.reign.kat.lib.exceptions.CommandException;
 import com.reign.kat.lib.exceptions.InsufficientPermissionsCommandException;
 import com.reign.kat.lib.utils.PermissionGroupType;
@@ -44,6 +45,9 @@ public abstract class Category extends ListenerAdapter {
 
     /** List of Pre commands to execute before any Commands */
     private final LinkedList<BiFunction<Context, CommandParameters, PreCommandResult>> precommands = new LinkedList<>();
+
+    /** Description of the data stored DB side */
+    public Datastore datastore;
 
     /**
      * Get a Collection of all commands in the category.
@@ -88,6 +92,7 @@ public abstract class Category extends ListenerAdapter {
             return;
         }
 
+        command.category = this;
         // precommands
         for (BiFunction<Context, CommandParameters, PreCommandResult> precommand :
                 precommands)
@@ -176,6 +181,18 @@ public abstract class Category extends ListenerAdapter {
     {
         log.trace("isPrivileged {}", Category.class.getCanonicalName());
         return PermissionHandler.isPrivileged(member, channel, requiredDiscordPermission, requiredPermission);
+    }
+
+    /**
+     * Create a Datastore
+     * Datastores are a feature to allow category/command's to have persistent storage per guild.
+     * An example of a datastore can be found in DebugCategory
+     * @return Datastore
+     */
+    public Datastore setDatastore()
+    {
+        datastore = new Datastore();
+        return datastore;
     }
 
     /**

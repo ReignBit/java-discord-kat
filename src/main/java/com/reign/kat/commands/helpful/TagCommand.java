@@ -19,16 +19,13 @@ public class TagCommand extends Command {
         super(new String[]{"t"}, "t", "Show the tag in chat.");
 
         addConverter(new GreedyStringConverter("tagName", "Name of the tag", null));
-
-        setDatastore()
-                .addField("tag.tags", new DatastoreField<>(new HashMap<String, String>()));
     }
 
     @Override
     public void execute(Context ctx, CommandParameters params) throws Exception {
         ApiGuild guild = ApiGuild.get(ctx.guild.getId());
 
-        Map<String, String> tags = datastore.getField("tag.tags", guild);
+        Map<String, String> tags = category.datastore.getField("tag.tags", guild);
 
         String tagText = tags.get(params.get("tagName").toString());
         ctx.send(tagText);

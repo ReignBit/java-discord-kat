@@ -22,8 +22,6 @@ public class TagUtilityCommand extends Command {
         addConverter(new StringConverter("operation", "add/remove", "add"));
         addConverter(new StringConverter("tagName", "Name of the tag", ""));
         addConverter(new GreedyStringConverter("text", "Tag text", ""));
-        setDatastore()
-                .addField("tag.tags", new DatastoreField<>(new HashMap<String, String>()));
     }
 
 
@@ -31,7 +29,7 @@ public class TagUtilityCommand extends Command {
     public void execute(Context ctx, CommandParameters params) throws Exception {
         ApiGuild guild = ApiGuild.get(ctx.guild.getId());
 
-        Map<String, String> tags = datastore.getField("tag.tags", guild);
+        Map<String, String> tags = category.datastore.getField("tag.tags", guild);
 
         if (((String) params.get("text")).isEmpty()) {
             throw new MissingArgumentCommandException("No tag text provided.");
@@ -56,6 +54,6 @@ public class TagUtilityCommand extends Command {
                 throw new MissingArgumentCommandException("Invalid operation (add/remove).");
         }
 
-        datastore.updateField("tag.tags", tags, guild);
+        category.datastore.updateField("tag.tags", tags, guild);
     }
 }
