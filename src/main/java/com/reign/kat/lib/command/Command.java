@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 import com.reign.kat.lib.PermissionHandler;
+import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.data.Datastore;
 import com.reign.kat.lib.converters.Converter;
 import com.reign.kat.lib.embeds.ExceptionEmbed;
@@ -48,22 +49,34 @@ public abstract class Command {
     /** List of argument Converters, parsed on command execution */
     public final ArrayList<Converter<?>> converters = new ArrayList<>();
 
-    /** Description of the data stored DB side */
-    public Datastore datastore;
-
+    /** The Category the command belongs to */
+    public Category category;
 
     /** List of pre commands which are ran before command execution */
     public LinkedList<BiFunction<Context, CommandParameters, PreCommandResult>> precommands = new LinkedList<>();
 
+    @Deprecated(since="Commands now need to know their category, use the new constructor.")
     public Command(String[] aliases, String primaryAlias, String description)
     {
         this.aliases.addAll(Arrays.asList(aliases));
         this.primaryAlias = primaryAlias;
         this.description = description;
 
-        if (description.length() == 0) { log.warn("{} is missing a description.", name); }
-        if (primaryAlias == null || primaryAlias.equals("")) { log.warn("{} is missing a primary alias.", name); }
+        if (description.isEmpty()) { log.warn("{} is missing a description.", name); }
+        if (primaryAlias == null || primaryAlias.isEmpty()) { log.warn("{} is missing a primary alias.", name); }
     }
+
+    public Command(String[] aliases, String primaryAlias, String description, Category category)
+    {
+        this.aliases.addAll(Arrays.asList(aliases));
+        this.primaryAlias = primaryAlias;
+        this.description = description;
+        this.category = category;
+
+        if (description.isEmpty()) { log.warn("{} is missing a description.", name); }
+        if (primaryAlias == null || primaryAlias.isEmpty()) { log.warn("{} is missing a primary alias.", name); }
+    }
+
 
     /** Add a Converter to the command */
     public void addConverter(Converter<?> converter)
@@ -99,6 +112,7 @@ public abstract class Command {
 
     public void registerSubcommand(Command command)
     {
+        command.category = category;
         for(String alias: command.getAliases())
         {
             // Inherit parent permissions.
@@ -121,6 +135,7 @@ public abstract class Command {
     public String getPrimaryAlias() { return primaryAlias; }
     public String getName(){return getPrimaryAlias();}
 
+    public Category getCategory() { return category; }
     public String getDescription() { return description; }
     public List<Command> getChildren() { return children.values().stream().toList(); }
     public void setShowTyping(boolean status) {this.showTyping = status; }
@@ -161,16 +176,6 @@ public abstract class Command {
             }
         }
         return sb.toString();
-    }
-
-    /**
-     * set the Datastore to be used for this command
-     * @return Datastore
-     */
-    public Datastore setDatastore()
-    {
-        datastore = new Datastore();
-        return datastore;
     }
 
     /**
@@ -218,7 +223,7 @@ public abstract class Command {
         {
             subAlias = args.remove(0);
         }
-        CommandParameters cmdParams = new CommandParameters(ctx, String.join("", args));
+        CommandParameters cmdParams = new CommandParameters(ctx, String.join(" ", args));
 
         invokeCommand(ctx, cmdParams);
 
