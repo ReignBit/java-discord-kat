@@ -34,8 +34,12 @@ public class GuildPlaylistPool
         // All source managers get initialized here.
         playerManager.registerSourceManager(SpotifyRemoteSource.build(playerManager));
         Web.setPoTokenAndVisitorData(Config.YT_PO_TOKEN, Config.YT_VISITOR_DATA);
-        //YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web(), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic());
-        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web());
+
+        ClientOptions webOptions = new ClientOptions();
+        webOptions.setPlayback(false);
+
+        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new MWeb(), new Web(webOptions), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic());
+        //YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web());
         playerManager.registerSourceManager(youtube);
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
