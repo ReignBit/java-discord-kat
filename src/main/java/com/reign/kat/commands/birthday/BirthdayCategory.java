@@ -1,12 +1,10 @@
 package com.reign.kat.commands.birthday;
 
 import com.reign.api.kat.models.ApiGuild;
-import com.reign.api.lib.Pair;
 import com.reign.kat.Bot;
 import com.reign.kat.lib.command.category.Category;
 import com.reign.kat.lib.command.data.DatastoreField;
 import com.reign.kat.lib.embeds.BirthdayEmbed;
-import com.reign.kat.lib.embeds.GenericEmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -63,7 +61,7 @@ public class BirthdayCategory extends Category {
     private void sendBirthdayAnnouncement(Member member, Guild guild, String channel_id) {
         TextChannel channel = guild.getTextChannelById(channel_id);
         if (channel != null) {
-            channel.sendMessage("(mention everyone would go here)")
+            channel.sendMessage("@everyone")
                     .setEmbeds(new BirthdayEmbed(member).build())
                     .setAllowedMentions(Collections.singleton(Message.MentionType.EVERYONE))
                     .queue();
