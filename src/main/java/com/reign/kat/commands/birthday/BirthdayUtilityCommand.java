@@ -47,7 +47,19 @@ public class BirthdayUtilityCommand extends Command {
         }
 
         if (key.equalsIgnoreCase("announce")) {
-            TextChannel channel = ctx.guild.getTextChannelById(value);
+            log.debug(value);
+            TextChannel channel;
+
+            try {
+                channel = ctx.guild.getTextChannelById(Long.parseLong(value));
+            } catch (NumberFormatException e) {
+                try {
+                    channel = ctx.guild.getTextChannelsByName(value, true).get(0);
+
+                } catch (IndexOutOfBoundsException ee) {
+                    channel = ctx.guild.getTextChannelById(value.substring(2, value.length() - 1));
+                }
+            }
             if (channel != null) {
                 category.datastore.updateField(BirthdayCategory.DK_ANNOUNCE_ID, value, guild);
                 ctx.send(new GenericEmbedBuilder()
