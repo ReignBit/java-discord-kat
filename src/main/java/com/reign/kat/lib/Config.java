@@ -149,6 +149,8 @@ public class Config {
 
     public static String YT_PO_TOKEN = "";
     public static String YT_VISITOR_DATA = "";
+    public static String YT_CIPHER_URL = "";
+    public static String YT_CIPHER_PASSWORD = "";
 
     public static boolean load()
     {
@@ -194,6 +196,9 @@ public class Config {
 
                 YT_PO_TOKEN = config.getProperty("yt-po-token");
                 YT_VISITOR_DATA = config.getProperty("yt-visitor-data");
+
+                YT_CIPHER_URL = config.getProperty("yt-cipher-url");
+                YT_CIPHER_PASSWORD = config.getProperty("yt-cipher-password");
 
                 return true;
             } catch (Exception e)
