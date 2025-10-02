@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.reign'
-version '1.3.6'
+version project.version
 
 repositories {
     mavenCentral()
@@ -23,7 +23,7 @@ dependencies {
     implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
 
     // New Youtube source
-    implementation("dev.lavalink.youtube:common:1.14.0")
+    implementation("dev.lavalink.youtube:common:$ytVersion")
 
     // VOSK
     implementation('net.java.dev.jna:jna:5.12.1')
