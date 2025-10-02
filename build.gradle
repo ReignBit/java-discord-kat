@@ -23,7 +23,7 @@ dependencies {
     implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
 
     // New Youtube source
-    implementation("dev.lavalink.youtube:common:1.13.2")
+    implementation("dev.lavalink.youtube:common:1.14.0")
 
     // VOSK
     implementation('net.java.dev.jna:jna:5.12.1')
