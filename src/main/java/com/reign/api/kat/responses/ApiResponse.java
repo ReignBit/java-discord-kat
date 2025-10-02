@@ -15,7 +15,7 @@ public class ApiResponse<T extends ApiModel> {
     public @JsonProperty("status") int status;
 
     public T get() {
-        if (data.size() > 0)
+        if (!data.isEmpty())
             return data.get(0);
         return null;
     }

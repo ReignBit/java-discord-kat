@@ -7,9 +7,12 @@ import com.reign.api.kat.Endpoints;
 import com.reign.api.kat.responses.GuildResponse;
 import com.reign.api.kat.responses.PermissionGroups;
 import com.reign.kat.lib.Config;
+import org.bson.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -22,8 +25,7 @@ public class ApiGuild extends ApiModel
     public @JsonProperty("members") ArrayList<String> members;
     public @JsonProperty("prefix") String prefix;
     //public @JsonProperty("dashboard_enabled") boolean dashboardEnabled;
-    @Deprecated
-    public @JsonProperty("owner_id") String ownerId;
+    public @JsonProperty("command") Map<String, Object> commandData;
     public @JsonProperty("permission_groups") PermissionGroups permissionGroups;
 
     protected static ApiCache<ApiGuild> cache = new ApiCache<>(ApiGuild.class);
@@ -31,6 +33,9 @@ public class ApiGuild extends ApiModel
     public ApiGuild()
     {
         super();
+        this.discoveredAt = Instant.now().getEpochSecond();
+        this.prefix = Config.PREFIX;
+        this.commandData = new HashMap<>();
     }
     public ApiGuild(String snowflake)
     {
@@ -38,6 +43,7 @@ public class ApiGuild extends ApiModel
         this.snowflake = snowflake;
         this.discoveredAt = Instant.now().getEpochSecond();
         this.prefix = Config.PREFIX;
+        this.commandData = new Document();
     }
 
     public PermissionGroups getPermissionGroups() {
@@ -60,9 +66,14 @@ public class ApiGuild extends ApiModel
         return prefix;
     }
 
-    @Deprecated
-    public String getOwnerId() {
-        return ownerId;
+    public Object getCommandData(String key)
+    {
+        return commandData.get(key);
+    }
+
+    public static void invalidateCache()
+    {
+        cache.clear();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.reign.api.lib.providers;
 
-import com.reign.api.kat.KatApi;
 import com.reign.api.kat.models.ApiModel;
 import com.reign.api.kat.responses.ApiResponse;
 import com.reign.api.lib.JsonBodyHandler;
@@ -19,11 +18,25 @@ public class ApiHttpProvider implements IApiProvider
 {
     protected static final Logger log = LoggerFactory.getLogger(ApiModel.class);
 
-    private static final Duration HTTP_TIMEOUT_SECONDS = Duration.ofSeconds(5);
-    private static final String API_HOST = KatApi.host;
-    private static final String API_AUTH = KatApi.authStr;
-    private static final HttpClient client = KatApi.getClient();
+    private Duration httpTimeoutSeconds = Duration.ofSeconds(5);
+    private final String apiHost;
+    private final String apiAuth;
+    private final HttpClient client = HttpClient.newHttpClient();
 
+    public ApiHttpProvider(String hostUri, String hostAuth)
+    {
+        apiHost = hostUri;
+        apiAuth = hostAuth;
+    }
+
+    /**
+     * Set the time to wait for an API response before timing out.
+     * @param seconds Seconds to wait. (default 5)
+     */
+    public void setTimeout(int seconds)
+    {
+        httpTimeoutSeconds = Duration.ofSeconds(seconds);
+    }
 
     @Override
     public <T extends ApiModel, Y extends ApiResponse<?>> boolean commit(String endpoint, T apiModel, Class<Y> responseClass)
@@ -45,15 +58,15 @@ public class ApiHttpProvider implements IApiProvider
      * @return T JSON-Deserialized class object
      * @param <T> Class to deserialize into.
      */
-    private static <T> T get(String endpoint, Class<T> response) {
+    private <T> T get(String endpoint, Class<T> response) {
         HttpRequest request = HttpRequest.newBuilder(
-                        URI.create(String.format("%s/%s", API_HOST, endpoint))
+                        URI.create(String.format("%s/%s", apiHost, endpoint))
                 )
-                .setHeader("Authorization", API_AUTH)
-                .timeout(HTTP_TIMEOUT_SECONDS)
+                .setHeader("Authorization", apiAuth)
+                .timeout(httpTimeoutSeconds)
                 .build();
 
-        log.trace("GET Requesting {}", String.format("%s/%s", API_HOST, endpoint));
+        log.debug("GET Requesting {}", String.format("%s/%s", apiHost, endpoint));
 
         try
         {
@@ -62,7 +75,6 @@ public class ApiHttpProvider implements IApiProvider
             // Ok status codes - Client Error status codes
             if (resp.statusCode() >= 200 && resp.statusCode() < 400) {
                 log.trace("Status code {}", resp.statusCode());
-                return resp.body().get();
             }
             else{
                 if (resp.statusCode() == 401)
@@ -70,15 +82,15 @@ public class ApiHttpProvider implements IApiProvider
                     log.error("API Request returned status code 401.");
                     log.error("Ensure you have set `backend_api_key` in config.properties");
                 }
-                log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", API_HOST, endpoint));
-                return resp.body().get();
+                log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", apiHost, endpoint));
             }
+            return resp.body().get();
 
 
         } catch (ExecutionException | InterruptedException e)
         {
             log.error(String.valueOf(e));
-            log.error("An error occurred whilst trying to GET request {}/{}", API_HOST, endpoint);
+            log.error("An error occurred whilst trying to GET request {}/{}", apiHost, endpoint);
         }
         return null;
     }
@@ -94,14 +106,15 @@ public class ApiHttpProvider implements IApiProvider
      */
     public <T,Y> T post(String endpoint, Class<T> response, Y body) {
         HttpRequest request = HttpRequest.newBuilder(
-                        URI.create(String.format("%s/%s", API_HOST, endpoint))
+                        URI.create(String.format("%s/%s", apiHost, endpoint))
                 )
-                .setHeader("Authorization", API_AUTH)
+                .setHeader("Authorization", apiAuth)
                 .setHeader("Content-Type", "application/json")
+                .timeout(httpTimeoutSeconds)
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
 
-        log.trace("POST Requesting {}", String.format("%s/%s", API_HOST, endpoint));
+        log.debug("POST Requesting {}", String.format("%s/%s", apiHost, endpoint));
         log.trace("body: {}", body);
         try
         {
@@ -113,14 +126,14 @@ public class ApiHttpProvider implements IApiProvider
             }
             else
             {
-                log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", API_HOST, endpoint));
+                log.warn("Non-Ok status code ({}) received from POST {}", resp.statusCode(), String.format("%s/%s", apiHost, endpoint));
                 log.error(body.toString());
             }
 
             return resp.body().get();
         } catch (ExecutionException | InterruptedException e)
         {
-            log.error("An error occurred whilst trying to POST request {}/{}", API_HOST, endpoint);
+            log.error("An error occurred whilst trying to POST request {}/{}", apiHost, endpoint);
         }
         return null;
     }

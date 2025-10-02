@@ -1,7 +1,10 @@
 package com.reign.api.kat;
 
 import com.reign.api.kat.models.ApiModel;
+import com.reign.api.lib.providers.ApiHttpProvider;
+import com.reign.api.lib.providers.ApiMongoProvider;
 import com.reign.api.lib.providers.IApiProvider;
+import com.reign.kat.lib.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +13,26 @@ import java.net.http.HttpClient;
 
 public class KatApi {
     private static final Logger log = LoggerFactory.getLogger(KatApi.class);
-    private static final HttpClient client = HttpClient.newHttpClient();
-    public static String host;
-    public static String authStr;
 
-    public static void setAuthorization(String host, String authentication) {
-        KatApi.host = host;
-        KatApi.authStr = authentication;
-
+    /**
+     * Initialize the selected data provider for the bot.
+     * The selected provider will be responsible for fetching and saving guild and user data.
+     * @param providerName Name of the provider, defaults to "http", options are:<br>
+     *                     - http<br>
+     *                     - mongodb<br>
+     */
+    public static void init(String providerName)
+    {
+        switch (providerName) {
+            case "mongodb":
+                log.debug("Using MongoDB...");
+                KatApi.setProvider(new ApiMongoProvider(Config.MONGODB_URI, Config.MONGODB_NAME));
+                break;
+            case "http":
+            default:
+                log.debug("Using HTTP...");
+                KatApi.setProvider(new ApiHttpProvider(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY));
+        }
     }
 
     /**
@@ -32,14 +47,4 @@ public class KatApi {
     {
         ApiModel.provider = provider;
     }
-
-    public static HttpClient getClient()
-    {
-        return client;
-    }
-
-
-
-
-
 }

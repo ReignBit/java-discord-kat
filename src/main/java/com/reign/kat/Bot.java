@@ -2,7 +2,9 @@ package com.reign.kat;
 
 import com.reign.api.kat.KatApi;
 import com.reign.api.lib.providers.ApiHttpProvider;
+import com.reign.api.lib.providers.ApiMongoProvider;
 import com.reign.api.tenor.TenorApi;
+import com.reign.kat.commands.birthday.BirthdayCategory;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
 import com.reign.kat.commands.helpful.HelpfulCategory;
@@ -35,7 +37,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class Bot extends ListenerAdapter{
+public class Bot extends ListenerAdapter {
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
 
     public static final CommandHandler commandHandler = new CommandHandler();
@@ -44,26 +46,23 @@ public class Bot extends ListenerAdapter{
     public static TenorApi tenorApi;
     public static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
-    public Bot() throws Exception
-    {
+    public Bot() throws Exception {
         log.debug("Starting bot...");
-        try{
+        try {
             initialize();
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error(e.toString());
             throw e;
         }
     }
 
-    public void initialize()
-    {
-       log.info("Loading Config...");
+    public void initialize() {
+        log.info("Loading Config...");
 
 
-       if (!Config.load())
-       {
-           log.error("Failed to load config. Bot is in an undefined state!");
-       }
+        if (!Config.load()) {
+            log.error("Failed to load config. Bot is in an undefined state!");
+        }
         init_apis();
 
         jda = JDABuilder.createDefault(Config.BOT_TOKEN)
@@ -83,45 +82,29 @@ public class Bot extends ListenerAdapter{
                 .build();
 
         // Hide token
-       Config.BOT_TOKEN = Config.BOT_TOKEN.split("\\.")[0] + "************";
+        Config.BOT_TOKEN = Config.BOT_TOKEN.split("\\.")[0] + "************";
 
-       addCategories();
-       postInit();
+        addCategories();
+        postInit();
     }
 
-    private void init_apis()
-    {
+    private void init_apis() {
+        log.info("Starting Api controllers...");
+        log.debug("Init TenorApi");
         tenorApi = new TenorApi(Config.TENOR_API_KEY, "kat-java-bot");
 
-
-        switch (Config.API_PROVIDER)
-        {
-            case "mongodb" -> {
-//                KatApi.setHost(Config.API_MONGO_URI);
-//                KatApi.setProvider(new ApiMongoProvider(Config.API_MONGO_DB));
-                  log.error("UNSUPPORTED API PROVIDER");
-            }
-            case "http" -> {
-                KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
-                KatApi.setProvider(new ApiHttpProvider());
-            }
-            default ->
-            {
-                log.warn("Config does not have API_PROVIDER property, defaulting to http...");
-                KatApi.setAuthorization(Config.BACKEND_API_HOST, Config.BACKEND_API_KEY);
-                KatApi.setProvider(new ApiHttpProvider());
-            }
-        }
+        log.debug("Init KatApi");
+        KatApi.init(Config.API_PROVIDER);
     }
 
-    public void postInit()
-    {
+    public void postInit() {
         ScheduledFuture<?> firstTimeOnHour = executorService.scheduleAtFixedRate(
                 this::onHourEvent,
                 10,
                 60,
                 TimeUnit.MINUTES
         );
+
 
         if (BotRunner.BotProperties.exitAfterLaunch)
             Bot.jda.shutdown();
@@ -130,25 +113,24 @@ public class Bot extends ListenerAdapter{
             commandHandler.updateSlashCommands();
     }
 
-    public void addCategories(){
+    public void addCategories() {
         log.info("Adding Categories");
         addCategory(new HelpfulCategory());
         addCategory(new DebugCategory());
         addCategory(new EmoteCategory());
         addCategory(new VoiceCategory());
         addCategory(new LevelCategory());
+        addCategory(new BirthdayCategory());
         log.info("Categories Loaded");
     }
 
-    public void addCategory(Category cat)
-    {
+    public void addCategory(Category cat) {
         commandHandler.addCategory(cat);
         jda.addEventListener(cat);
         log.info("Registered category {} ({} commands)", cat.internalName, cat.getCommandsDistinct().size());
     }
 
-    public void removeCategory(String name)
-    {
+    public void removeCategory(String name) {
         Category cat = commandHandler.removeCategory(name);
         jda.removeEventListener(cat);
         log.info("Unregistered category {}", cat.internalName);
@@ -156,11 +138,12 @@ public class Bot extends ListenerAdapter{
 
 
     @Override
-    public void onReady(@NotNull ReadyEvent event)
-    {
+    public void onReady(@NotNull ReadyEvent event) {
         log.info("==============================");
-        log.info("Started Kat v" + BotVersion.version());
-        if (Config.DEBUG_MODE) { log.warn("! Debug Mode Enabled !"); }
+        log.info("Started Kat v{}", BotVersion.version());
+        if (Config.DEBUG_MODE) {
+            log.warn("! Debug Mode Enabled !");
+        }
         log.info("Logged in as {}", event.getJDA().getSelfUser().getName());
         log.info("I can see {} Users", event.getJDA().getUsers().size());
         log.info("I can see {}/{} Guilds", event.getGuildAvailableCount(), event.getGuildTotalCount());
@@ -171,23 +154,20 @@ public class Bot extends ListenerAdapter{
     }
 
     @Override
-    public void onGuildJoin(@NotNull GuildJoinEvent event)
-    {
+    public void onGuildJoin(@NotNull GuildJoinEvent event) {
         Guild guild = event.getGuild();
         log.info("Joined a new guild. {} | {}", guild.getId(), guild.getName());
 
     }
 
     @Override
-    public void onGuildLeave(@NotNull GuildLeaveEvent event)
-    {
+    public void onGuildLeave(@NotNull GuildLeaveEvent event) {
         Guild guild = event.getGuild();
         log.info("left a guild. {} | {}", guild.getId(), guild.getName());
 
     }
 
-    private void onHourEvent()
-    {
+    private void onHourEvent() {
         BotStats.buildReport().forEachRemaining(log::info);
         commandHandler.getCategories().forEach(Category::onHourEvent);
     }
