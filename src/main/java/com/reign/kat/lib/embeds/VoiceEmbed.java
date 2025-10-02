@@ -8,4 +8,12 @@ public class VoiceEmbed extends GenericEmbedBuilder {
     {
         setColor(KatColor.VOICE_CATEGORY);
     }
+
+    public VoiceEmbed setPausedNotification(boolean set)
+    {
+        if (set)
+            setFooter("Player is paused - Use `play` to unpause.");
+
+        return this;
+    }
 }

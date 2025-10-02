@@ -4,6 +4,7 @@ import com.reign.api.kat.KatApi;
 import com.reign.api.lib.providers.ApiHttpProvider;
 import com.reign.api.lib.providers.ApiMongoProvider;
 import com.reign.api.tenor.TenorApi;
+import com.reign.kat.commands.birthday.BirthdayCategory;
 import com.reign.kat.commands.debug.DebugCategory;
 import com.reign.kat.commands.fun.emote.EmoteCategory;
 import com.reign.kat.commands.helpful.HelpfulCategory;
@@ -104,6 +105,7 @@ public class Bot extends ListenerAdapter {
                 TimeUnit.MINUTES
         );
 
+
         if (BotRunner.BotProperties.exitAfterLaunch)
             Bot.jda.shutdown();
 
@@ -118,6 +120,7 @@ public class Bot extends ListenerAdapter {
         addCategory(new EmoteCategory());
         addCategory(new VoiceCategory());
         addCategory(new LevelCategory());
+        addCategory(new BirthdayCategory());
         log.info("Categories Loaded");
     }
 
