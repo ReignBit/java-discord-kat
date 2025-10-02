@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.YoutubeSourceOptions;
 import dev.lavalink.youtube.clients.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,10 @@ public class GuildPlaylistPool
         ClientOptions webOptions = new ClientOptions();
         webOptions.setPlayback(false);
 
-        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new MWeb(), new Web(webOptions), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic());
+        YoutubeSourceOptions options = new YoutubeSourceOptions()
+                .setRemoteCipherUrl(Config.YT_CIPHER_URL, Config.YT_CIPHER_PASSWORD);
+
+        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(options, new MWeb(), new Web(webOptions), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic());
         //YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web());
         playerManager.registerSourceManager(youtube);
         AudioSourceManagers.registerRemoteSources(playerManager);

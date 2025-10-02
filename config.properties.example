@@ -4,20 +4,26 @@ Customize these settings and rename the file to `config.properties`
 for your changes to take effect.
 
 ---
-
-bot-token=Your.Token.Here
+bot-token=your.token.here
 prefix=!
-tenor-api-key=APIKEYHERE
-backend-api-key=
-backend-api-host=
+tenor-api-key=TENORAPIKEY
+api-provider=mongodb
+backend-api-key=API_KEY_HERE
+backend-api-host=http://KAT_API_HOST_HERE
+
+mongodb-uri=mongodb://KAT_API_DB_HERE
+mongodb-name=KAT_DB_NAME
 
 voice-autodisconnect-minutes=5
-voice-spotify-client-id=
-voice-spotify-client-secret=
-voice-spotify-country-code=
+voice-spotify-client-id=SPOTIFY_CLIENT_ID
+voice-spotify-client-secret=SPOTIFY_CLIENT_SECRET
+voice-spotify-country-code=CC
 
 debug-mode=true
 debug-ignore-permission-sys=false
 
-speech-recognition-model-name=[folder name inside of voice-models/]
-speech-recognition-wake-words=a, list, of, comma, separated, english, words
+yt-po-token=YT_PO_TOKEN
+yt-visitor-data=YT_VISITOR_DATA_KEY
+
+yt-cipher-url=https://cipher.kikkia.dev/api
+yt-cipher-password=
