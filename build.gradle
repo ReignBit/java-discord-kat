@@ -3,7 +3,12 @@ plugins {
 }
 
 group 'com.reign'
-version project.version
+
+def gitHash = "git rev-parse --short HEAD".execute().text.trim()
+def gitTag  = "git describe --tags --exact-match".execute(null, rootDir).text.trim()
+
+
+version = gitTag ?: project.version+"-"+gitHash
 
 repositories {
     mavenCentral()
@@ -16,7 +21,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 
     // JDA
-    implementation("net.dv8tion:JDA:5.1.1")
+    implementation("net.dv8tion:JDA:6.0.0")
 
     // Lavaplayer
     implementation("dev.arbjerg:lavaplayer:2.1.2")
