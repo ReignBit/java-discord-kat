@@ -21,7 +21,7 @@ public class SeekCommand extends Command {
         super(new String[]{"seek"},"seek" ,"Seek through the current track");
         addConverter(new StringConverter(
                 "position",
-                "Position in the track to seek to. Formatted as a timestamp (eg: 15:24)",
+                "Position in the track to seek to. Formatted as a timestamp (eg: 15:24) (+/- relative)",
                 "0"
         ));
 
@@ -31,8 +31,26 @@ public class SeekCommand extends Command {
     public void execute(Context ctx, CommandParameters args) throws Exception {
         GuildPlaylist playlist = GuildPlaylistPool.get(ctx.guild.getIdLong());
 
-        long pos = Utilities.stringToTimeConversion(args.get("position"));
-        if (pos < 0L)
+        String position = args.get("position");
+
+        long requestedPosition;
+        if (position.startsWith("+") || position.startsWith("-")) {
+            // Relative seeking
+
+            boolean subtract = position.startsWith("-");
+
+            long currentPositionMs = playlist.nowPlaying().track.getPosition();
+            requestedPosition = Utilities.stringToTimeConversion(position.substring(1));
+
+            if (subtract)
+                requestedPosition = -requestedPosition;
+
+            requestedPosition = currentPositionMs + requestedPosition;
+        } else {
+            requestedPosition = Utilities.stringToTimeConversion(args.get("position"));
+        }
+
+        if (requestedPosition < 0L)
         {
             // Failed to convert to a timestamp
             ctx.send(new ExceptionEmbed()
@@ -41,14 +59,14 @@ public class SeekCommand extends Command {
             return;
         }
 
-        if (pos > playlist.nowPlaying().duration)
+        if (requestedPosition > playlist.nowPlaying().duration)
         {
-            pos = playlist.nowPlaying().duration;
+            requestedPosition = playlist.nowPlaying().duration;
         }
-        playlist.seek(pos);
+        playlist.seek(requestedPosition);
 
         ctx.send(new VoiceEmbed()
                 .setTitle("Seeked track")
-                .setDescription("Set track position to " + Utilities.timeConversion(pos)).build());
+                .setDescription("Set track position to " + Utilities.timeConversion(requestedPosition)).build());
     }
 }
