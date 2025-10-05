@@ -73,9 +73,9 @@ public class Bot extends ListenerAdapter {
                         GatewayIntent.GUILD_MESSAGES,
                         GatewayIntent.GUILD_MEMBERS,
                         GatewayIntent.GUILD_VOICE_STATES,
-                        GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
                         GatewayIntent.SCHEDULED_EVENTS,
-                        GatewayIntent.MESSAGE_CONTENT
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_EXPRESSIONS
                 )
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
