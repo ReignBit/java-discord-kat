@@ -12,11 +12,14 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.actionrow.ActionRowChildComponent;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,8 +86,8 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         {
             RequestedTrack track = tracks.get(0);
 
-            sendEmbedWithActionRow(
-                    new ItemComponent[]{Button.primary("play-again", "Queue Again")},
+            sendEmbedWithSingleComponent(
+                    Button.primary("play-again", "Queue Again"),
                     new VoiceEmbed()
                             .setPausedNotification(player.lavaPlayer.isPaused())
                             .setTitle("Added a track to the queue")
@@ -129,7 +132,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     {
         RequestedTrack track = player.nowPlaying;
         sendEmbedWithActionRow(
-                new ItemComponent[]{Button.primary("play-again", "Queue Again")},
+                new ActionRowChildComponent[]{Button.primary("play-again", "Queue Again")},
                 new VoiceEmbed()
                         .setTitle("Now playing")
                         .setDescription(track.toString())
@@ -141,7 +144,8 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason)
     {
-
+        // TODO: Add tries before stopping music to avoid spamming chat with errors for each track.
+        // TODO: Also maybe look into retrying if we have some kind of errors?
     }
 
     @Override
@@ -212,17 +216,28 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         hook = null;
     }
 
-    private void sendEmbedWithActionRow(ItemComponent[] components, MessageEmbed... embeds)
+    private void sendEmbedWithSingleComponent(ActionRowChildComponent component, MessageEmbed... embeds)
+    {
+
+        sendEmbedWithActionRow(new ActionRowChildComponent[]{component}, embeds);
+    }
+
+    private void sendEmbedWithActionRow(ActionRowChildComponent[] components, MessageEmbed... embeds)
     {
         TextChannel channel = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getTextChannelById(textChannelID);
         if (channel != null)
         {
+            MessageCreateData data = new MessageCreateBuilder()
+                    .setEmbeds(embeds)
+                    .addComponents(ActionRow.of(Arrays.asList(components)))
+                    .build();
+
             if (hook != null)
             {
-                hook.sendMessageEmbeds(Arrays.asList(embeds)).addActionRow(components).queue();
+                hook.sendMessage(data).queue();
             } else
             {
-                channel.sendMessageEmbeds(Arrays.asList(embeds)).addActionRow(components).queue();
+                channel.sendMessage(data).queue();
             }
         }
 
