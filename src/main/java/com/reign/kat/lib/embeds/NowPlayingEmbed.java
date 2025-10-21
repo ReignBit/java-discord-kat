@@ -21,10 +21,10 @@ public class NowPlayingEmbed extends VoiceEmbed
     {
         int before = (int) (TOTAL_BAR_SIZE * track.getPercentComplete());
 
-        return String.format("`%s%s%s`\t[%s/%s]",
+        return String.format("`[%s%s%s]`\t[%s/%s]",
                 PROGRESS_BAR_SYMBOL.repeat(before),
                 CURRENT_TIME_SYMBOL,
-                "\u1CBC\u1CBC".repeat(TOTAL_BAR_SIZE - before),
+                " ".repeat(TOTAL_BAR_SIZE - before),
                 track.getPositionAsTimestamp(),
                 track.getDurationAsTimestamp()
             );
