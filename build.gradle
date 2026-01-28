@@ -57,11 +57,17 @@ tasks.withType(Zip.class).configureEach {
 
 tasks.register('generateVersion') {
     def outputFile = new File(projectDir, "src/main/resources/version.properties")
-    def date = new Date().format("yyyy-MM-dd_hh-mm-ss")
-    def commit = 'git rev-parse --verify --short HEAD'.execute().text.trim()
 
     outputs.file outputFile
     doLast {
+        def date = new Date().format("yyyy-MM-dd_HH-mm-ss")
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', '--verify', '--short', 'HEAD'
+            standardOutput = stdout
+        }
+        def commit = stdout.toString().trim()
+
         outputFile.text = """
 version=$project.version
 timestamp=$date
