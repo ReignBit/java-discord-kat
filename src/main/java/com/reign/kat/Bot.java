@@ -1,5 +1,6 @@
 package com.reign.kat;
 
+import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import com.reign.api.kat.KatApi;
 import com.reign.api.lib.providers.ApiHttpProvider;
 import com.reign.api.lib.providers.ApiMongoProvider;
@@ -18,6 +19,7 @@ import com.reign.kat.lib.utils.stats.BotStats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.audio.AudioModuleConfig;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -79,6 +81,8 @@ public class Bot extends ListenerAdapter {
                 )
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .setAudioModuleConfig(new AudioModuleConfig()
+                        .withDaveSessionFactory(new JDaveSessionFactory()))
                 .build();
 
         // Hide token

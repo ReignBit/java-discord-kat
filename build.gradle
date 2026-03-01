@@ -5,6 +5,12 @@ plugins {
 group 'com.reign'
 version project.version
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 repositories {
     mavenCentral()
     maven {url('https://m2.dv8tion.net/releases')}
@@ -45,6 +51,16 @@ dependencies {
 
     //MongoDB
     implementation('org.mongodb:mongodb-driver-sync:5.3.0')
+
+    // DAVE (Discord's Audio & Video End-to-End Encryption)
+    // Interface to use for libraries
+    implementation("club.minnced:jdave-api:0.1.7")
+
+    // Compiled natives for libdave for the specified platform
+    implementation("club.minnced:jdave-native-linux-x86-64:0.1.7")
+    implementation("club.minnced:jdave-native-linux-aarch64:0.1.7")
+    implementation("club.minnced:jdave-native-win-x86-64:0.1.7")
+    implementation("club.minnced:jdave-native-darwin:0.1.7")
 }
 
 tasks.withType(Tar.class).configureEach {
