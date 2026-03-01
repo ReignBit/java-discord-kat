@@ -12,11 +12,15 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.dv8tion.jda.api.components.MessageTopLevelComponent;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.actionrow.ActionRowChildComponent;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +88,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
             RequestedTrack track = tracks.get(0);
 
             sendEmbedWithActionRow(
-                    new ItemComponent[]{Button.primary("play-again", "Queue Again")},
+                    new ActionRowChildComponent[]{Button.primary("play-again", "Queue Again")},
                     new VoiceEmbed()
                             .setPausedNotification(player.lavaPlayer.isPaused())
                             .setTitle("Added a track to the queue")
@@ -129,7 +133,7 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     {
         RequestedTrack track = player.nowPlaying;
         sendEmbedWithActionRow(
-                new ItemComponent[]{Button.primary("play-again", "Queue Again")},
+                new ActionRowChildComponent[]{Button.primary("play-again", "Queue Again")},
                 new VoiceEmbed()
                         .setTitle("Now playing")
                         .setDescription(track.toString())
@@ -212,17 +216,18 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
         hook = null;
     }
 
-    private void sendEmbedWithActionRow(ItemComponent[] components, MessageEmbed... embeds)
+    private void sendEmbedWithActionRow(ActionRowChildComponent[] components, MessageEmbed... embeds)
     {
         TextChannel channel = Objects.requireNonNull(Bot.jda.getGuildById(guildID)).getTextChannelById(textChannelID);
         if (channel != null)
         {
+            ActionRow ar = ActionRow.of(Arrays.stream(components).toList());
             if (hook != null)
             {
-                hook.sendMessageEmbeds(Arrays.asList(embeds)).addActionRow(components).queue();
+                hook.sendMessageEmbeds(Arrays.asList(embeds)).addComponents(ar).queue();
             } else
             {
-                channel.sendMessageEmbeds(Arrays.asList(embeds)).addActionRow(components).queue();
+                channel.sendMessageEmbeds(Arrays.asList(embeds)).addComponents(ar).queue();
             }
         }
 

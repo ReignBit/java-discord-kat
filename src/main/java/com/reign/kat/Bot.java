@@ -73,7 +73,7 @@ public class Bot extends ListenerAdapter {
                         GatewayIntent.GUILD_MESSAGES,
                         GatewayIntent.GUILD_MEMBERS,
                         GatewayIntent.GUILD_VOICE_STATES,
-                        GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+                        GatewayIntent.GUILD_EXPRESSIONS,
                         GatewayIntent.SCHEDULED_EVENTS,
                         GatewayIntent.MESSAGE_CONTENT
                 )

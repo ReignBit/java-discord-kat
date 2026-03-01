@@ -16,7 +16,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 
     // JDA
-    implementation("net.dv8tion:JDA:5.1.1")
+    implementation("net.dv8tion:JDA:6.3.1")
 
     // Lavaplayer
     implementation("dev.arbjerg:lavaplayer:2.1.2")

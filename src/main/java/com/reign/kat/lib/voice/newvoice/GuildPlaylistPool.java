@@ -42,7 +42,17 @@ public class GuildPlaylistPool
         YoutubeSourceOptions options = new YoutubeSourceOptions()
                 .setRemoteCipher(Config.YT_CIPHER_URL, Config.YT_CIPHER_PASSWORD, null);
 
-        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(options, new MWeb(), new Web(webOptions), new Music(), new TvHtml5Embedded(), new WebEmbedded(), new AndroidMusic());
+        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(options,
+                new Music(),
+                new MWeb(),
+                new Web(webOptions),
+                new WebEmbedded(),
+                new AndroidMusic(),
+                new AndroidVr(),
+                new Ios(),
+                new Tv(),
+                new TvHtml5Simply()
+        );
         //YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web());
         playerManager.registerSourceManager(youtube);
         AudioSourceManagers.registerRemoteSources(playerManager);
