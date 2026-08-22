@@ -151,6 +151,7 @@ public class Config {
     public static String YT_VISITOR_DATA = "";
     public static String YT_CIPHER_URL = "";
     public static String YT_CIPHER_PASSWORD = "";
+    public static String YT_REFRESH_TOKEN = null;
 
     public static boolean load()
     {
@@ -194,11 +195,12 @@ public class Config {
                 SPEECH_RECOGNITION_WAKE_WORDS = config.getProperty("speech-recognition-wake-words").split(", ");
                 SPEECH_RECOGNITION_WAKE_WORD = SPEECH_RECOGNITION_WAKE_WORDS[0];
 
-                YT_PO_TOKEN = config.getProperty("yt-po-token");
-                YT_VISITOR_DATA = config.getProperty("yt-visitor-data");
+                YT_PO_TOKEN = config.getProperty("yt-po-token", "");
+                YT_VISITOR_DATA = config.getProperty("yt-visitor-data", "");
 
                 YT_CIPHER_URL = config.getProperty("yt-cipher-url");
                 YT_CIPHER_PASSWORD = config.getProperty("yt-cipher-password");
+                YT_REFRESH_TOKEN = config.getProperty("yt-refresh-token", null);
 
                 return true;
             } catch (Exception e)

@@ -151,11 +151,17 @@ public class GuildPlaylistResponseHandler extends AudioEventAdapter
     @Override
     public void onTrackException(AudioPlayer _player, AudioTrack _track, FriendlyException exception)
     {
+
+        String msg = exception.getMessage();
+        if (msg.length() > 3000) {
+            msg = msg.substring(0, 3000) + "...";
+        }
+
         RequestedTrack track = player.nowPlaying;
         sendEmbed(
                 new ExceptionEmbed()
                         .setTitle("Failed to play a track")
-                        .setDescription(String.format("Something went wrong when trying to play **[%s](%s)**!\n```\n%s```", track.title, track.url, exception.getMessage()))
+                        .setDescription(String.format("Something went wrong when trying to play **[%s](%s)**!\n```\n%s```", track.title, track.url, msg))
                         .build()
         );
 

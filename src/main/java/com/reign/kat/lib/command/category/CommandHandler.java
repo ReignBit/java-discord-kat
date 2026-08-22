@@ -187,7 +187,7 @@ public class CommandHandler extends ListenerAdapter {
             // ["help", "debug", "timing"] for example
 
             ArrayList<String> cmdArgs = new ArrayList<>(List.of(message.getContentRaw().split(" ")));
-            String cmd = cmdArgs.get(0).substring(usedPrefix.length());
+            String cmd = cmdArgs.getFirst().substring(usedPrefix.length()).toLowerCase(Locale.ROOT);
 
             log.trace(cmd);
 

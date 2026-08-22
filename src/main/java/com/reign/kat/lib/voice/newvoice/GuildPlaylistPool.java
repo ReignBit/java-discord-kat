@@ -39,6 +39,7 @@ public class GuildPlaylistPool
         ClientOptions webOptions = new ClientOptions();
         webOptions.setPlayback(false);
 
+
         YoutubeSourceOptions options = new YoutubeSourceOptions()
                 .setRemoteCipher(Config.YT_CIPHER_URL, Config.YT_CIPHER_PASSWORD, null);
 
@@ -53,6 +54,9 @@ public class GuildPlaylistPool
                 new Tv(),
                 new TvHtml5Simply()
         );
+
+        youtube.useOauth2(Config.YT_REFRESH_TOKEN, Config.YT_REFRESH_TOKEN != null);
+
         //YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager(true, new Web());
         playerManager.registerSourceManager(youtube);
         AudioSourceManagers.registerRemoteSources(playerManager);

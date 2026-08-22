@@ -16,6 +16,7 @@ repositories {
     maven {url('https://m2.dv8tion.net/releases')}
     maven {url('https://jitpack.io')}
     maven {url("https://maven.lavalink.dev/releases")}
+    maven {url("https://maven.lavalink.dev/snapshots")}
 }
 
 dependencies {
@@ -25,7 +26,7 @@ dependencies {
     implementation("net.dv8tion:JDA:6.3.1")
 
     // Lavaplayer
-    implementation("dev.arbjerg:lavaplayer:2.1.2")
+    implementation("dev.arbjerg:lavaplayer:2.2.7")
     implementation('com.github.Topis-Lavalink-Plugins:Topis-Source-Managers:2.0.7')
 
     // New Youtube source
